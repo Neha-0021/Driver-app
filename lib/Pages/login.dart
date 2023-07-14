@@ -1,0 +1,114 @@
+import 'package:driver_app/atom/button.dart';
+import 'package:driver_app/atom/custom-header.dart';
+import 'package:driver_app/atom/password-input.dart';
+import 'package:driver_app/atom/privacy-policy.dart';
+import 'package:driver_app/atom/text-Input-symbol.dart';
+import 'package:flutter/material.dart';
+
+class Login extends StatefulWidget {
+  @override
+  _LoginState createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  bool showPassword = false;
+
+  @override
+  Widget build(BuildContext context) {
+    double deviceHeight = MediaQuery.of(context).size.height;
+    double deviceWidth = MediaQuery.of(context).size.width;
+    return Scaffold(
+      body: SafeArea(
+        child: ListView(
+          children: [
+            SizedBox(
+              height: deviceHeight / 2.8,
+              width: deviceWidth,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.asset(
+                    "assets/images/login.png",
+                    fit: BoxFit.fill,
+                  ),
+                  Positioned(
+                    left: 10,
+                    child: CustomHeader(),
+                  ),
+                ],
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.only(left: 20, top: 20),
+              child: Text(
+                'Great to have you back!',
+                style: screenTitleStyle,
+                textAlign: TextAlign.left,
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                'Start your journey with existing new features!',
+                style: screenSubtitleStyle,
+                textAlign: TextAlign.left,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: CustomTextInput(
+                hintText: "Enter Username",
+                imagePath: "assets/images/svg/profile.svg",
+                onChangeText: (String e) => {},
+                keyboardType: TextInputType.text,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: PasswordInput(
+                hintText: "Enter Password",
+                imagePath: "assets/images/svg/lock.svg",
+                onChangeText: (String e) => {},
+                keyboardType: TextInputType.text,
+                showHidePassword: () {
+                  setState(() {
+                    showPassword = !showPassword;
+                  });
+                },
+                showPassword: showPassword,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 60),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: CustomButton(
+                  label: 'Login',
+                  onPressed: () {},
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: Center(child: PrivacyPolicy()),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+const TextStyle screenTitleStyle = TextStyle(
+  fontFamily: 'PublicaSans',
+  fontSize: 24,
+  fontWeight: FontWeight.w700,
+  color: Color(0xFF000000),
+);
+
+const TextStyle screenSubtitleStyle = TextStyle(
+  fontFamily: 'PublicaSans',
+  fontSize: 16,
+  fontWeight: FontWeight.w400,
+  color: Color(0xFF75879B),
+);
