@@ -1,3 +1,4 @@
+import 'package:driver_app/Pages/Driver/DriverRating.dart';
 import 'package:driver_app/Pages/Profile/personal-details-page.dart';
 import 'package:driver_app/state-management/home-state.dart';
 import 'package:driver_app/state-management/profile-state.dart';
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
           initialRoute: 'personal-details-page',
           routes: {
             'personal-details-page': (context) => PersonalDetailPage(),
+            'DriverRating':(context) => DriverRating(),
           },
         ));
   }
