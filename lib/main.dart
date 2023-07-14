@@ -1,5 +1,6 @@
 import 'package:driver_app/Pages/Driver/DriverRating.dart';
 import 'package:driver_app/Pages/Profile/personal-details-page.dart';
+import 'package:driver_app/Pages/login.dart';
 import 'package:driver_app/state-management/home-state.dart';
 import 'package:driver_app/state-management/profile-state.dart';
 import 'package:flutter/material.dart';
@@ -21,10 +22,12 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           title: 'RydThru',
-          initialRoute: 'personal-details-page',
+          initialRoute: 'login',
           routes: {
             'personal-details-page': (context) => PersonalDetailPage(),
             'DriverRating':(context) => DriverRating(),
+            'login': (context) => Login(),
+
           },
         ));
   }
