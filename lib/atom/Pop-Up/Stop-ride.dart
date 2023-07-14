@@ -2,8 +2,6 @@ import 'package:driver_app/atom/custom-radioButton.dart';
 import 'package:flutter/material.dart';
 
 class StopRide extends StatelessWidget {
-  const StopRide({required Key key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -14,99 +12,112 @@ class StopRide extends StatelessWidget {
           color: Colors.white,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         ),
-        child: Container(
-          color: Color.fromRGBO(73, 86, 100, 1),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        child: Column(
+          children: [
+            Container(
+              width: 320,
+              height: 45,
+              decoration: const ShapeDecoration(
+                color: Color(0xFF485564),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(5),
+                    topRight: Radius.circular(5),
+                  ),
+                ),
+              ),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Image.asset(
+                          'assets/images/Star.png',
+                          width: 20,
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: Text(
+                            'Please tell us the reason :',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontFamily: 'Publica Sans',
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+            CustomRadioButton(
+              text: 'Vehicle Breakdown',
+              isSelected: true,
+              onClick: () {
+                // Handle radio button click logic here
+              },
+            ),
+            CustomRadioButton(
+              text: 'All users dropped',
+              isSelected: false,
+              onClick: () {
+                // Handle radio button click logic here
+              },
+            ),
+            const Padding(padding: EdgeInsets.symmetric(vertical: 4.5)),
+            Row(
               children: [
-                Row(
-                  children: [
-                    Image.asset(
-                      'assets/images/Star.png',
-                      width: 20,
+                Container(
+                  width: 151,
+                  height: 40,
+                  decoration: ShapeDecoration(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(3),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Text(
-                        'Please tell us the reason:',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontFamily: 'Publica Sans',
-                          fontWeight: FontWeight.w500,
-                        ),
+                  ),
+                  child: TextButton(
+                    onPressed: () {},
+                    child: const Text(
+                      'Go Back',
+                      style: TextStyle(
+                        color: Colors.black,
                       ),
                     ),
-                  ],
+                  ),
                 ),
-                SizedBox(height: 10),
-                CustomRadioButton(
-                  text: 'Vehicle Breakdown',
-                  isSelected: true,
-                  onClick: () {
-                    // Handle radio button click logic here
-                  },
-                ),
-                CustomRadioButton(
-                  text: 'All users dropped',
-                  isSelected: false,
-                  onClick: () {
-                    // Handle radio button click logic here
-                  },
-                ),
-                SizedBox(height: 20),
-                Row(
-                  children: [
-                    Container(
-                      width: 160,
-                      height: 40,
-                      decoration: ShapeDecoration(
+                Container(
+                  width: 161.5,
+                  height: 40,
+                  decoration: const ShapeDecoration(
+                    color: Color(0xFF192B46),
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.only(bottomRight: Radius.circular(3)),
+                    ),
+                  ),
+                  child: TextButton(
+                    onPressed: () {},
+                    child: const Text(
+                      'Submit',
+                      style: TextStyle(
                         color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                      ),
-                      child: TextButton(
-                        onPressed: () {},
-                        child: const Text(
-                          'Go Back',
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
                       ),
                     ),
-                    SizedBox(width: 15),
-                    Container(
-                      width: 160,
-                      height: 40,
-                      decoration: ShapeDecoration(
-                        color: Color(0xFF192B46),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(bottomRight: Radius.circular(3)),
-                        ),
-                      ),
-                      child: TextButton(
-                        onPressed: () {},
-                        child: const Text(
-                          'Submit',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ],
             ),
-          ),
+          ],
         ),
       ),
     );
   }
 }
-
-

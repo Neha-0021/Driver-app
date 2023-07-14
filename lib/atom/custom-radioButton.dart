@@ -17,6 +17,15 @@ class CustomRadioButton extends StatelessWidget {
     return Row(
       children: [
         Expanded(
+          flex: 1,
+          child: Radio(
+            value: isSelected,
+            groupValue: true,
+            onChanged: (_) => onClick(),
+            activeColor: Colors.blue,
+          ),
+        ),
+        Expanded(
           flex: 6,
           child: Text(
             text,
@@ -26,15 +35,6 @@ class CustomRadioButton extends StatelessWidget {
               fontWeight: FontWeight.w400,
               color: Color(0xFF000000),
             ),
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Radio(
-            value: isSelected,
-            groupValue: true,
-            onChanged: (_) => onClick(),
-            activeColor: Colors.blue,
           ),
         ),
       ],

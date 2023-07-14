@@ -37,11 +37,11 @@ class ProfileList extends StatelessWidget {
                   child: Text(
                     title,
                     style: const TextStyle(
-                      fontFamily: 'PublicaSans',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xFF192B46),
-                    ),
+                        fontFamily: 'PublicaSans',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xFF192B46),
+                        decoration: TextDecoration.none),
                   ),
                 ),
                 if (actionImagePath != null)

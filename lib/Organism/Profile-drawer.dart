@@ -1,6 +1,8 @@
 import 'package:driver_app/Molecules/Profile/Log-out.dart';
+import 'package:driver_app/Pages/Driver/DriverRating.dart';
 import 'package:driver_app/Pages/Profile/About-us.dart';
 import 'package:driver_app/Pages/Profile/personal-details-page.dart';
+import 'package:driver_app/Pages/login.dart';
 import 'package:driver_app/atom/Profile/Profile-list.dart';
 import 'package:driver_app/state-management/home-state.dart';
 import 'package:driver_app/state-management/profile-state.dart';
@@ -14,8 +16,7 @@ class ProfileDrawer extends StatelessWidget {
 
   ProfileDrawer({Key? key}) : super(key: key);
 
-  // ignore: non_constant_identifier_names
-  void LogOut(context, homeProvider) async {
+  void logOut(context, homeProvider) async {
     storage.removeElement("token");
     homeProvider.reset();
     Navigator.pushReplacement(
@@ -24,7 +25,6 @@ class ProfileDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: unused_local_variable
     final homeProvider = Provider.of<HomeState>(context, listen: false);
 
     return Consumer<ProfileState>(
@@ -45,8 +45,13 @@ class ProfileDrawer extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                        image: NetworkImage(
-                            profileState.userData["profile_photo"]),
+                        image: profileState.userData != null &&
+                                profileState.userData!['profile_photo'] != null
+                            ? NetworkImage(
+                                    profileState.userData!['profile_photo'])
+                                as ImageProvider<Object>
+                            : const AssetImage(
+                                'assets/images/default_profile_photo.png'),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -60,13 +65,13 @@ class ProfileDrawer extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${profileState.userData['firstname']} ${profileState.userData['lastname']}',
+                        '${profileState.userData?['firstname'] ?? ''} ${profileState.userData?['lastname'] ?? ''}',
                         style: textHeadingstyle,
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10),
                         child: Text(
-                          'Driver ID: ${profileState.userData['_id'].toString().substring(0, 3)}',
+                          'Driver ID: ${profileState.userData?['_id']?.toString()?.substring(0, 3) ?? ''}',
                           style: textSubHeadingStyle,
                         ),
                       ),
@@ -91,7 +96,6 @@ class ProfileDrawer extends StatelessWidget {
               actionImagePath: 'assets/images/go.png',
             ),
           ),
-          
           GestureDetector(
             onTap: () {
               Navigator.push(
@@ -105,16 +109,22 @@ class ProfileDrawer extends StatelessWidget {
               actionImagePath: 'assets/images/go.png',
             ),
           ),
-          
-             const ProfileList(
-              imagePath: 'assets/images/svg/About.svg',
-              title: 'About Us',
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DriverRating(),
+                ),
+              );
+            },
+            child: const ProfileList(
+              imagePath: 'assets/images/svg/Rating-icon.svg',
+              title: 'Driver Rating',
               actionImagePath: 'assets/images/go.png',
             ),
-        ]
-          ), 
-    
-          child: GestureDetector(
+          ),
+          GestureDetector(
             onTap: () {
               showModalBottomSheet(
                 context: context,
@@ -133,8 +143,8 @@ class ProfileDrawer extends StatelessWidget {
               title: 'Log Out',
             ),
           ),
-        
-      
+        ],
+      ),
     );
   }
 }
@@ -144,6 +154,7 @@ const TextStyle textHeadingstyle = TextStyle(
   fontSize: 20,
   fontWeight: FontWeight.w700,
   color: Color(0xFFFFFFFF),
+  decoration: TextDecoration.none,
 );
 
 const TextStyle textSubHeadingStyle = TextStyle(
@@ -151,4 +162,5 @@ const TextStyle textSubHeadingStyle = TextStyle(
   fontSize: 14,
   fontWeight: FontWeight.w400,
   color: Color(0xFF75879B),
+  decoration: TextDecoration.none,
 );

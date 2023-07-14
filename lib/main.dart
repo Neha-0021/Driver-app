@@ -1,6 +1,9 @@
+import 'package:driver_app/Organism/Profile-drawer.dart';
 import 'package:driver_app/Pages/Driver/DriverRating.dart';
 import 'package:driver_app/Pages/Profile/personal-details-page.dart';
 import 'package:driver_app/Pages/login.dart';
+import 'package:driver_app/atom/Pop-Up/CompleteRide.dart';
+import 'package:driver_app/atom/Pop-Up/Stop-ride.dart';
 import 'package:driver_app/state-management/home-state.dart';
 import 'package:driver_app/state-management/profile-state.dart';
 import 'package:flutter/material.dart';
@@ -21,13 +24,15 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => ProfileState()),
         ],
         child: MaterialApp(
-          title: 'RydThru',
-          initialRoute: 'login',
+          title: 'DRIVER',
+          initialRoute: 'DriverRating',
           routes: {
             'personal-details-page': (context) => PersonalDetailPage(),
-            'DriverRating':(context) => DriverRating(),
+            'DriverRating': (context) => DriverRating(),
             'login': (context) => Login(),
-
+            //'Profile-drawer':(context) => ProfileDrawer(),
+            //'CompleteRide' :(context) => CompleteRide(),
+            //'Stop-ride': (context) => StopRide(),
           },
         ));
   }
