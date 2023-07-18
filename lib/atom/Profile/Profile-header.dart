@@ -58,7 +58,7 @@ class ProfileHeaderComponent extends State<ProfileHeader> {
                                 height: 42,
                                 fit: BoxFit.cover,
                               ),
-                            ))
+                            )),
                       ],
                     ))
               ],

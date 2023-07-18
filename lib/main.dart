@@ -2,6 +2,7 @@ import 'package:driver_app/Organism/Profile-drawer.dart';
 import 'package:driver_app/Pages/Driver/DriverRating.dart';
 import 'package:driver_app/Pages/Profile/personal-details-page.dart';
 import 'package:driver_app/Pages/login.dart';
+import 'package:driver_app/atom/Map/MapScreen.dart';
 import 'package:driver_app/atom/Pop-Up/CompleteRide.dart';
 import 'package:driver_app/atom/Pop-Up/Stop-ride.dart';
 import 'package:driver_app/state-management/home-state.dart';
@@ -25,11 +26,12 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           title: 'DRIVER',
-          initialRoute: 'DriverRating',
+          initialRoute: 'MapScreen',
           routes: {
             'personal-details-page': (context) => PersonalDetailPage(),
             'DriverRating': (context) => DriverRating(),
             'login': (context) => Login(),
+            'MapScreen' :(context) => MapScreen(),
             //'Profile-drawer':(context) => ProfileDrawer(),
             //'CompleteRide' :(context) => CompleteRide(),
             //'Stop-ride': (context) => StopRide(),

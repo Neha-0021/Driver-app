@@ -27,8 +27,10 @@ class CompleteRide extends StatelessWidget {
                 ),
               ),
             ),
-            const Text(
-              'Are you sure you want to mark this ride',
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+            child:  Text(
+              'Are you sure you want to mark this ride  completed? you will not will able to  change it again ',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Color(0xFF75879B),
@@ -37,27 +39,10 @@ class CompleteRide extends StatelessWidget {
                 fontWeight: FontWeight.w400,
               ),
             ),
-            const Text(
-              ' completed? you will not will able to ', 
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Color(0xFF75879B),
-                fontSize: 12,
-                fontFamily: 'Publica Sans',
-                fontWeight: FontWeight.w400,
-              ),
             ),
-            const Text(
-              '  change it again ', 
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Color(0xFF75879B),
-                fontSize: 12,
-                fontFamily: 'Publica Sans',
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            Container(
+           
+           
+             Container(
               decoration: ShapeDecoration(
                 color: Colors.white,
                 shape: RoundedRectangleBorder(

@@ -5,6 +5,7 @@ import 'package:driver_app/utils/alert.dart';
 import 'package:driver_app/utils/storage.dart';
 import 'package:flutter/material.dart';
 
+
 class HomeState extends ChangeNotifier {
   String phone = "";
   String messageId = "";
@@ -55,6 +56,7 @@ class HomeState extends ChangeNotifier {
   ProfileService profileService = ProfileService();
   AlertBundle alert = AlertBundle();
   PhoneStorage storage = PhoneStorage();
+ 
 
   void updatePhone(data) {
     phone = data;
@@ -168,33 +170,39 @@ class HomeState extends ChangeNotifier {
         "profile_photo":
             "https://rydthru.s3.amazonaws.com/blank-profile-picture-973460_1280.webp"
       });
-
-      Future<dynamic> loginUser() async {
-        // this need to be done via phone
-        Response loginAPICallback = await service.login(
-            {"mobile": Login["username"], "password": Login["password"]});
-        if (loginAPICallback.statusCode == 200) {
-          if (loginAPICallback.data["token"] != "") {
-            storage.setStringValue("token", loginAPICallback.data["token"]);
-          }
-        }
-        return {
-          "code": loginAPICallback.statusCode,
-          "message": loginAPICallback.data["message"],
-        };
+      if (UserCreatedCallBack.statusCode == 200) {
+    
+        return {"code": 200, "message": UserCreatedCallBack.data["message"]};
+      } else {
+        return {"code": 400, "message": UserCreatedCallBack.data["message"]};
       }
+    }
+  }
 
-      Future<dynamic> getUserProfile() async {
-        Response getUserDetailsAPIcallBack =
-            await profileService.getUserProfile({});
-        if (getUserDetailsAPIcallBack.statusCode == 200) {
-          saveUserdetails = getUserDetailsAPIcallBack.data["user"];
-          notifyListeners();
-          return {"code": 200, "message": "failed to get user details."};
-        } else {
-          return {"code": 400, "message": "failed to get user details."};
-        }
+  Future<dynamic> loginUser() async {
+    // this need to be done via phone
+    Response loginAPICallback = await service
+        .login({"mobile": Login["username"], "password": Login["password"]});
+    if (loginAPICallback.statusCode == 200) {
+      if (loginAPICallback.data["token"] != "") {
+        storage.setStringValue("token", loginAPICallback.data["token"]);
       }
+    }
+    return {
+      "code": loginAPICallback.statusCode,
+      "message": loginAPICallback.data["message"],
+    };
+  }
+
+  Future<dynamic> getUserProfile() async {
+    Response getUserDetailsAPIcallBack =
+        await profileService.getUserProfile({});
+    if (getUserDetailsAPIcallBack.statusCode == 200) {
+      saveUserdetails = getUserDetailsAPIcallBack.data["user"];
+      notifyListeners();
+      return {"code": 200, "message": "failed to get user details."};
+    } else {
+      return {"code": 400, "message": "failed to get user details."};
     }
   }
 }
