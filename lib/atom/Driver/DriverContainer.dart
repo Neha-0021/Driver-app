@@ -16,8 +16,6 @@ class DriverContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 170,
-      height: 120,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(5),
@@ -32,42 +30,44 @@ class DriverContainer extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 18, left: 15),
-                child: SvgPicture.asset(imagePath),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                    top: 18, left: 6), // Adjust the padding to your preference
-                child: Text(
-                  titleText,
-                  style: const TextStyle(
-                    color: Color(0xFF192B46),
-                    fontSize: 12,
-                    fontFamily: 'Publica Sans',
-                    fontWeight: FontWeight.w400,
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+            child: Row(
+              children: [
+                SvgPicture.asset(imagePath),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Text(
+                    titleText,
+                    style: const TextStyle(
+                      color: Color(0xFF192B46),
+                      fontSize: 12,
+                      fontFamily: 'PublicaSans',
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
                 ),
+              ],
+            ),
+          ),
+          Container(
+            width: 120,
+            child: const Divider(
+              color: Color(0xFFD2DBD6),
+              thickness: 1.0,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 20),
+            child: Text(
+              subtitleText,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Color(0xFF192B46),
+                fontSize: 20,
+                fontFamily: 'PublicaSans',
+                fontWeight: FontWeight.w700,
               ),
-            ],
-          ),
-          const Padding(padding: EdgeInsets.symmetric(vertical: 2)),
-          const Divider(
-            color: Colors.grey,
-            indent: 25,
-            endIndent: 25,
-          ),
-          const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-          Text(
-            subtitleText,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Color(0xFF192B46),
-              fontSize: 20,
-              fontFamily: 'Publica Sans',
-              fontWeight: FontWeight.w700,
             ),
           ),
         ],

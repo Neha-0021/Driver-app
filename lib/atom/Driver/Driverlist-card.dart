@@ -31,57 +31,61 @@ class DriverListCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Container(
-              padding: const EdgeInsets.only(left: 21),
-              width: 60,
-              child: Image.asset(imagePathProfile),
+            Expanded(
+              flex: 1,
+              child: Image.asset(
+                imagePathProfile,
+                height: 31,
+                width: 31,
+              ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 12, top: 20),
-                  child: Text(
+            Expanded(
+              flex: 3,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
                     offerText,
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 14,
-                      fontFamily: 'Publica Sans',
+                      fontFamily: 'PublicaSans',
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Text(
+                  Text(
                     subText,
                     style: const TextStyle(
                       color: Color(0xFF75879B),
                       fontSize: 10,
-                      fontFamily: 'Publica Sans',
+                      fontFamily: 'PublicaSans',
                       fontWeight: FontWeight.w300,
                     ),
                   ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 100, top: 20),
-              child: Align(
-                alignment: Alignment.topRight,
-                child: SvgPicture.asset(imagePath),
+                ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 5, bottom: 10),
-              child: Text(
-                subTitleText,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 13,
-                  fontFamily: 'Publica Sans',
-                  fontWeight: FontWeight.w500,
-                ),
+            Expanded(
+              flex: 1,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.star,
+                    size: 16,
+                    color: Colors.green,
+                  ),
+                  Text(
+                    subTitleText,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 13,
+                      fontFamily: 'PublicaSans',
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

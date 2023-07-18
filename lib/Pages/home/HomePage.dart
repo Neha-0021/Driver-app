@@ -10,12 +10,15 @@ import 'package:driver_app/utils/alert.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class MapScreen extends StatefulWidget {
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
-  _MapScreenState createState() => _MapScreenState();
+  // ignore: library_private_types_in_public_api
+  _HomePageState createState() => _HomePageState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   AlertBundle alert = AlertBundle();
@@ -70,7 +73,7 @@ class _MapScreenState extends State<MapScreen> {
               ],
             ),
           ),
-          HomeListCard(),
+        const  HomeListCard(),
           Padding(
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
               child: CustomButton(label: 'View All')),

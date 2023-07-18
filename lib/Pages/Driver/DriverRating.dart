@@ -17,27 +17,25 @@ class DriverRating extends StatelessWidget {
                 Titletext: 'Driver Rating',
                 subtitletext: 'Check what your customers say about you!',
               ),
-              const Padding(padding: EdgeInsets.symmetric(vertical: 20)),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 15),
-                      child: DriverContainer(
-                        titleText: 'Total Customer',
-                        imagePath: 'assets/images/svg/Vector.svg',
-                        subtitleText: '20',
-                      )),
-                  Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 5),
-                      child: DriverContainer(
-                        titleText: 'Average Ratings',
-                        imagePath: 'assets/images/svg/Vectorv.svg',
-                        subtitleText: '3.2',
-                      )),
-                ],
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 30),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    DriverContainer(
+                      titleText: 'Total Customer',
+                      imagePath: 'assets/images/svg/Vector.svg',
+                      subtitleText: '20',
+                    ),
+                    DriverContainer(
+                      titleText: 'Average Ratings',
+                      imagePath: 'assets/images/svg/Vectorv.svg',
+                      subtitleText: '3.2',
+                    )
+                  ],
+                ),
               ),
-              const Padding(padding: EdgeInsets.symmetric(vertical: 10)),
               Container(
                 decoration: const BoxDecoration(color: Color(0xFF6B7B8E)),
                 child: const Row(
@@ -50,7 +48,7 @@ class DriverRating extends StatelessWidget {
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 14,
-                            fontFamily: 'Publica Sans',
+                            fontFamily: 'PublicaSans',
                             fontWeight: FontWeight.w500,
                           ),
                         )),

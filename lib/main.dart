@@ -1,10 +1,13 @@
-import 'package:driver_app/Organism/Profile-drawer.dart';
+import 'package:driver_app/Pages/History-page.dart';
+import 'package:driver_app/Pages/Next-stop.dart';
+import 'package:driver_app/Pages/Notification-page.dart';
 import 'package:driver_app/Pages/Driver/DriverRating.dart';
 import 'package:driver_app/Pages/Profile/personal-details-page.dart';
+import 'package:driver_app/Pages/home/HomePage.dart';
 import 'package:driver_app/Pages/login.dart';
-import 'package:driver_app/atom/Map/MapScreen.dart';
-import 'package:driver_app/atom/Pop-Up/CompleteRide.dart';
-import 'package:driver_app/atom/Pop-Up/Stop-ride.dart';
+
+
+
 import 'package:driver_app/state-management/home-state.dart';
 import 'package:driver_app/state-management/profile-state.dart';
 import 'package:flutter/material.dart';
@@ -26,15 +29,16 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           title: 'DRIVER',
-          initialRoute: 'MapScreen',
+          initialRoute: 'DriverRating',
           routes: {
             'personal-details-page': (context) => PersonalDetailPage(),
-            'DriverRating': (context) => DriverRating(),
+            'DriverRating': (context) =>const  DriverRating(),
             'login': (context) => Login(),
-            'MapScreen' :(context) => MapScreen(),
-            //'Profile-drawer':(context) => ProfileDrawer(),
-            //'CompleteRide' :(context) => CompleteRide(),
-            //'Stop-ride': (context) => StopRide(),
+            'HomePage' :(context) => const  HomePage(),
+            'HistoryPage': (context) => const HistoryPage(),
+            'Notification-page': (context) => const NotificationPage(),
+            'Next-stop': (context) => const NextStep(),
+
           },
         ));
   }
