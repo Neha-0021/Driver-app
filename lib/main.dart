@@ -1,4 +1,5 @@
 import 'package:driver_app/Pages/History-page.dart';
+import 'package:driver_app/Pages/Next-stop.dart';
 import 'package:driver_app/Pages/Notification-page.dart';
 import 'package:driver_app/Pages/Profile/personal-details-page.dart';
 import 'package:driver_app/Pages/login.dart';
@@ -23,12 +24,13 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           title: 'RydThru',
-          initialRoute: 'Notification-page',
+          initialRoute: 'Next-stop',
           routes: {
             'personal-details-page': (context) => PersonalDetailPage(),
             'login': (context) => Login(),
             'HistoryPage': (context) => const HistoryPage(),
-             'Notification-page': (context) =>  NotificationPage(),
+            'Notification-page': (context) => const NotificationPage(),
+            'Next-stop': (context) => const NextStep(),
           },
         ));
   }

@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 class ProfileHeader extends StatefulWidget {
   final void Function()? openSideDrawer;
 
-  const ProfileHeader({super.key, required this.openSideDrawer});
+  const ProfileHeader({ required this.openSideDrawer});
 
   @override
   State<StatefulWidget> createState() {
