@@ -1,3 +1,4 @@
+import 'package:driver_app/atom/Pop-Up/NoteAlert.dart';
 import 'package:flutter/material.dart';
 import '../../atom/CustomTextInput.dart';
 
@@ -44,7 +45,16 @@ class PersonalDetail extends StatelessWidget {
                 onChangeText: isDisable ? (String e) => {} : onLastNameChanged,
                 value: lastName,
                 isDisabled: isDisable)),
-        Padding(
+        GestureDetector(
+          onTap: () {
+            showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return NoteAlert();
+          },
+        );
+          },
+          child: Padding(
             padding: const EdgeInsets.all(10),
             child: CustomTextInput(
               hintText: phone ?? "",
@@ -52,7 +62,9 @@ class PersonalDetail extends StatelessWidget {
               isDisabled: true,
               additionalImagePath: 'assets/images/Password.png',
               onChangeText: (String value) {},
-            )),
+            ),
+          ),
+        ),
         Padding(
             padding: const EdgeInsets.all(10),
             child: CustomTextInput(

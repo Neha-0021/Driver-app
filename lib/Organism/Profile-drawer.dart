@@ -50,8 +50,7 @@ class ProfileDrawer extends StatelessWidget {
                             ? NetworkImage(
                                     profileState.userData!['profile_photo'])
                                 as ImageProvider<Object>
-                            : const AssetImage(
-                                'assets/images/default_profile_photo.png'),
+                            : const AssetImage('assets/images/view.png'),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -100,7 +99,7 @@ class ProfileDrawer extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AboutUs()),
+                MaterialPageRoute(builder: (context) => const AboutUs()),
               );
             },
             child: const ProfileList(
@@ -114,7 +113,7 @@ class ProfileDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => DriverRating(),
+                  builder: (context) => const DriverRating(),
                 ),
               );
             },
