@@ -29,10 +29,11 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           title: 'DRIVER',
-          initialRoute: 'bottom-tabbar',
+          initialRoute: 'HomePage',
           routes: {
             'personal-details-page': (context) => PersonalDetailPage(),
             'DriverRating': (context) => const DriverRating(),
+            
             'login': (context) => Login(),
             'HistoryPage': (context) => const HistoryPage(),
             'Notification-page': (context) => const NotificationPage(),
