@@ -45,6 +45,13 @@ dependencies:
   flutter_stepper: ^0.0.1
   casa_vertical_stepper: ^0.0.5
   flutter_inappwebview: ^5.7.2+3
+  geolocator: ^8.2.0
+  geocoding: ^2.0.4
+
+
+
+
+
 
 
 dev_dependencies:
