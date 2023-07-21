@@ -1,3 +1,4 @@
+import 'package:driver_app/Pages/home/HomePage.dart';
 import 'package:driver_app/atom/Button.dart';
 import 'package:driver_app/atom/CustomTextInput.dart';
 import 'package:driver_app/atom/custom-header.dart';
@@ -81,7 +82,10 @@ class LoginComponent extends State<Login> {
                 padding: const EdgeInsets.only(top: 10),
                 child: CustomButton(
                   label: 'Login',
-                  onPressed: () {},
+                  onPressed: () {   Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage()),
+              );},
                 )),
           ),
           Padding(
