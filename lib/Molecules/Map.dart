@@ -4,6 +4,8 @@ import 'package:driver_app/atom/home/HomeListCard.dart';
 import 'package:driver_app/atom/home/MapButton.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:geolocator/geolocator.dart';
+import 'dart:async';
 
 class Map extends StatefulWidget {
   const Map({Key? key}) : super(key: key);
@@ -13,6 +15,10 @@ class Map extends StatefulWidget {
 }
 
 class _MapState extends State<Map> {
+  Completer<WebViewController> _controllerCompleter =
+      Completer<WebViewController>();
+  Position? currentLocation;
+
   String htmlContent() {
     return '''
 <!DOCTYPE html>
@@ -42,10 +48,36 @@ class _MapState extends State<Map> {
           var marker = new flightmap.Marker()
             .setLngLat([-77.38, 39])
             .addTo(map);
+
+          function updateLocation(lat, lng) {
+            marker.setLngLat([lng, lat]);
+            map.flyTo({ center: [lng, lat], zoom: 7 });
+          }
         </script>
       </body>
     </html>
 ''';
+  }
+
+  void startLocationUpdates() {
+    Timer.periodic(Duration(seconds: 3), (timer) async {
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      setState(() {
+        currentLocation = position;
+      });
+      if (!_controllerCompleter.isCompleted) return;
+      final WebViewController controller = await _controllerCompleter.future;
+      controller.evaluateJavascript(
+          'updateLocation(${position.latitude}, ${position.longitude})');
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    startLocationUpdates();
   }
 
   @override
@@ -59,6 +91,9 @@ class _MapState extends State<Map> {
                 .toString(),
             javascriptMode: JavascriptMode.unrestricted,
             onWebResourceError: (WebResourceError error) {},
+            onWebViewCreated: (WebViewController controller) {
+              _controllerCompleter.complete(controller);
+            },
           ),
         ),
         Padding(
