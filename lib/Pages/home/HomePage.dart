@@ -1,6 +1,8 @@
 import 'package:driver_app/Molecules/Map.dart';
+import 'package:driver_app/Molecules/Notification-card.dart';
 
 import 'package:driver_app/Organism/Profile-drawer.dart';
+import 'package:driver_app/atom/Pop-Up/CompleteRide.dart';
 import 'package:driver_app/atom/home/home-header.dart';
 
 import 'package:driver_app/state-management/home-state.dart';
@@ -16,13 +18,14 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this); 
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
