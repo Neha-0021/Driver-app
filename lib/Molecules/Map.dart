@@ -1,3 +1,4 @@
+import 'package:driver_app/Pages/Next-stop.dart';
 import 'package:driver_app/atom/Pop-Up/Stop-ride.dart';
 import 'package:driver_app/atom/button.dart';
 import 'package:driver_app/atom/home/HomeListCard.dart';
@@ -132,7 +133,10 @@ class _MapState extends State<Map> {
         const HomeListCard(),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-          child: CustomButton(label: 'View All'),
+          child: CustomButton(label: 'View All',     onPressed: () {   Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => NextStop()),
+              );},),
         ),
       ],
     );

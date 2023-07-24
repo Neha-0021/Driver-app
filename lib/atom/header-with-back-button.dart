@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
 class HeaderwithBackButton extends StatelessWidget {
-  final String Titletext;
-  final String  subtitletext;
+  final String titleText;
+  final String subtitleText;
+  final VoidCallback onPressed;
 
-  const HeaderwithBackButton({ 
-    required this.Titletext,
-    required this.subtitletext,
+  const HeaderwithBackButton({
+    required this.titleText,
+    required this.subtitleText,
+    required this.onPressed,
   });
 
   @override
@@ -24,9 +26,7 @@ class HeaderwithBackButton extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+                onPressed: onPressed,
                 icon: const Icon(Icons.arrow_back),
                 color: Colors.white,
               ),
@@ -36,7 +36,7 @@ class HeaderwithBackButton extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: 15),
                     child: Text(
-                      Titletext,
+                      titleText,
                       style: const TextStyle(
                         fontFamily: 'PublicaSans',
                         color: Colors.white,
@@ -46,7 +46,7 @@ class HeaderwithBackButton extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    subtitletext,
+                    subtitleText,
                     style: const TextStyle(
                       fontFamily: 'PublicaSans',
                       color: Color(0XFF75879B),

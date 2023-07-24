@@ -1,17 +1,19 @@
 import 'package:casa_vertical_stepper/casa_vertical_stepper.dart';
 import 'package:driver_app/Molecules/Customer-details.dart';
+
 import 'package:driver_app/atom/header-with-back-button.dart';
+import 'package:driver_app/utils/bottom-tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class NextStep extends StatefulWidget {
-  const NextStep({super.key});
+class NextStop extends StatefulWidget {
+  const NextStop({super.key});
 
   @override
-  _NextStepState createState() => _NextStepState();
+  _NextStopState createState() => _NextStopState();
 }
 
-class _NextStepState extends State<NextStep> {
+class _NextStopState extends State<NextStop> {
   List<bool> showCustomerDetailsList = List.filled(7, false);
 
   int selectedIndex = -1;
@@ -269,9 +271,15 @@ class _NextStepState extends State<NextStep> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const HeaderwithBackButton(
-                Titletext: 'Next Stop & Customers',
-                subtitletext: 'All details of your customers!',
+              HeaderwithBackButton(
+                titleText: 'Next Stop & Customers',
+                subtitleText: 'All details of your customers!',
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => BottomBar()),
+                  );
+                },
               ),
               Padding(
                   padding: const EdgeInsets.symmetric(vertical: 30),

@@ -4,9 +4,8 @@ import 'package:driver_app/Pages/Notification-page.dart';
 import 'package:driver_app/Pages/Driver/DriverRating.dart';
 import 'package:driver_app/Pages/Profile/personal-details-page.dart';
 import 'package:driver_app/Pages/login.dart';
-import 'package:driver_app/state-management/Driver-Rating-state.dart';
 import 'package:driver_app/state-management/home-state.dart';
-import 'package:driver_app/state-management/notification-state.dart';
+
 import 'package:driver_app/state-management/profile-state.dart';
 import 'package:driver_app/utils/bottom-tabbar.dart';
 import 'package:flutter/material.dart';
@@ -26,19 +25,18 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (content) => HomeState()),
           ChangeNotifierProvider(create: (context) => ProfileState()),
-          ChangeNotifierProvider(create: (context) => NotificationState()),
-          ChangeNotifierProvider(create: (context) => DriverRatingState()),
+       
         ],
         child: MaterialApp(
           title: 'DRIVER',
-          initialRoute: 'DriverRating',
+          initialRoute: 'login',
           routes: {
             'personal-details-page': (context) => PersonalDetailPage(),
             'DriverRating': (context) => const DriverRating(),
             'login': (context) => Login(),
             'HistoryPage': (context) => const HistoryPage(),
             'Notification-page': (context) => const NotificationPage(),
-            'Next-stop': (context) => const NextStep(),
+            'Next-stop': (context) => const NextStop(),
             'HomePage': (context) => const HomePage(),
             'bottom-tabbar': (context) => const BottomBar(),
           },
