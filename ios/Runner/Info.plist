@@ -33,10 +33,7 @@
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
-		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-        <string>YOUR_BACKGROUND_LOCATION_USAGE_DESCRIPTION</string>
-        <key>NSLocationWhenInUseUsageDescription</key>
-        <string>YOUR_FOREGROUND_LOCATION_USAGE_DESCRIPTION</string>
+		
 
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>

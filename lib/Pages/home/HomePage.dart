@@ -2,7 +2,7 @@ import 'package:driver_app/Molecules/Map.dart';
 import 'package:driver_app/Molecules/Notification-card.dart';
 
 import 'package:driver_app/Organism/Profile-drawer.dart';
-import 'package:driver_app/atom/BackgroundFetch/get_lat_long_address.dart';
+
 import 'package:driver_app/atom/Pop-Up/CompleteRide.dart';
 import 'package:driver_app/atom/home/home-header.dart';
 
@@ -96,7 +96,6 @@ class _HomePageState extends State<HomePage>
                   children: const [Map()],
                 ),
               ),
-              
             ],
           ),
         ),

@@ -71,4 +71,10 @@ class DriverService {
       }
     }
   }
+
+  getDriverRating() {}
+
+  rateDriver(String driverId, int rating) {}
+
+  deleteDriverRating(String driverId) {}
 }

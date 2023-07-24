@@ -1,12 +1,35 @@
 import 'package:driver_app/atom/Driver/DriverContainer.dart';
 import 'package:driver_app/atom/Driver/Driverlist-card.dart';
 import 'package:driver_app/atom/Driver/HeaderWith-BackButton.dart';
+import 'package:driver_app/state-management/Driver-Rating-state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
-class DriverRating extends StatelessWidget {
+class DriverRating extends StatefulWidget {
   const DriverRating({Key? key}) : super(key: key);
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _DriverRatingState createState() => _DriverRatingState();
+}
+
+class _DriverRatingState extends State<DriverRating> {
+  @override
+  void initState() {
+    super.initState();
+    final driverRatingState =
+        Provider.of<DriverRatingState>(context, listen: false);
+  }
+
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Color(0xFF192B46),
+      ),
+    );
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -55,27 +78,22 @@ class DriverRating extends StatelessWidget {
                   ],
                 ),
               ),
-              const DriverListCard(
-                imagePathProfile: 'assets/images/Driverimage.png',
-                offerText: 'Rahul Chorasiya',
-                subText: 'Ahmedabad - Kanpur • Sun 14 May',
-                imagePath: 'assets/images/svg/Star.svg',
-                subTitleText: '4.0',
-              ),
-              const DriverListCard(
-                imagePathProfile: 'assets/images/Driverrating1.png',
-                offerText: 'Chandani Chopra',
-                subText: 'Ahmedabad - Kanpur • Sun 14 May',
-                imagePath: 'assets/images/svg/Stars.svg',
-                subTitleText: '3.1',
-              ),
-              const DriverListCard(
-                imagePathProfile: 'assets/images/Driverrating2.png',
-                offerText: 'Chinmay Jivani',
-                subText: 'Ahmedabad - Kanpur • Sun 14 May',
-                imagePath: 'assets/images/svg/Stars.svg',
-                subTitleText: '3.4',
-              ),
+              Consumer<DriverRatingState>(
+                builder: (context, driverRatingState, child) =>
+                    ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: driverRatingState.driverRating.length,
+                        itemBuilder: (context, index) {
+                          final driverRating = driverRatingState.driverRating[index];
+                          return const DriverListCard(
+                            imagePathProfile: 'assets/images/Driverimage.png',
+                            offerText: 'Rahul Chorasiya',
+                            subText: 'Ahmedabad - Kanpur • Sun 14 May',
+                            imagePath: 'assets/images/svg/Star.svg',
+                            subTitleText: '4.0',
+                          );
+                        }),
+              )
             ],
           ),
         ),
