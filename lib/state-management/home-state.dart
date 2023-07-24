@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:driver_app/service/login/login.dart';
 import 'package:driver_app/utils/alert.dart';
 import 'package:flutter/material.dart';
-
 import 'package:driver_app/utils/storage.dart';
 
 class HomeState extends ChangeNotifier {
@@ -48,40 +47,52 @@ class HomeState extends ChangeNotifier {
   }
 
   Future<dynamic> driverLogin() async {
-    if (driverUsername.isNotEmpty && driverPassword.isNotEmpty) {
-      Response response = await driverService.driverLogin({
-        "username": driverUsername,
-        "password": driverPassword,
-      });
-      if (response.statusCode == 200) {
-        if (response.data["token"] != "") {
-          storage.setStringValue("token", response.data["token"]);
-        }
-      }
-      return {
-        "code": response.statusCode,
-        "message": response.data["message"],
-      };
-    } else {
+    if (driverUsername.isEmpty || driverPassword.isEmpty) {
       return {
         "code": 400,
         "message": "Please enter both username and password.",
       };
     }
-  }
 
-  Future<dynamic> deleteDriverAccount() async {
-    if (driverId.isNotEmpty) {
-      Response response = await driverService.deleteDriver(driverId);
+    Response response = await driverService.driverLogin({
+      "mobile": driverUsername,
+      "password": driverPassword,
+    });
+
+    if (response.statusCode == 200) {
+      String token = response.data["token"];
+      if (token != "") {
+        storage.setStringValue("token", token);
+        return {
+          "code": 200,
+          "message": "Login successful.",
+        };
+      } else {
+        return {
+          "code": 400,
+          "message": "Invalid token received from the server.",
+        };
+      }
+    } else {
       return {
         "code": response.statusCode,
         "message": response.data["message"],
       };
-    } else {
+    }
+  }
+
+  Future<dynamic> deleteDriverAccount() async {
+    if (driverId.isEmpty) {
       return {
         "code": 400,
         "message": "Driver ID is required to delete the driver account.",
       };
     }
+
+    Response response = await driverService.deleteDriver(driverId);
+    return {
+      "code": response.statusCode,
+      "message": response.data["message"],
+    };
   }
 }
