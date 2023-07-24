@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 
 class NotificationCard extends StatelessWidget {
- final Map<String, dynamic> notification;
-  const NotificationCard({
-    super.key,
-    required this.notification,
-  });
+  const NotificationCard({super.key});
+
+ 
 
  @override
   Widget build(BuildContext context) {

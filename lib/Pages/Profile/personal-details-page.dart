@@ -90,12 +90,12 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
                         Padding(
                           padding: const EdgeInsets.only(top: 75),
                           child: Text(
-                            "${profileState.userData['firstname']} ${profileState.userData['lastname']}",
+                            "${profileState.driverData['firstname']} ${profileState.driverData['lastname']}",
                             style: textHeadingstyle,
                           ),
                         ),
                         Text(
-                            "Driver id : ${profileState.userData['_id'].toString().substring(0, 3)}",
+                            "Driver id : ${profileState.driverData['_id'].toString().substring(0, 3)}",
                             style: textSubHeadingStyle),
                         PersonalDetail(
                           isDisable: profileState.isDisableText,
@@ -108,10 +108,10 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
                           onLastNameChanged: (value) {
                             profileState.updateState("lastname", value);
                           },
-                          firstName: profileState.userData["firstname"] ?? "",
-                          lastName: profileState.userData["lastname"] ?? "",
-                          email: profileState.userData["email"] ?? "",
-                          phone: profileState.userData["mobile"] ?? "",
+                          firstName: profileState.driverData["firstname"] ?? "",
+                          lastName: profileState.driverData["lastname"] ?? "",
+                          email: profileState.driverData["email"] ?? "",
+                          phone: profileState.driverData["mobile"] ?? "",
                         ),
                         Expanded(
                           child: Align(
@@ -123,7 +123,7 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
                                   ? null
                                   : CustomButton(
                                       disabled:
-                                          profileState.userData["firstname"] ==
+                                          profileState.driverData["firstname"] ==
                                               "",
                                       label: 'Submit',
                                       onPressed: () {
@@ -159,12 +159,12 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
                                 child: AspectRatio(
                                   aspectRatio: 1,
                                   child: profileState
-                                              .userData["profile_photo"] !=
+                                              .driverData["profile_photo"] !=
                                           null
                                       ? profileImage == null
                                           ? Image.network(
                                               profileState
-                                                  .userData["profile_photo"],
+                                                  .driverData["profile_photo"],
                                               fit: BoxFit.cover)
                                           : Image.file(
                                               File(profileImage!.path),
