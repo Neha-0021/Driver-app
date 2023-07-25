@@ -6,19 +6,20 @@ import 'package:flutter/material.dart';
 import 'package:driver_app/utils/storage.dart';
 
 class DriverRatingState extends ChangeNotifier {
- String driverRating = "";
+
+ List<dynamic> driverRating = [];
 
   DriverService driverService = DriverService();
   AlertBundle alert = AlertBundle();
   PhoneStorage storage = PhoneStorage();
 
   void DriverRating(String rating) {
-    driverRating = rating;
+    driverRating = ['rating'];
     notifyListeners();
   }
 
   void DeleteDriverRating(String rating) {
-    driverRating = rating;
+    driverRating = ['rating'];
     notifyListeners();
   }
 

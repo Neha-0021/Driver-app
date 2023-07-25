@@ -36,7 +36,7 @@ class BottomBarTab extends State<BottomBar> {
         break;
       case 'NOTIFICATION':
         setState(() {
-          currentPage = NotificationPage();
+          currentPage = const NotificationPage();
         });
         break;
     }
