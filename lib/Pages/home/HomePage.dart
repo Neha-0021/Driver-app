@@ -1,18 +1,13 @@
 import 'package:driver_app/Molecules/Map.dart';
-import 'package:driver_app/Molecules/Notification-card.dart';
-
 import 'package:driver_app/Organism/Profile-drawer.dart';
-
-import 'package:driver_app/atom/Pop-Up/CompleteRide.dart';
 import 'package:driver_app/atom/home/home-header.dart';
-
 import 'package:driver_app/state-management/home-state.dart';
 import 'package:driver_app/utils/alert.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
