@@ -12,6 +12,7 @@ import 'package:driver_app/utils/bottom-tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'Pages/home/HomePage.dart';
+import 'state-management/history-state.dart';
 
 void main() {
   runApp(const MyApp());
@@ -27,10 +28,11 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (content) => HomeState()),
           ChangeNotifierProvider(create: (context) => ProfileState()),
           ChangeNotifierProvider(create: (context) => DriverRatingState()),
+          ChangeNotifierProvider(create: (context) => DriverHistoryState()),
         ],
         child: MaterialApp(
           title: 'DRIVER',
-          initialRoute: 'HomePage',
+          initialRoute: 'HistoryPage',
           routes: {
             'personal-details-page': (context) => PersonalDetailPage(),
             'DriverRating': (context) => const DriverRating(),
