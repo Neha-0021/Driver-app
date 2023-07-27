@@ -122,9 +122,9 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
                               child: profileState.isDisableText
                                   ? null
                                   : CustomButton(
-                                      disabled:
-                                          profileState.driverData["firstname"] ==
-                                              "",
+                                      disabled: profileState
+                                              .driverData["firstname"] ==
+                                          "",
                                       label: 'Submit',
                                       onPressed: () {
                                         profileState.submit(context);

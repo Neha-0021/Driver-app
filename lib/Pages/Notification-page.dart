@@ -3,7 +3,6 @@ import 'package:driver_app/atom/history-notification-header.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({Key? key});
@@ -13,7 +12,6 @@ class NotificationPage extends StatefulWidget {
 }
 
 class _NotificationPageState extends State<NotificationPage> {
-  @override
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(

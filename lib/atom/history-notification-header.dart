@@ -5,7 +5,7 @@ class HistoryNotificationHeader extends StatelessWidget {
   final String subtitletext;
 
   const HistoryNotificationHeader({
-  key,
+    key,
     required this.Titletext,
     required this.subtitletext,
   });

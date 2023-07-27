@@ -12,7 +12,7 @@ class HeaderwithBackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 125,
+     
       decoration: const BoxDecoration(
         color: Color(0xFF192B46),
       ),
