@@ -6,6 +6,7 @@ import 'package:driver_app/Pages/Profile/personal-details-page.dart';
 import 'package:driver_app/Pages/login.dart';
 import 'package:driver_app/state-management/Driver-Rating-state.dart';
 import 'package:driver_app/state-management/home-state.dart';
+import 'package:driver_app/state-management/notification-state.dart';
 
 import 'package:driver_app/state-management/profile-state.dart';
 import 'package:driver_app/utils/bottom-tabbar.dart';
@@ -29,10 +30,12 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => ProfileState()),
           ChangeNotifierProvider(create: (context) => DriverRatingState()),
           ChangeNotifierProvider(create: (context) => DriverHistoryState()),
+          ChangeNotifierProvider(
+              create: (context) => DriverNotificationState()),
         ],
         child: MaterialApp(
           title: 'DRIVER',
-          initialRoute: 'HistoryPage',
+          initialRoute: 'Notification-page',
           routes: {
             'personal-details-page': (context) => PersonalDetailPage(),
             'DriverRating': (context) => const DriverRating(),
