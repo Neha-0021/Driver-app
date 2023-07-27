@@ -2,7 +2,12 @@ import 'package:driver_app/atom/history-status.dart';
 import 'package:flutter/material.dart';
 
 class HistoryCard extends StatelessWidget {
-  const HistoryCard({key});
+  final Map<String, dynamic> data;
+  const HistoryCard({
+    super.key,
+    required this.data,
+  });
+
 
   @override
   Widget build(BuildContext context) {
