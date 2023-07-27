@@ -1,21 +1,8 @@
 import 'package:flutter/material.dart';
 
-
 class DriverListCard extends StatelessWidget {
-  final String offerText;
-  final String subText;
-  final String subTitleText;
-  final String imagePath;
-  final String imagePathProfile;
-
-  const DriverListCard({
-    Key? key,
-    required this.offerText,
-    required this.subText,
-    required this.subTitleText,
-    required this.imagePath,
-    required this.imagePathProfile,
-  }) : super(key: key);
+  final Map<String, dynamic> data;
+  const DriverListCard({Key? key, required this.data}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,20 +21,20 @@ class DriverListCard extends StatelessWidget {
             Expanded(
               flex: 1,
               child: Image.asset(
-                imagePathProfile,
+                'assets/images/Driverimage.png',
                 height: 31,
                 width: 31,
               ),
             ),
-            Expanded(
+            const Expanded(
               flex: 3,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    offerText,
-                    style: const TextStyle(
+                    'Rahul Chorasiya', // Sample driver name (should be fetched from 'data')
+                    style: TextStyle(
                       color: Colors.black,
                       fontSize: 14,
                       fontFamily: 'PublicaSans',
@@ -55,8 +42,8 @@ class DriverListCard extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    subText,
-                    style: const TextStyle(
+                    'Ahmedabad - Kanpur • Sun 14 May', // Sample travel details (should be fetched from 'data')
+                    style: TextStyle(
                       color: Color(0xFF75879B),
                       fontSize: 10,
                       fontFamily: 'PublicaSans',
@@ -66,19 +53,19 @@ class DriverListCard extends StatelessWidget {
                 ],
               ),
             ),
-            Expanded(
+            const Expanded(
               flex: 1,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.star,
                     size: 16,
                     color: Colors.green,
                   ),
                   Text(
-                    subTitleText,
-                    style: const TextStyle(
+                    '4.0', // Sample average rating (should be fetched from 'data')
+                    style: TextStyle(
                       color: Colors.black,
                       fontSize: 13,
                       fontFamily: 'PublicaSans',

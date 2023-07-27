@@ -14,7 +14,7 @@ class CustomerDetails extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Divider(
+        const Divider(
           thickness: 0.5,
         ),
         Column(

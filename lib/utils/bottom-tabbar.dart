@@ -18,7 +18,7 @@ class BottomBar extends StatefulWidget {
 
 class BottomBarTab extends State<BottomBar> {
   final PageStorageBucket bucket = PageStorageBucket();
-  Widget currentPage = const HomePage();
+  Widget currentPage =  HomePage();
 
   void changeScreen(selectedScreen) {
     switch (selectedScreen) {
@@ -36,7 +36,7 @@ class BottomBarTab extends State<BottomBar> {
         break;
       case 'NOTIFICATION':
         setState(() {
-          currentPage = NotificationPage();
+          currentPage = const NotificationPage();
         });
         break;
     }
