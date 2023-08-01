@@ -1,4 +1,4 @@
-package com.example.driver_app
+package com.rydthru.driverapplication01
 
 import io.flutter.embedding.android.FlutterActivity
 
