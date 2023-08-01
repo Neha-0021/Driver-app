@@ -283,7 +283,10 @@ class _NextStopState extends State<NextStop> {
               ),
               Padding(
                   padding: const EdgeInsets.symmetric(vertical: 30),
-                  child: CasaVerticalStepperView(steps: stepperList)),
+                  child: CasaVerticalStepperView(
+                    steps: stepperList,
+                    seperatorColor: Colors.transparent,
+                  )),
             ],
           ),
         ),
