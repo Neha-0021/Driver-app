@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           title: 'DRIVER',
-          initialRoute: 'Notification-page',
+          initialRoute: 'HomePage',
           routes: {
             'personal-details-page': (context) => PersonalDetailPage(),
             'DriverRating': (context) => const DriverRating(),

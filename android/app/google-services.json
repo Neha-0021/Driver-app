@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "725810335891",
+    "project_id": "driver-app-ba00e",
+    "storage_bucket": "driver-app-ba00e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:725810335891:android:bc78145cf1cb47b20b3d66",
+        "android_client_info": {
+          "package_name": "com.rydthru.driverapplication01"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "725810335891-r377b94oc0tjh2or19b4rvu5edop5r7c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rydthru.driverapplication01",
+            "certificate_hash": "dc3c35e77e8d75a8db173dc42764217a0e887216"
+          }
+        },
+        {
+          "client_id": "725810335891-ut4melnagbc46f6tpb8ukkbkuq2j7hrk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rydthru.driverapplication01",
+            "certificate_hash": "14eecb6a21ba7bcd89c40eb2b926cba103b2d545"
+          }
+        },
+        {
+          "client_id": "725810335891-3ejn3fjgo2bmdjosucv9c906skcjvu8t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASVywCgQOMCFJJtj73X_YHPVD9xzDcmWc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "725810335891-3ejn3fjgo2bmdjosucv9c906skcjvu8t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,6 +1,6 @@
 import 'package:casa_vertical_stepper/casa_vertical_stepper.dart';
 import 'package:driver_app/Molecules/Customer-details.dart';
-import 'package:vertical_stepper/vertical_stepper.dart';
+
 import 'package:driver_app/atom/header-with-back-button.dart';
 import 'package:driver_app/utils/bottom-tabbar.dart';
 import 'package:flutter/material.dart';
@@ -283,7 +283,10 @@ class _NextStopState extends State<NextStop> {
               ),
               Padding(
                   padding: const EdgeInsets.symmetric(vertical: 30),
-                  child: CasaVerticalStepperView(steps: stepperList)),
+                  child: CasaVerticalStepperView(
+                    steps: stepperList,
+                    seperatorColor: Colors.transparent,
+                  )),
             ],
           ),
         ),
