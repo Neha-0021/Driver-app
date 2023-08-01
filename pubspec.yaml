@@ -51,6 +51,10 @@ dependencies:
   workmanager: ^0.5.1
   google_maps_flutter: ^2.4.0
   flutter_polyline_points: ^1.0.0
+  firebase_core: ^2.15.0
+  firebase_messaging: ^14.6.5
+  flutter_local_notifications: ^15.1.0+1
+  
  
 
 
