@@ -2,9 +2,11 @@ import 'package:casa_vertical_stepper/casa_vertical_stepper.dart';
 import 'package:driver_app/Molecules/Customer-details.dart';
 
 import 'package:driver_app/atom/header-with-back-button.dart';
+import 'package:driver_app/state-management/next-stop.dart';
 import 'package:driver_app/utils/bottom-tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class NextStop extends StatefulWidget {
   const NextStop({super.key});
@@ -22,6 +24,14 @@ class _NextStopState extends State<NextStop> {
     setState(() {
       selectedIndex = selectedIndex == index ? -1 : index;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final nextstopState =
+        Provider.of<NextStoppageState>(context, listen: false);
+    nextstopState.getNextStoppageData('driverId', 'vehicleId');
   }
 
   @override
@@ -266,28 +276,30 @@ class _NextStopState extends State<NextStop> {
         ),
       ),
     ];
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              HeaderwithBackButton(
-                titleText: 'Next Stop & Customers',
-                subtitleText: 'All details of your customers!',
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => BottomBar()),
-                  );
-                },
-              ),
-              Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 30),
-                  child: CasaVerticalStepperView(
-                    steps: stepperList,
-                    seperatorColor: Colors.transparent,
-                  )),
-            ],
+    return Consumer<NextStoppageState>(
+      builder: (context, nextstopState, child) => Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                HeaderwithBackButton(
+                  titleText: 'Next Stop & Customers',
+                  subtitleText: 'All details of your customers!',
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const BottomBar()),
+                    );
+                  },
+                ),
+                Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 30),
+                    child: CasaVerticalStepperView(
+                      steps: stepperList,
+                      seperatorColor: Colors.transparent,
+                    )),
+              ],
+            ),
           ),
         ),
       ),

@@ -14,7 +14,7 @@ class HistoryPage extends StatefulWidget {
 class _HistoryPageState extends State<HistoryPage> {
   List<dynamic> upcomingBookings = [];
 
-  @override
+  
   @override
   void initState() {
     super.initState();
