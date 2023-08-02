@@ -31,7 +31,7 @@ class _NextStopState extends State<NextStop> {
     super.initState();
     final nextstopState =
         Provider.of<NextStoppageState>(context, listen: false);
-    nextstopState.getNextStoppageData('driverId', 'vehicleId');
+    nextstopState.getNextStoppage();
   }
 
   @override

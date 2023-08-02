@@ -10,13 +10,13 @@ import 'package:driver_app/utils/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// ignore: must_be_immutable
 class ProfileDrawer extends StatelessWidget {
   PhoneStorage storage = PhoneStorage();
 
-  ProfileDrawer({Key? key}) : super(key: key);
+  ProfileDrawer({super.key});
 
-  void logOut(context, homeProvider) async {
+  // ignore: non_constant_identifier_names
+  void LogOut(context, homeProvider) async {
     storage.removeElement("token");
     homeProvider.reset();
     Navigator.pushReplacement(
@@ -25,8 +25,6 @@ class ProfileDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeProvider = Provider.of<HomeState>(context, listen: false);
-
     return Consumer<ProfileState>(
       builder: (context, profileState, child) => Column(
         children: [
@@ -46,7 +44,8 @@ class ProfileDrawer extends StatelessWidget {
                       shape: BoxShape.circle,
                       image: DecorationImage(
                         image: profileState.driverData != null &&
-                                profileState.driverData!['profile_photo'] != null
+                                profileState.driverData!['profile_photo'] !=
+                                    null
                             ? NetworkImage(
                                     profileState.driverData!['profile_photo'])
                                 as ImageProvider<Object>
@@ -64,16 +63,14 @@ class ProfileDrawer extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${profileState.driverData?['firstname'] ?? ''} ${profileState.driverData?['lastname'] ?? ''}',
+                        '${profileState.driverData['firstname']} ${profileState.driverData['lastname']}',
                         style: textHeadingstyle,
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Text(
-                          'Driver ID: ${profileState.driverData?['_id']?.toString()?.substring(0, 3) ?? ''}',
-                          style: textSubHeadingStyle,
-                        ),
-                      ),
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Text(
+                              'Driver ID: ${profileState.driverData['_id'].toString().substring(0, 3)}',
+                              style: textSubHeadingStyle)),
                     ],
                   ),
                 ),
@@ -133,7 +130,7 @@ class ProfileDrawer extends StatelessWidget {
                   ),
                 ),
                 builder: (context) {
-                  return  LogOutSheet();
+                  return LogOutSheet();
                 },
               );
             },

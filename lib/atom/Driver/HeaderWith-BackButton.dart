@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 class HeaderwithBackButton extends StatelessWidget {
   final String Titletext;
-  final String  subtitletext;
+  final String subtitletext;
 
-  const HeaderwithBackButton({super.key, 
+  const HeaderwithBackButton({
+    super.key,
     required this.Titletext,
     required this.subtitletext,
   });
@@ -12,7 +13,7 @@ class HeaderwithBackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-     
+      height: 100,
       decoration: const BoxDecoration(
         color: Color(0xFF192B46),
       ),
