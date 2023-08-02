@@ -3,12 +3,12 @@ import 'package:driver_app/service/config.dart';
 
 final dio = Dio();
 
-class NextStoppageService {
+class RouteDetailService {
   String baseUrl = ServiceConfig.baseUrl;
 
-  Future<Response> getNextStoppage() async {
+  Future<Response> getRouteDetailsByDriver() async {
     try {
-      final response = await dio.get("$baseUrl/api/driver/get-next-stoppage/64a7e6ef5850cf731a303f12/64a7e6695850cf731a303f08");
+      final response = await dio.get("$baseUrl/api/driver/route_detail_by_driver/2023-07-26");
       return response;
     } catch (err) {
       if (err is DioError) {
