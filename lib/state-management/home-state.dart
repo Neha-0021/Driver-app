@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:driver_app/service/login/login.dart';
+import 'package:driver_app/service/profile/profile.dart';
 import 'package:driver_app/utils/alert.dart';
 import 'package:flutter/material.dart';
 import 'package:driver_app/utils/storage.dart';
@@ -8,10 +9,19 @@ class HomeState extends ChangeNotifier {
   String driverId = "";
   String driverUsername = "";
   String driverPassword = "";
+  Map<String, dynamic> saveDriverDetails = {
+    "_id": "",
+    "firstname": "",
+    "lastname": "",
+    "email": "",
+    "mobile": "",
+    "password": "",
+  };
 
   DriverService driverService = DriverService();
   AlertBundle alert = AlertBundle();
   PhoneStorage storage = PhoneStorage();
+  ProfileService profileService = ProfileService();
 
   void updateDriverId(String id) {
     driverId = id;
@@ -94,5 +104,17 @@ class HomeState extends ChangeNotifier {
       "code": response.statusCode,
       "message": response.data["message"],
     };
+  }
+
+  Future<dynamic> getDriverProfile() async {
+    Response getDriverDetailsAPIcallBack =
+        await profileService.getDriverProfile({});
+    if (getDriverDetailsAPIcallBack.statusCode == 200) {
+      saveDriverDetails = getDriverDetailsAPIcallBack.data["driver"];
+      notifyListeners();
+      return {"code": 200, "message": "failed to get user details."};
+    } else {
+      return {"code": 400, "message": "failed to get user details."};
+    }
   }
 }
