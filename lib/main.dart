@@ -67,7 +67,7 @@ class MyAppComponent extends State<MyApp> {
         ],
         child: MaterialApp(
           title: 'DRIVER',
-          initialRoute: 'HomePage',
+          initialRoute: 'login',
 
           routes: {
             'personal-details-page': (context) => PersonalDetailPage(),
