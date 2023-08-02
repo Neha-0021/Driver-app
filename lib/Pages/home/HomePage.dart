@@ -53,7 +53,9 @@ class _HomePageState extends State<HomePage>
         body: SafeArea(
           child: Column(
             children: [
-              HomeHeader(openSideDrawer: () => toggleDrawer()),
+              HomeHeader(
+                openSideDrawer: () => toggleDrawer(),
+              ),
               Container(
                 color: const Color(0xFF192B46),
                 child: TabBar(
