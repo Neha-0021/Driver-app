@@ -27,7 +27,7 @@ class LoginComponent extends State<Login> {
       homeState.driverLogin().then((value) => {
             alert.SnackBarNotify(context, value['message']),
             if (value["code"] == 200)
-              {Navigator.pushNamed(context, "bottomBar")}
+              {Navigator.pushNamed(context, "bottom-tabbar")}
           });
     } else {
       alert.SnackBarNotify(context, 'Please Provide Login details to continue');

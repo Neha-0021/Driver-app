@@ -16,11 +16,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'Pages/home/HomePage.dart';
 import 'state-management/history-state.dart';
-
-
+import 'state-management/next-stop.dart';
 
 Future<void> main() async {
-   WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());
 }
@@ -28,7 +27,6 @@ Future<void> main() async {
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  
   @override
   State<StatefulWidget> createState() {
     return MyAppComponent();
@@ -63,7 +61,9 @@ class MyAppComponent extends State<MyApp> {
           ChangeNotifierProvider(create: (context) => ProfileState()),
           ChangeNotifierProvider(create: (context) => DriverRatingState()),
           ChangeNotifierProvider(create: (context) => DriverHistoryState()),
-          ChangeNotifierProvider(create: (context) => DriverNotificationState()),
+          ChangeNotifierProvider(
+              create: (context) => DriverNotificationState()),
+          ChangeNotifierProvider(create: (context) => NextStoppageState()),
         ],
         child: MaterialApp(
           title: 'DRIVER',
