@@ -4,7 +4,10 @@ import 'package:driver_app/atom/button.dart';
 import 'package:driver_app/atom/home/HomeListCard.dart';
 import 'package:driver_app/atom/home/MapButton.dart';
 import 'package:driver_app/atom/mapper.dart';
+
+import 'package:driver_app/state-management/route-state.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Map extends StatefulWidget {
   const Map({super.key});
@@ -23,91 +26,105 @@ class _MapState extends State<Map> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    final RouteState = Provider.of<RouteDetailState>(context, listen: false);
+    RouteState.getRouteDetailByDriver();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        Stack(
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              height: isMapExpanded ? MediaQuery.of(context).size.height : 300,
-              child: Mapper(),
-            ),
-            Positioned(
-              top: 16,
-              right: 16,
-              child: GestureDetector(
-                onTap: toggleMapSize,
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    isMapExpanded ? Icons.fullscreen_exit : Icons.fullscreen,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        Visibility(
-          visible: !isMapExpanded,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Consumer<RouteDetailState>(
+        builder: (context, RouteState, child) => ListView(
               children: [
-                MapButton(
-                  buttonText: 'Go to starting Point',
-                  onPressed: () {},
-                  width: 140,
-                  color: const Color(0xFF192B46),
+                Stack(
+                  children: [
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      height: isMapExpanded
+                          ? MediaQuery.of(context).size.height
+                          : 300,
+                      child:  Mapper(),
+                    ),
+                    Positioned(
+                      top: 16,
+                      right: 16,
+                      child: GestureDetector(
+                        onTap: toggleMapSize,
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            isMapExpanded
+                                ? Icons.fullscreen_exit
+                                : Icons.fullscreen,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                MapButton(
-                  buttonText: 'Start Ride',
-                  onPressed: () {},
-                  width: 110,
-                  color: const Color(0xFF192B46),
+                Visibility(
+                  visible: !isMapExpanded,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        MapButton(
+                          buttonText: 'Go to starting Point',
+                          onPressed: () {},
+                          width: 140,
+                          color: const Color(0xFF192B46),
+                        ),
+                        MapButton(
+                          buttonText: 'Start Ride',
+                          onPressed: () {},
+                          width: 110,
+                          color: const Color(0xFF192B46),
+                        ),
+                        MapButton(
+                          buttonText: 'Stop Ride',
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return StopRide();
+                              },
+                            );
+                          },
+                          color: Color(0xFFECB21E),
+                          width: 85,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                MapButton(
-                  buttonText: 'Stop Ride',
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return StopRide();
+                Visibility(
+                  visible: !isMapExpanded,
+                  child: const HomeListCard(),
+                ),
+                Visibility(
+                  visible: !isMapExpanded,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 20, horizontal: 15),
+                    child: CustomButton(
+                      label: 'View All',
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => NextStop()),
+                        );
                       },
-                    );
-                  },
-                  color: Color(0xFFECB21E),
-                  width: 85,
+                    ),
+                  ),
                 ),
               ],
-            ),
-          ),
-        ),
-        Visibility(
-          visible: !isMapExpanded,
-          child: const HomeListCard(),
-        ),
-        Visibility(
-          visible: !isMapExpanded,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-            child: CustomButton(
-              label: 'View All',
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => NextStop()),
-                );
-              },
-            ),
-          ),
-        ),
-      ],
-    );
+            ));
   }
 }

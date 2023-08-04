@@ -10,6 +10,7 @@ import 'package:driver_app/state-management/home-state.dart';
 import 'package:driver_app/state-management/notification-state.dart';
 
 import 'package:driver_app/state-management/profile-state.dart';
+import 'package:driver_app/state-management/route-state.dart';
 import 'package:driver_app/utils/bottom-tabbar.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -64,11 +65,11 @@ class MyAppComponent extends State<MyApp> {
           ChangeNotifierProvider(
               create: (context) => DriverNotificationState()),
           ChangeNotifierProvider(create: (context) => NextStoppageState()),
+          ChangeNotifierProvider(create: (context) => RouteDetailState()),
         ],
         child: MaterialApp(
           title: 'DRIVER',
           initialRoute: 'login',
-
           routes: {
             'personal-details-page': (context) => PersonalDetailPage(),
             'DriverRating': (context) => const DriverRating(),

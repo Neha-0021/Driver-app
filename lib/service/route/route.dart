@@ -1,20 +1,29 @@
 import 'package:dio/dio.dart';
 import 'package:driver_app/service/config.dart';
+import 'package:driver_app/utils/storage.dart';
 
 final dio = Dio();
 
 class RouteDetailService {
   String baseUrl = ServiceConfig.baseUrl;
 
-  Future<Response> getRouteDetailsByDriver() async {
+  PhoneStorage storage = PhoneStorage();
+  getRouteDetailsByDriver(Map map) async {
+    String? token = await storage.getStringValue("token");
+    Map<String, dynamic> headers = {
+      'Authorization': "Bearer $token",
+      'Content-Type': 'application/json',
+    };
+
     try {
-      final response = await dio.get("$baseUrl/api/driver/route_detail_by_driver/2023-07-26");
+      Response response = await dio.get(
+          "$baseUrl/api/driver/route_detail_by_driver/2023-07-26",
+          options: Options(headers: headers));
       return response;
     } catch (err) {
-      if (err is DioError) {
-        return err.response!;
+      if (err is DioException) {
+        return (err.response);
       }
-      throw err;
     }
   }
 }

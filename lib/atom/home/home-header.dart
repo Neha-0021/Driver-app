@@ -1,4 +1,3 @@
-import 'package:driver_app/atom/constant/common.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -34,7 +33,7 @@ class HomeHeaderComponent extends State<HomeHeader> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                   Expanded(
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -59,17 +58,17 @@ class HomeHeaderComponent extends State<HomeHeader> {
                         ],
                       ),
                     ),
-                      GestureDetector(
-                            onTap: widget.openSideDrawer,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(50),
-                              child: Image.network(
-                                homeState.saveDriverDetails["profile_photo"] ??CommonConstant.profileImage,
-                                width: 42,
-                                height: 42,
-                                fit: BoxFit.cover,
-                              ),
-                            ))
+                    GestureDetector(
+                        onTap: widget.openSideDrawer,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(50),
+                          child: Image.asset(
+                            'assets/images/view.png',
+                            width: 42,
+                            height: 42,
+                            fit: BoxFit.cover,
+                          ),
+                        ))
                   ],
                 ),
               ),
