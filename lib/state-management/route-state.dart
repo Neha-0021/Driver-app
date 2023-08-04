@@ -8,9 +8,9 @@ class RouteDetailState extends ChangeNotifier {
 
   Response? routeDetailResponse; 
 
-  Future<void> getRouteDetailByDriver() async {
+  void getRouteDetailByDriver() async {
     try {
-      routeDetailResponse = await service.getRouteDetailsByDriver();
+      routeDetailResponse = await service.getRouteDetailsByDriver({});
       notifyListeners();
     } catch (error) {
       print('Error fetching route details: $error');

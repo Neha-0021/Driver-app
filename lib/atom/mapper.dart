@@ -5,12 +5,11 @@ import 'package:driver_app/service/mapper/map.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
-import 'package:background_location/background_location.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class Mapper extends StatefulWidget {
-  const Mapper({Key? key}) : super(key: key);
+  const Mapper({super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -27,7 +26,7 @@ class MapperComponent extends State<Mapper> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
-  Marker userMarker = Marker(markerId: MarkerId("userMarker"));
+  Marker userMarker = Marker(markerId: MarkerId("userMarket"));
 
   static const Marker shuttleMarker = Marker(
       markerId: MarkerId("shuttleMarker"),
@@ -43,52 +42,9 @@ class MapperComponent extends State<Mapper> {
   void initState() {
     super.initState();
     if (mounted) {
-      requestLocationPermission();
-    }
-  }
-
-  void requestLocationPermission() async {
-    final status = await Permission.location.request();
-    if (status.isGranted) {
-      configureBackgroundLocation();
+      // getDirection();
       getCurrentLocation();
     }
-  }
-
-  void configureBackgroundLocation() {
-    BackgroundLocation.setAndroidNotification(
-      title: "Notification title",
-      message: "Notification message",
-      icon: "@mipmap/ic_launcher",
-    );
-
-    BackgroundLocation.setAndroidConfiguration(1000);
-    startBackgroundLocationService();
-  }
-
-  void startBackgroundLocationService() {
-    BackgroundLocation.startLocationService();
-  }
-
-  void getLocationUpdates() {
-    BackgroundLocation.getLocationUpdates((location) {
-      print(location);
-
-      setState(() {
-        userLocation = LatLng(location.latitude!, location.longitude!);
-        userMarker = Marker(
-          markerId: const MarkerId("userMarker"),
-          icon: BitmapDescriptor.defaultMarker,
-          position: userLocation,
-        );
-      });
-      getDirection(
-          "${location.latitude},${location.longitude}", "21.1938,81.3509");
-    });
-  }
-
-  void stopBackgroundLocationService() {
-    BackgroundLocation.stopLocationService();
   }
 
   getCurrentLocation() async {
@@ -100,12 +56,11 @@ class MapperComponent extends State<Mapper> {
     setState(() {
       userLocation = LatLng(latitude, longitude);
       userMarker = Marker(
-        markerId: const MarkerId("userMarker"),
-        icon: BitmapDescriptor.defaultMarker,
-        position: userLocation,
-      );
+          markerId: const MarkerId("userMarker"),
+          icon: BitmapDescriptor.defaultMarker,
+          position: userLocation);
     });
-    getDirection("$latitude,$longitude", "21.1938,81.3509");
+    getDirection("$latitude,$longitude", "21.1938, 81.3509");
   }
 
   getDirection(origin, destination) async {
@@ -129,11 +84,10 @@ class MapperComponent extends State<Mapper> {
     polylineCounter++;
     Set<Polyline> tempRoute = Set<Polyline>();
     tempRoute.add(Polyline(
-      polylineId: PolylineId(polylineIds),
-      width: 5,
-      color: Colors.blue,
-      points: points.map((e) => LatLng(e.latitude, e.longitude)).toList(),
-    ));
+        polylineId: PolylineId(polylineIds),
+        width: 5,
+        color: Colors.blue,
+        points: points.map((e) => LatLng(e.latitude, e.longitude)).toList()));
     setState(() {
       _routeCoordinates = tempRoute;
     });
