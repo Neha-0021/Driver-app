@@ -30,7 +30,7 @@ class _MapState extends State<Map> {
     super.initState();
 
     final RouteState = Provider.of<RouteDetailState>(context, listen: false);
-    RouteState.getRouteDetailByDriver();
+    RouteState.getRouteDetailsByDriver();
   }
 
   @override
@@ -45,7 +45,7 @@ class _MapState extends State<Map> {
                       height: isMapExpanded
                           ? MediaQuery.of(context).size.height
                           : 300,
-                      child:  Mapper(),
+                      child: const Mapper(),
                     ),
                     Positioned(
                       top: 16,

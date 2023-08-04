@@ -1,16 +1,16 @@
-
-import 'package:dio/dio.dart';
 import 'package:driver_app/service/route/route.dart';
 import 'package:flutter/material.dart';
+
 
 class RouteDetailState extends ChangeNotifier {
   final RouteDetailService service = RouteDetailService();
 
-  Response? routeDetailResponse; 
+  Map<String, dynamic> routeDetails = {};
 
-  void getRouteDetailByDriver() async {
+  Future<void> getRouteDetailsByDriver() async {
     try {
-      routeDetailResponse = await service.getRouteDetailsByDriver({});
+      final response = await service.getRouteDetailsByDriver();
+      routeDetails = response.data;
       notifyListeners();
     } catch (error) {
       print('Error fetching route details: $error');

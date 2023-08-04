@@ -8,7 +8,7 @@ class RouteDetailService {
   String baseUrl = ServiceConfig.baseUrl;
 
   PhoneStorage storage = PhoneStorage();
-  getRouteDetailsByDriver(Map map) async {
+  getRouteDetailsByDriver() async {
     String? token = await storage.getStringValue("token");
     Map<String, dynamic> headers = {
       'Authorization': "Bearer $token",
