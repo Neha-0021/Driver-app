@@ -1,11 +1,9 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:driver_app/service/mapper/map.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 
 class Mapper extends StatefulWidget {
@@ -18,33 +16,19 @@ class Mapper extends StatefulWidget {
 }
 
 class MapperComponent extends State<Mapper> {
-  MapperMap map = MapperMap();
   Set<Polyline> _routeCoordinates = Set<Polyline>();
   int polylineCounter = 1;
   LatLng userLocation = LatLng(0.0, 0.0);
+  Marker userMarker = Marker(markerId: MarkerId("userMarket"));
 
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
-  Marker userMarker = Marker(markerId: MarkerId("userMarket"));
-
-  static const Marker shuttleMarker = Marker(
-      markerId: MarkerId("shuttleMarker"),
-      icon: BitmapDescriptor.defaultMarker,
-      position: LatLng(21.2514, 81.6296));
-
-  static const CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(21.1938, 81.3509),
-    zoom: 14.4746,
-  );
-
   @override
   void initState() {
     super.initState();
-    if (mounted) {
-      // getDirection();
-      getCurrentLocation();
-    }
+    // Fetch user location after 5 seconds
+    Timer(Duration(seconds: 5), getCurrentLocation);
   }
 
   getCurrentLocation() async {
@@ -56,15 +40,22 @@ class MapperComponent extends State<Mapper> {
     setState(() {
       userLocation = LatLng(latitude, longitude);
       userMarker = Marker(
-          markerId: const MarkerId("userMarker"),
-          icon: BitmapDescriptor.defaultMarker,
-          position: userLocation);
+        markerId: const MarkerId("userMarker"),
+        icon: BitmapDescriptor.defaultMarker,
+        position: userLocation,
+      );
     });
-    getDirection("$latitude,$longitude", "21.1938, 81.3509");
+    getDirection("$latitude,$longitude", "21.1938,81.3509");
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(
+      CameraPosition(target: userLocation, zoom: 14.0),
+    ));
   }
 
   getDirection(origin, destination) async {
-    Response resp = await map.getDirectionAPI(origin, destination);
+    Response resp = await Dio().get(
+        "https://maps.googleapis.com/maps/api/directions/json",
+        queryParameters: {"origin": origin, "destination": destination});
     final responseData = resp.data;
     if (responseData['status'] == 'OK') {
       final List<dynamic> routes = responseData['routes'];
@@ -84,10 +75,11 @@ class MapperComponent extends State<Mapper> {
     polylineCounter++;
     Set<Polyline> tempRoute = Set<Polyline>();
     tempRoute.add(Polyline(
-        polylineId: PolylineId(polylineIds),
-        width: 5,
-        color: Colors.blue,
-        points: points.map((e) => LatLng(e.latitude, e.longitude)).toList()));
+      polylineId: PolylineId(polylineIds),
+      width: 5,
+      color: Colors.blue,
+      points: points.map((e) => LatLng(e.latitude, e.longitude)).toList(),
+    ));
     setState(() {
       _routeCoordinates = tempRoute;
     });
@@ -98,11 +90,11 @@ class MapperComponent extends State<Mapper> {
     return Scaffold(
       body: GoogleMap(
         mapType: MapType.normal,
-        initialCameraPosition: _kGooglePlex,
-        markers: {
-          userMarker,
-          shuttleMarker,
-        },
+        initialCameraPosition: CameraPosition(
+          target: LatLng(0.0, 0.0), // Initially set to 0,0
+          zoom: 14.0,
+        ),
+        markers: {userMarker}, // Show only user's location marker
         polylines: _routeCoordinates,
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
@@ -111,3 +103,7 @@ class MapperComponent extends State<Mapper> {
     );
   }
 }
+
+
+
+
