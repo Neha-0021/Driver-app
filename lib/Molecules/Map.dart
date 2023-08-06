@@ -1,5 +1,7 @@
 import 'package:driver_app/Pages/Next-stop.dart';
+import 'package:driver_app/state-management/GeolocationProvider.dart';
 import 'package:driver_app/atom/Pop-Up/Stop-ride.dart';
+
 import 'package:driver_app/atom/button.dart';
 import 'package:driver_app/atom/home/HomeListCard.dart';
 import 'package:driver_app/atom/home/MapButton.dart';
@@ -77,7 +79,19 @@ class _MapState extends State<Map> {
                       children: [
                         MapButton(
                           buttonText: 'Go to starting Point',
-                          onPressed: () {},
+                          onPressed: () {
+                            final geolocation =
+                                Provider.of<GeolocationProvider>(context,
+                                    listen: false);
+
+                            final geoDirection = Provider.of<DirectionProvider>(
+                                context,
+                                listen: false);
+                            geoDirection.getDirection(
+                                "$geolocation.latitude , $geolocation.longitude",
+                                "21.1904 , 81.2849");
+                            setState(() {});
+                          },
                           width: 140,
                           color: const Color(0xFF192B46),
                         ),
