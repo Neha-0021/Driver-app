@@ -7,7 +7,6 @@ import 'package:driver_app/Pages/login.dart';
 import 'package:driver_app/notification-handler.dart';
 import 'package:driver_app/state-management/Driver-Rating-state.dart';
 import 'package:driver_app/state-management/home-state.dart';
-import 'package:driver_app/state-management/map-provider.dart';
 import 'package:driver_app/state-management/notification-state.dart';
 
 import 'package:driver_app/state-management/profile-state.dart';
@@ -67,7 +66,7 @@ class MyAppComponent extends State<MyApp> {
               create: (context) => DriverNotificationState()),
           ChangeNotifierProvider(create: (context) => NextStoppageState()),
           ChangeNotifierProvider(create: (context) => RouteDetailState()),
-          ChangeNotifierProvider(create: (context) => MapProvider()),
+         
         ],
         child: MaterialApp(
           title: 'DRIVER',
