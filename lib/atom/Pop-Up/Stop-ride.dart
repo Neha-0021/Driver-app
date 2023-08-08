@@ -1,10 +1,10 @@
 import 'package:driver_app/atom/custom-radioButton.dart';
+import 'package:driver_app/state-management/stop-ride.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class StopRide extends StatefulWidget {
   const StopRide({super.key});
-
-  
 
   @override
   _StopRideState createState() => _StopRideState();
@@ -26,6 +26,13 @@ class _StopRideState extends State<StopRide> {
       isFirstSelected = false;
       isSecondSelected = true;
     });
+  }
+
+  Future<void> submitStopRide() async {
+    String reason = isFirstSelected ? 'Vehicle Breakdown' : 'All users dropped';
+    final StopState = Provider.of<StopRideState>(context, listen: false);
+    StopState.stopRide(reason);
+    Navigator.pop(context); 
   }
 
   @override
@@ -55,7 +62,7 @@ class _StopRideState extends State<StopRide> {
                 child: Row(
                   children: [
                     Image.asset(
-                     'assets/images/Star.png',
+                      'assets/images/Star.png',
                       width: 20,
                     ),
                     const Padding(
@@ -98,7 +105,9 @@ class _StopRideState extends State<StopRide> {
                           ),
                           padding: EdgeInsets.zero,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
                         child: const Text(
                           'Go Back',
                           style: TextStyle(
@@ -112,9 +121,7 @@ class _StopRideState extends State<StopRide> {
                     ),
                     Expanded(
                       child: TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
+                        onPressed: submitStopRide,
                         style: TextButton.styleFrom(
                           minimumSize: const Size(130, 41),
                           backgroundColor: const Color(0xFF192B46),
@@ -145,4 +152,3 @@ class _StopRideState extends State<StopRide> {
     );
   }
 }
-

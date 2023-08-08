@@ -1,16 +1,14 @@
-import 'package:dio/dio.dart';
 import 'package:driver_app/service/start-ride/start-ride.dart';
 import 'package:flutter/foundation.dart';
 
+class ShuttleTrackingState extends ChangeNotifier {
+  final ShuttleTrackingService _service = ShuttleTrackingService();
 
-
-class StartShuttleState extends ChangeNotifier {
-  final StartShuttleService _shuttleService = StartShuttleService();
-
-  Future<void> startShuttleTracking(String driverLocation) async {
+  Future<void> startShuttleTracking(
+      double driverLatitude, double driverLongitude) async {
     try {
-      Response response =
-          await _shuttleService.startShuttleTracking(driverLocation);
+      await _service.startShuttleTracking(driverLatitude, driverLongitude);
+
       notifyListeners();
     } catch (error) {
       print('Error starting shuttle tracking: $error');
@@ -18,11 +16,11 @@ class StartShuttleState extends ChangeNotifier {
   }
 
   Future<void> updateShuttleTracking(
-      String trackingId, String driverCurrentLocation) async {
+      String id, String driverCurrentLocation) async {
     try {
-      Response response = await _shuttleService.updateShuttleTracking(
-          trackingId, driverCurrentLocation);
-       notifyListeners();
+      await _service.updateShuttleTracking(id, driverCurrentLocation);
+
+      notifyListeners();
     } catch (error) {
       print('Error updating shuttle tracking: $error');
     }

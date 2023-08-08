@@ -2,57 +2,53 @@ import 'package:dio/dio.dart';
 import 'package:driver_app/service/config.dart';
 import 'package:driver_app/utils/storage.dart';
 
-class StartShuttleService {
+class ShuttleTrackingService {
   final Dio _dio = Dio();
-  final String _baseUrl = ServiceConfig.baseUrl;
+  final String baseUrl = ServiceConfig.baseUrl;
   final PhoneStorage _storage = PhoneStorage();
 
-  Future<Response<dynamic>> startShuttleTracking(String driverLocation) async {
-    final String token = await _storage.getStringValue("token") ?? "";
-    final Map<String, dynamic> headers = {
-      'Authorization': "Bearer $token",
+  Future<Response<dynamic>> startShuttleTracking(double driverLatitude, double driverLongitude) async {
+    final String token = await _storage.getStringValue('token') ?? '';
+    final headers = {
+      'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
     };
 
+    final body = {
+      'driverLatitude': driverLatitude.toString(),
+      'driverLongitude': driverLongitude.toString(),
+    };
+
     try {
-      final response = await _dio.post(
-        "$_baseUrl/api/driver/start-shuttle-tracking",
-        data: {
-          "driverLocation": driverLocation,
-        },
+      return await _dio.post(
+        '$baseUrl/api/driver/start-shuttle-tracking',
+        data: body,
         options: Options(headers: headers),
       );
-      return response;
-    } catch (err) {
-      if (err is DioException) {
-        return err.response!;
-      }
-      rethrow;
+    } catch (error) {
+      throw error;
     }
   }
 
-  Future<Response<dynamic>> updateShuttleTracking(
-      String trackingId, String driverCurrentLocation) async {
-    final String token = await _storage.getStringValue("token") ?? "";
-    final Map<String, dynamic> headers = {
-      'Authorization': "Bearer $token",
+  Future<Response<dynamic>> updateShuttleTracking(String id, String driverCurrentLocation) async {
+    final String token = await _storage.getStringValue('token') ?? '';
+    final headers = {
+      'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
     };
 
+    final body = {
+      'driverCurrentLocation': driverCurrentLocation,
+    };
+
     try {
-      final response = await _dio.put(
-        "$_baseUrl/api/driver/update-shuttle-tracking/$trackingId",
-        data: {
-          "driverCurrentLocation": driverCurrentLocation,
-        },
+      return await _dio.put(
+        '$baseUrl/api/driver/update-shuttle-tracking/$id',
+        data: body,
         options: Options(headers: headers),
       );
-      return response;
-    } catch (err) {
-      if (err is DioException) {
-        return err.response!;
-      }
-      rethrow;
+    } catch (error) {
+      throw error;
     }
   }
 }
