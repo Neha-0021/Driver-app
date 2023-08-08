@@ -6,9 +6,9 @@ final dio = Dio();
 class NextStoppageService {
   String baseUrl = ServiceConfig.baseUrl;
 
-  Future<Response> getNextStoppage() async {
+  Future<Response> getNextStoppage(String driverId, String stoppageId) async {
     try {
-      final response = await dio.get("$baseUrl/api/driver/get-next-stoppage/64a7e6ef5850cf731a303f12/64a7e6695850cf731a303f08");
+      final response = await dio.get("$baseUrl/api/driver/get-next-stoppage/$driverId/$stoppageId");
       return response;
     } catch (err) {
       if (err is DioError) {

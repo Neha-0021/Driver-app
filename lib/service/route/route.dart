@@ -8,7 +8,7 @@ class RouteDetailService {
   String baseUrl = ServiceConfig.baseUrl;
 
   PhoneStorage storage = PhoneStorage();
-  getRouteDetailsByDriver() async {
+  getRouteDetailsByDriver(String date) async {
     String? token = await storage.getStringValue("token");
     Map<String, dynamic> headers = {
       'Authorization': "Bearer $token",
@@ -17,7 +17,7 @@ class RouteDetailService {
 
     try {
       Response response = await dio.get(
-          "$baseUrl/api/driver/route_detail_by_driver/2023-07-26",
+          "$baseUrl/api/driver/route_detail_by_driver/$date",
           options: Options(headers: headers));
       return response;
     } catch (err) {

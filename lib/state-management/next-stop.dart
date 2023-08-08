@@ -6,9 +6,9 @@ class NextStoppageState extends ChangeNotifier {
 
   Map<String, dynamic> nextStoppage = {};
 
-  Future<void> getNextStoppage() async {
+  Future<void> getNextStoppage(String driverId, String stoppageId) async {
     try {
-      final response = await service.getNextStoppage();
+      final response = await service.getNextStoppage(driverId, stoppageId);
       nextStoppage = response.data;
       notifyListeners();
     } catch (error) {
