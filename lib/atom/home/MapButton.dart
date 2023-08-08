@@ -4,14 +4,16 @@ class MapButton extends StatelessWidget {
   final String buttonText;
   final VoidCallback onPressed;
   final double width;
-  final Color color; 
+  final Color color;
+  final bool disabled;
 
   const MapButton({
     Key? key,
     required this.buttonText,
     required this.onPressed,
     required this.width,
-    required this.color, // Add required color parameter
+    required this.color,
+    this.disabled = false,
   }) : super(key: key);
 
   @override

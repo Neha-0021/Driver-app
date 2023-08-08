@@ -7,15 +7,16 @@ import 'package:driver_app/atom/home/HomeListCard.dart';
 
 import 'package:driver_app/atom/home/MapButton.dart';
 import 'package:driver_app/service/mapper/map.dart';
-import 'package:driver_app/state-management/start-ride.dart';
+import 'package:driver_app/utils/distance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:provider/provider.dart';
 
 class Mapper extends StatefulWidget {
-  const Mapper({Key? key}) : super(key: key);
+  const Mapper({super.key});
+
+  
 
   @override
   State<StatefulWidget> createState() {
@@ -52,7 +53,7 @@ class MapperComponent extends State<Mapper> {
           icon: BitmapDescriptor.defaultMarker,
           position: userLocation);
     });
-    getDirection("$latitude,$longitude", "21.1904, 81.2849");
+    getDirection("$latitude,$longitude", "$targetLat, $targetLon");
   }
 
   getDirection(origin, destination) async {
@@ -85,6 +86,38 @@ class MapperComponent extends State<Mapper> {
     });
   }
 
+  DistanceUtils distanceUtils = DistanceUtils();
+  double targetLat = 21.1904;
+  double targetLon = 81.2849;
+  String targetTime = "08:00 AM";
+
+  double thresholdDistance = 10.0;
+  int thresholdTimeDifferenceMinutes = 10;
+  bool rideStarted = false;
+  void checkAndStartRide() async {
+    String distanceString = await distanceUtils
+        .getCurrentLocationAndCalculateDistance(targetLat, targetLon);
+
+    double distance = double.parse(distanceString);
+
+   DateTime now = DateTime.now();
+    DateTime targetDateTime = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      int.parse(targetTime.split(':')[0]),
+      int.parse(targetTime.split(':')[1].split(' ')[0]),
+    );
+
+    Duration timeDifference = targetDateTime.difference(now);
+
+    if (timeDifference.inMinutes <= thresholdTimeDifferenceMinutes && distance <= thresholdDistance) {
+      setState(() {
+        rideStarted = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,7 +125,7 @@ class MapperComponent extends State<Mapper> {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
               child: Container(
                 height: 390,
                 child: GoogleMap(
@@ -125,6 +158,8 @@ class MapperComponent extends State<Mapper> {
                           zoom: 10.0,
                         ),
                       ));
+
+                      checkAndStartRide();
                     }
                   },
                   width: 140,
@@ -132,6 +167,7 @@ class MapperComponent extends State<Mapper> {
                 ),
                 MapButton(
                   buttonText: 'Start Ride',
+                  disabled: !rideStarted,
                   onPressed: () {},
                   width: 110,
                   color: const Color(0xFF192B46),
