@@ -132,15 +132,7 @@ class MapperComponent extends State<Mapper> {
                 ),
                 MapButton(
                   buttonText: 'Start Ride',
-                  onPressed: () {
-                    final StartState =
-                        Provider.of<StartShuttleState>(context, listen: false);
-                    StartState.startShuttleTracking('driverLocation');
-                    final trackingId = 'your_tracking_id';
-                    final CurrentLocation = 'your_current_location';
-                    StartState.updateShuttleTracking(
-                        trackingId, CurrentLocation);
-                  },
+                  onPressed: () {},
                   width: 110,
                   color: const Color(0xFF192B46),
                 ),
