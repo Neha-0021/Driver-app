@@ -124,6 +124,7 @@ class MapperComponent extends State<Mapper> {
   void initState() {
     super.initState();
     final routeState = Provider.of<RouteDetailState>(context, listen: false);
+
     routeState.getRouteDetailsByDriver('2023-07-26');
   }
 
@@ -184,8 +185,7 @@ class MapperComponent extends State<Mapper> {
                         final shuttleTrackingState =
                             Provider.of<ShuttleTrackingState>(context,
                                 listen: false);
-
-                        await shuttleTrackingState.startShuttleTracking(
+                         await shuttleTrackingState.startShuttleTracking(
                             userLocation.latitude, userLocation.longitude);
                         shuttleTrackingState.updateShuttleTracking(
                             '64ca3d885068bb8bb9fb4d60',
@@ -201,7 +201,7 @@ class MapperComponent extends State<Mapper> {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return StopRide();
+                          return const StopRide();
                         },
                       );
                     },
