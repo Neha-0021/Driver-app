@@ -7,9 +7,9 @@ class RouteDetailState extends ChangeNotifier {
 
   Map<String, dynamic> routeDetails = {};
 
-  Future<void> getRouteDetailsByDriver() async {
+  Future<void> getRouteDetailsByDriver(String date) async {
     try {
-      final response = await service.getRouteDetailsByDriver();
+      final response = await service.getRouteDetailsByDriver(date);
       routeDetails = response.data;
       notifyListeners();
     } catch (error) {

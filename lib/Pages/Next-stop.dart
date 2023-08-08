@@ -31,7 +31,7 @@ class _NextStopState extends State<NextStop> {
     super.initState();
     final nextstopState =
         Provider.of<NextStoppageState>(context, listen: false);
-    nextstopState.getNextStoppage();
+    nextstopState.getNextStoppage('64a7e6ef5850cf731a303f12', '64a7e6695850cf731a303f08');
   }
 
   @override

@@ -7,16 +7,17 @@ import 'package:driver_app/atom/home/HomeListCard.dart';
 
 import 'package:driver_app/atom/home/MapButton.dart';
 import 'package:driver_app/service/mapper/map.dart';
+import 'package:driver_app/state-management/route-state.dart';
+import 'package:driver_app/state-management/start-ride.dart';
 import 'package:driver_app/utils/distance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
 class Mapper extends StatefulWidget {
   const Mapper({super.key});
-
-  
 
   @override
   State<StatefulWidget> createState() {
@@ -100,7 +101,7 @@ class MapperComponent extends State<Mapper> {
 
     double distance = double.parse(distanceString);
 
-   DateTime now = DateTime.now();
+    DateTime now = DateTime.now();
     DateTime targetDateTime = DateTime(
       now.year,
       now.month,
@@ -111,7 +112,8 @@ class MapperComponent extends State<Mapper> {
 
     Duration timeDifference = targetDateTime.difference(now);
 
-    if (timeDifference.inMinutes <= thresholdTimeDifferenceMinutes && distance <= thresholdDistance) {
+    if (timeDifference.inMinutes <= thresholdTimeDifferenceMinutes &&
+        distance <= thresholdDistance) {
       setState(() {
         rideStarted = true;
       });
@@ -119,88 +121,111 @@ class MapperComponent extends State<Mapper> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    final routeState = Provider.of<RouteDetailState>(context, listen: false);
+    routeState.getRouteDetailsByDriver('2023-07-26');
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-              child: Container(
-                height: 390,
-                child: GoogleMap(
-                  mapType: MapType.normal,
-                  initialCameraPosition: _kGooglePlex,
-                  markers: {
-                    userMarker,
-                  },
-                  polylines: _routeCoordinates,
-                  onMapCreated: (GoogleMapController controller) {
-                    _controller.complete(controller);
-                  },
+    return Consumer<RouteDetailState>(
+      builder: (context, routeState, child) => Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                child: Container(
+                  height: 390,
+                  child: GoogleMap(
+                    mapType: MapType.normal,
+                    initialCameraPosition: _kGooglePlex,
+                    markers: {
+                      userMarker,
+                    },
+                    polylines: _routeCoordinates,
+                    onMapCreated: (GoogleMapController controller) {
+                      _controller.complete(controller);
+                    },
+                  ),
                 ),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                MapButton(
-                  buttonText: 'Go to starting Point',
-                  onPressed: () async {
-                    await getCurrentLocation();
-                    final GoogleMapController controller =
-                        await _controller.future;
-                    if (userLocation.latitude != 0.0 &&
-                        userLocation.longitude != 0.0) {
-                      controller.animateCamera(CameraUpdate.newCameraPosition(
-                        CameraPosition(
-                          target: userLocation,
-                          zoom: 10.0,
-                        ),
-                      ));
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  MapButton(
+                    buttonText: 'Go to starting Point',
+                    onPressed: () async {
+                      await getCurrentLocation();
+                      final GoogleMapController controller =
+                          await _controller.future;
+                      if (userLocation.latitude != 0.0 &&
+                          userLocation.longitude != 0.0) {
+                        controller.animateCamera(CameraUpdate.newCameraPosition(
+                          CameraPosition(
+                            target: userLocation,
+                            zoom: 10.0,
+                          ),
+                        ));
 
-                      checkAndStartRide();
-                    }
-                  },
-                  width: 140,
-                  color: const Color(0xFF192B46),
-                ),
-                MapButton(
-                  buttonText: 'Start Ride',
-                  disabled: !rideStarted,
-                  onPressed: () {},
-                  width: 110,
-                  color: const Color(0xFF192B46),
-                ),
-                MapButton(
-                  buttonText: 'Stop Ride',
+                        checkAndStartRide();
+                      }
+                    },
+                    width: 140,
+                    color: const Color(0xFF192B46),
+                  ),
+                  MapButton(
+                    buttonText: 'Start Ride',
+                    disabled: !rideStarted,
+                    onPressed: () async {
+                      if (rideStarted) {
+                        final shuttleTrackingState =
+                            Provider.of<ShuttleTrackingState>(context,
+                                listen: false);
+
+                        await shuttleTrackingState.startShuttleTracking(
+                            userLocation.latitude, userLocation.longitude);
+                        shuttleTrackingState.updateShuttleTracking(
+                            '64ca3d885068bb8bb9fb4d60',
+                            userLocation.toString());
+                      }
+                    },
+                    width: 110,
+                    color: const Color(0xFF192B46),
+                  ),
+                  MapButton(
+                    buttonText: 'Stop Ride',
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return StopRide();
+                        },
+                      );
+                    },
+                    color: Color(0xFFECB21E),
+                    width: 85,
+                  ),
+                ],
+              ),
+              const HomeListCard(),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                child: CustomButton(
+                  label: 'View All',
                   onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return StopRide();
-                      },
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => NextStop()),
                     );
                   },
-                  color: Color(0xFFECB21E),
-                  width: 85,
                 ),
-              ],
-            ),
-            const HomeListCard(),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-              child: CustomButton(
-                label: 'View All',
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => NextStop()),
-                  );
-                },
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

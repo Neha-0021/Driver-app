@@ -21,7 +21,7 @@ class _DriverRatingState extends State<DriverRating> {
     super.initState();
     final driverRatingState =
         Provider.of<DriverRatingState>(context, listen: false);
-        driverRatingState.rateDriver('driverId', 'rating' as int);
+        driverRatingState.rateDriver('64a97959a9d82d7c3517921c', 5);
   }
 
   @override

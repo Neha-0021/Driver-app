@@ -7,7 +7,8 @@ class ShuttleTrackingService {
   final String baseUrl = ServiceConfig.baseUrl;
   final PhoneStorage _storage = PhoneStorage();
 
-  Future<Response<dynamic>> startShuttleTracking(double driverLatitude, double driverLongitude) async {
+  Future<Response<dynamic>> startShuttleTracking(
+      double driverLatitude, double driverLongitude) async {
     final String token = await _storage.getStringValue('token') ?? '';
     final headers = {
       'Authorization': 'Bearer $token',
@@ -30,7 +31,8 @@ class ShuttleTrackingService {
     }
   }
 
-  Future<Response<dynamic>> updateShuttleTracking(String id, String driverCurrentLocation) async {
+  Future<Response<dynamic>> updateShuttleTracking(
+      String id, String driverCurrentLocation) async {
     final String token = await _storage.getStringValue('token') ?? '';
     final headers = {
       'Authorization': 'Bearer $token',
