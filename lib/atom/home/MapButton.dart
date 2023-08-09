@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class MapButton extends StatelessWidget {
   final String buttonText;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final double width;
   final Color color;
   final bool disabled;
@@ -19,7 +19,7 @@ class MapButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: onPressed,
+        onPressed: disabled ? null : onPressed,
       style: TextButton.styleFrom(
         backgroundColor: color, // Use the provided color
         shape: RoundedRectangleBorder(
