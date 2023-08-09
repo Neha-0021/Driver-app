@@ -36,7 +36,6 @@ class _HistoryPageState extends State<HistoryPage> {
               ),
               ListView.builder(
                 shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
                 itemCount: historyState.upcomingBookings.length,
                 itemBuilder: (context, index) {
                   final history = historyState.upcomingBookings[index];
@@ -56,6 +55,7 @@ class _HistoryPageState extends State<HistoryPage> {
           ),
         ),
       ),
-    );
+      );
+    
   }
 }
