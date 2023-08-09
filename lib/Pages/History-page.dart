@@ -20,7 +20,7 @@ class _HistoryPageState extends State<HistoryPage> {
     super.initState();
     final historyState =
         Provider.of<DriverHistoryState>(context, listen: false);
-    historyState.fetchDriverCompleteHistory();
+    historyState.getDriverCompleteHistor();
   }
 
   @override

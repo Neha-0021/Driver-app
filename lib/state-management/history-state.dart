@@ -8,7 +8,7 @@ class DriverHistoryState extends ChangeNotifier {
 
   DriverHistoryService driverService = DriverHistoryService();
 
-  Future<void> fetchDriverUpcomingBookings() async {
+  Future<void> getDriverUpcomingBookings() async {
     try {
       Response response = await driverService.getDriverUpcomingBookings();
       upcomingBookings = response.data;
@@ -18,7 +18,7 @@ class DriverHistoryState extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchDriverCompleteHistory() async {
+  Future<void> getDriverCompleteHistor() async {
     try {
       Response response = await driverService.getDriverCompleteHistory();
       completeHistory = response.data;
