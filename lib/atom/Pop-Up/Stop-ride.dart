@@ -1,38 +1,32 @@
 import 'package:driver_app/atom/custom-radioButton.dart';
-import 'package:driver_app/state-management/stop-ride.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:driver_app/state-management/stop-ride.dart';
+
 
 class StopRide extends StatefulWidget {
-  const StopRide({super.key});
+  const StopRide({Key? key}) : super(key: key);
 
   @override
   _StopRideState createState() => _StopRideState();
 }
 
 class _StopRideState extends State<StopRide> {
-  bool isFirstSelected = false;
-  bool isSecondSelected = false;
+  bool isFirstReasonSelected = false;
+  bool isSecondReasonSelected = false;
 
   void selectFirst() {
     setState(() {
-      isFirstSelected = true;
-      isSecondSelected = false;
+      isFirstReasonSelected = true;
+      isSecondReasonSelected = false;
     });
   }
 
   void selectSecond() {
     setState(() {
-      isFirstSelected = false;
-      isSecondSelected = true;
+      isFirstReasonSelected = false;
+      isSecondReasonSelected = true;
     });
-  }
-
-  Future<void> submitStopRide() async {
-    String reason = isFirstSelected ? 'Vehicle Breakdown' : 'All users dropped';
-    final StopState = Provider.of<StopRideState>(context, listen: false);
-    StopState.stopRide(reason);
-    Navigator.pop(context); 
   }
 
   @override
@@ -83,12 +77,12 @@ class _StopRideState extends State<StopRide> {
             ),
             CustomRadioButton(
               text: 'Vehicle Breakdown',
-              isSelected: isFirstSelected,
+              isSelected: isFirstReasonSelected,
               onClick: selectFirst,
             ),
             CustomRadioButton(
               text: 'All users dropped',
-              isSelected: isSecondSelected,
+              isSelected: isSecondReasonSelected,
               onClick: selectSecond,
             ),
             Expanded(
@@ -121,7 +115,17 @@ class _StopRideState extends State<StopRide> {
                     ),
                     Expanded(
                       child: TextButton(
-                        onPressed: submitStopRide,
+                        onPressed: () {
+                          final stopRideState =
+                              Provider.of<StopRideState>(context, listen: false);
+                          if (!stopRideState.isLoading) {
+                            String selectedReason = isFirstReasonSelected
+                                ? 'Vehicle Breakdown'
+                                : 'All users dropped';
+                            stopRideState.stopRide(selectedReason);
+                            Navigator.pop(context);
+                          }
+                        },
                         style: TextButton.styleFrom(
                           minimumSize: const Size(130, 41),
                           backgroundColor: const Color(0xFF192B46),
