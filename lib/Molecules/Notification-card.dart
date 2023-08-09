@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class NotificationCard extends StatelessWidget {
-  final Map<String, dynamic> data;
+  final Map<String, dynamic> notification;
   const NotificationCard({
     super.key,
-    required this.data,
+    required this.notification,
   });
 
   @override
@@ -29,10 +30,10 @@ class NotificationCard extends StatelessWidget {
             Container(
               width: 46,
               height: 46,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
-                  image: AssetImage('assets/images/history.png'),
+                  image: NetworkImage(notification["icon"]),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -67,14 +68,7 @@ class NotificationCard extends StatelessWidget {
                         style: DefaultTextStyle.of(context).style,
                         children: [
                           TextSpan(
-                            text: 'Your bus route',
-                            style: textHeadingStyle.copyWith(
-                              decoration: TextDecoration.none,
-                            ),
-                          ),
-                          TextSpan(
-                            text:
-                                ' is from Ahmedabad to Kanpur. Stay tuned for more updates!',
+                            text: notification["notificationText"],
                             style: textSubHeadingStyle.copyWith(
                               decoration: TextDecoration.none,
                             ),
@@ -83,7 +77,11 @@ class NotificationCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '09:30 AM • Fri, 19 May',
+                      notification["createdOn"] == ""
+                          ? ""
+                          : DateFormat('hh:mm a dd-MMM-yy')
+                              .format(DateTime.parse(notification["createdAt"]))
+                              .toString(),
                       style: textSubHeadingStyle.copyWith(
                         decoration: TextDecoration.none,
                       ),

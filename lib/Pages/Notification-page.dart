@@ -50,7 +50,7 @@ class _NotificationPageState extends State<NotificationPage> {
                 itemCount: notificationState.notifications.length,
                 itemBuilder: (context, index) {
                   final notification = notificationState.notifications[index];
-                  return NotificationCard(data: notification);
+                  return NotificationCard(notification: notification);
                 },
               ),
                ListView.builder(
@@ -60,7 +60,7 @@ class _NotificationPageState extends State<NotificationPage> {
                 itemBuilder: (context, index) {
                   final notification =
                       notificationState.viewedNotifications[index];
-                  return NotificationCard(data: notification);
+                  return NotificationCard(notification: notification);
                 },
               ),
             ],
