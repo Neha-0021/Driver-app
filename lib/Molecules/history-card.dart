@@ -1,5 +1,6 @@
 import 'package:driver_app/atom/history-status.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class HistoryCard extends StatelessWidget {
   final Map<String, dynamic> data;
@@ -32,31 +33,31 @@ class HistoryCard extends StatelessWidget {
                 Card(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(3),
-                    child: Image.asset(
-                      'assets/images/history.png',
+                    child: Image.network(
+                    data["route_details"]["image"],
                       width: 30,
                       height: 30,
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
-                const Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Route Name',
-                        style: textHeadingstyle,
-                      ),
-                      Text(
-                        'Sun 14 May • 08:30 AM to 03:30 PM',
-                        style: textSubHeadingStyle,
-                      ),
-                    ],
-                  ),
+               Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "${data["stoppage_from_details"]["stoppage_name"]} - ${data["stoppage_to_details"]["stoppage_name"]}",
+                      style: textHeadingstyle,
+                    ),
+                    Text(
+                      '${DateFormat("dd MMM yy").format(DateTime.parse(data['date']))} • 08:30 AM to 03:30 PM',
+                      style: textSubHeadingStyle,
+                    ),
+                  ],
                 ),
-                HistoryStatus(
+              ),
+              HistoryStatus(
                     containerColor: const Color(0xFF00BD79),
                     labelText: 'Completed')
               ],
