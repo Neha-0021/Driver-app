@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:driver_app/Molecules/Profile/Personal-details.dart';
 import 'package:driver_app/Molecules/Profile/camera-gallery.dart';
-import 'package:driver_app/atom/Button.dart';
 import 'package:driver_app/atom/Profile/header.dart';
 import 'package:driver_app/state-management/home-state.dart';
 import 'package:driver_app/state-management/profile-state.dart';
@@ -71,17 +70,12 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
                             ),
                             color: Color(0xFF192B46),
                           ),
-                          child: Column(
+                          child: const Column(
                             children: [
                               Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 20),
+                                padding: EdgeInsets.symmetric(vertical: 20),
                                 child: HeaderWithActionButton(
                                   headerText: 'Personal Details',
-                                  showIcon: true,
-                                  onEditPressed: () {
-                                    profileState.toggleEdit();
-                                  },
                                 ),
                               ),
                             ],
@@ -112,26 +106,6 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
                           lastName: profileState.driverData["lastname"] ?? "",
                           email: profileState.driverData["email"] ?? "",
                           phone: profileState.driverData["mobile"] ?? "",
-                        ),
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 10),
-                              child: profileState.isDisableText
-                                  ? null
-                                  : CustomButton(
-                                      disabled: profileState
-                                              .driverData["firstname"] ==
-                                          "",
-                                      label: 'Submit',
-                                      onPressed: () {
-                                        profileState.submit(context);
-                                      },
-                                    ),
-                            ),
-                          ),
                         ),
                       ],
                     ),
@@ -180,21 +154,36 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
                             Padding(
                               padding:
                                   const EdgeInsets.only(bottom: 5, right: 5),
-                              child: !profileState.isDisableText
-                                  ? Container(
-                                      width: 28,
-                                      height: 28,
-                                      decoration: const BoxDecoration(
-                                        color: Colors.white,
-                                        shape: BoxShape.circle,
-                                      ),
+                              child: Container(
+                                  width: 28,
+                                  height: 28,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Container(
+                                    width: 28,
+                                    height: 28,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        showModalBottomSheet(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return CameraGallerySheet();
+                                          },
+                                        );
+                                      },
                                       child: const Icon(
                                         Icons.camera_alt,
                                         color: Color(0xFF192B46),
                                         size: 18,
                                       ),
-                                    )
-                                  : null,
+                                    ),
+                                  )),
                             ),
                           ],
                         ),

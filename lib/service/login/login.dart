@@ -17,6 +17,19 @@ class DriverService {
       }
     }
   }
+  driverLogin(data) async {
+    try {
+      Response response = await dio.post(
+        "$baseUrl/api/driver/driver-login",
+        data: data,
+      );
+      return response;
+    } catch (err) {
+      if (err is DioException) {
+        return (err.response);
+      }
+    }
+  }
 
   deleteDriver(driverId) async {
     try {
@@ -45,19 +58,7 @@ class DriverService {
     }
   }
 
-  driverLogin(data) async {
-    try {
-      Response response = await dio.post(
-        "$baseUrl/api/driver/driver-login",
-        data: data,
-      );
-      return response;
-    } catch (err) {
-      if (err is DioException) {
-        return (err.response);
-      }
-    }
-  }
+  
 
   deleteAllDrivers() async {
     try {

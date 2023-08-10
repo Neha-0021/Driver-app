@@ -25,11 +25,7 @@ class HeaderwithBackButton extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              IconButton(
-                onPressed: onPressed,
-                icon: const Icon(Icons.arrow_back),
-                color: Colors.white,
-              ),
+             
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
