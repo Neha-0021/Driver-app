@@ -1,11 +1,11 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+
 import 'package:driver_app/Molecules/driver-list-card.dart';
 import 'package:driver_app/atom/Driver/DriverContainer.dart';
 import 'package:driver_app/atom/Driver/HeaderWith-BackButton.dart';
 import 'package:driver_app/state-management/Driver-Rating-state.dart';
-
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 
 class DriverRating extends StatefulWidget {
   const DriverRating({Key? key}) : super(key: key);
@@ -19,8 +19,7 @@ class _DriverRatingState extends State<DriverRating> {
   @override
   void initState() {
     super.initState();
-    final driverRatingState =
-        Provider.of<DriverRatingState>(context, listen: false);
+    final driverRatingState = Provider.of<DriverRatingState>(context, listen: false);
     driverRatingState.getDriverRatingByBookingId('64a1583d964565929b270bf7');
   }
 
@@ -67,27 +66,28 @@ class _DriverRatingState extends State<DriverRating> {
                   child: const Row(
                     children: [
                       Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 20),
-                          child: Text(
-                            'Customer Name & Ratings',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontFamily: 'PublicaSans',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          )),
+                        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                        child: Text(
+                          'Customer Name & Ratings',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontFamily: 'PublicaSans',
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
                 ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: driverRatingState.driverRating.length,
-                    itemBuilder: (context, index) {
-                      final driver = driverRatingState.driverRating[index];
-                      return DriverListCard(data: driver);
-                    }),
+                  shrinkWrap: true,
+                  itemCount: driverRatingState.driverRating.length,
+                  itemBuilder: (context, index) {
+                    final driver = driverRatingState.driverRating[index];
+                    return DriverListCard(data: driver);
+                  },
+                ),
               ],
             ),
           ),
@@ -96,3 +96,4 @@ class _DriverRatingState extends State<DriverRating> {
     );
   }
 }
+

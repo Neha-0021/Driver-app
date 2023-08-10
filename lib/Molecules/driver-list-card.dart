@@ -6,6 +6,10 @@ class DriverListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Extracting driver details from the data
+    final driver = data['driver'][0];
+    final user = data['user'][0];
+
     return SingleChildScrollView(
       child: Container(
         height: 70,
@@ -20,52 +24,50 @@ class DriverListCard extends StatelessWidget {
           children: [
             Expanded(
               flex: 1,
-              child: Image.asset(
-                'assets/images/Driverimage.png',
+              child: Image.network(
+                user['profile_photo'], // Using the profile photo URL from user data
                 height: 31,
                 width: 31,
               ),
             ),
-            const Expanded(
+            Expanded(
               flex: 3,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Rahul Chorasiya', // Sample driver name (should be fetched from 'data')
-                    style: TextStyle(
+                    '${user['firstname']} ${user['lastname']}', // Displaying user's full name
+                    style: const TextStyle(
                       color: Colors.black,
                       fontSize: 14,
                       fontFamily: 'PublicaSans',
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  Text(
-                    'Ahmedabad - Kanpur • Sun 14 May', // Sample travel details (should be fetched from 'data')
-                    style: TextStyle(
-                      color: Color(0xFF75879B),
-                      fontSize: 10,
-                      fontFamily: 'PublicaSans',
-                      fontWeight: FontWeight.w300,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Expanded(
+                 Text(
+  '${user['workplace']} - ${user['address']} • ${user['officeTimeFrom']}',
+  style: const TextStyle(
+    color: Color(0xFF75879B),
+    fontSize: 10,
+    fontFamily: 'PublicaSans',
+    fontWeight: FontWeight.w300,
+  ),
+),
+
+            Expanded(
               flex: 1,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.star,
                     size: 16,
                     color: Colors.green,
                   ),
                   Text(
-                    '4.0', // Sample average rating (should be fetched from 'data')
-                    style: TextStyle(
+                    '${driver['rating']}', // Displaying driver's rating from data
+                    style: const TextStyle(
                       color: Colors.black,
                       fontSize: 13,
                       fontFamily: 'PublicaSans',
@@ -76,6 +78,9 @@ class DriverListCard extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+          ]
         ),
       ),
     );
