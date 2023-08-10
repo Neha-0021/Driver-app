@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 
 class HeaderWithActionButton extends StatelessWidget {
   final String headerText;
-  final VoidCallback? onEditPressed;
-  final bool showIcon;
+  
 
-  const HeaderWithActionButton({Key? key, required this.headerText, this.onEditPressed, required this.showIcon})
+  const HeaderWithActionButton({Key? key, required this.headerText,})
       : super(key: key);
 
   @override
@@ -35,16 +34,7 @@ class HeaderWithActionButton extends StatelessWidget {
             color: Color(0xFFFFFFFF),
           ),
         )),
-        Expanded(
-          flex: 1,
-          child: GestureDetector(
-            onTap: onEditPressed,
-            child: showIcon?const Icon(
-              Icons.edit,
-              color: Colors.white,
-            ):null,
-          ),
-        )
+       
       ],
     );
   }

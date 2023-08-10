@@ -44,10 +44,10 @@ class MyAppComponent extends State<MyApp> {
   }
 
   void initializeNotificationService() async {
-    // Create an instance of the NotificationService class
+   
     NotificationHandler notificationService = NotificationHandler();
 
-    // Get the FCM token using the notification service
+    
     String? token = await notificationService.getFcmToken();
     if (token != "") {
       print('FCM Token: $token');

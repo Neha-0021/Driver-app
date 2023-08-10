@@ -34,23 +34,9 @@ class ProfileState extends ChangeNotifier {
     print(driverData);
   }
 
-  void toggleEdit() {
-    isDisableText = !isDisableText;
-    notifyListeners();
-  }
+  
 
-  void submit(context) async {
-    if (profileImagePath != "") {
-      await uploadFileAndGetLink(context);
-    }
-    Response callback = await service.saveDriverDetails(driverData); 
-    if (callback.statusCode == 200) {
-      alert.SnackBarNotify(context, "Profile Updated");
-    } else {
-      alert.SnackBarNotify(
-          context, "Unable to update profile please try again.");
-    }
-  }
+
 
   uploadFileAndGetLink(context) async {
     var sendingData = FormData.fromMap({

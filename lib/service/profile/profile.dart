@@ -26,21 +26,4 @@ class ProfileService {
       }
     }
   }
-
-  saveDriverDetails(data) async {
-    String? token = await storage.getStringValue("token");
-    Map<String, dynamic> headers = {
-      'Authorization': "Bearer $token",
-      'Content-Type': 'application/json',
-    };
-    try {
-      Response response = await dio.put("$baseUrl/api/driver/edit-profile",
-          options: Options(headers: headers), data: data);
-      return response;
-    } catch (err) {
-      if (err is DioException) {
-        return (err.response);
-      }
-    }
-  }
 }

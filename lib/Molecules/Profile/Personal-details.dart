@@ -45,24 +45,14 @@ class PersonalDetail extends StatelessWidget {
                 onChangeText: isDisable ? (String e) => {} : onLastNameChanged,
                 value: lastName,
                 isDisabled: isDisable)),
-        GestureDetector(
-          onTap: () {
-            showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return NoteAlert();
-          },
-        );
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: CustomTextInput(
-              hintText: phone ?? "",
-              imagePath: 'assets/images/disable.png',
-              isDisabled: true,
-              additionalImagePath: 'assets/images/Password.png',
-              onChangeText: (String value) {},
-            ),
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: CustomTextInput(
+            hintText: phone ?? "",
+            imagePath: 'assets/images/disable.png',
+            isDisabled: true,
+            additionalImagePath: 'assets/images/Password.png',
+            onChangeText: (String value) {},
           ),
         ),
         Padding(
