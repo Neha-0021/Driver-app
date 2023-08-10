@@ -1,27 +1,14 @@
-import 'package:driver_app/atom/Pop-Up/NoteAlert.dart';
 import 'package:flutter/material.dart';
 import '../../atom/CustomTextInput.dart';
 
 class PersonalDetail extends StatelessWidget {
-  final ValueChanged<String> onFirstNameChanged;
-  final ValueChanged<String> onLastNameChanged;
-  final ValueChanged<String> onEmailChanged;
   final String? firstName;
   final String? lastName;
   final String? email;
   final String? phone;
-  final bool isDisable;
 
   const PersonalDetail(
-      {Key? key,
-      required this.onFirstNameChanged,
-      required this.onLastNameChanged,
-      required this.onEmailChanged,
-      required this.isDisable,
-      this.firstName,
-      this.lastName,
-      this.email,
-      this.phone})
+      {Key? key, this.firstName, this.lastName, this.email, this.phone})
       : super(key: key);
 
   @override
@@ -32,19 +19,20 @@ class PersonalDetail extends StatelessWidget {
         Padding(
             padding: const EdgeInsets.all(10),
             child: CustomTextInput(
-                hintText: "First Name",
-                imagePath: "assets/images/svg/profile.svg",
-                onChangeText: isDisable ? (String e) => {} : onFirstNameChanged,
-                value: firstName,
-                isDisabled: isDisable)),
+              hintText: "First Name",
+              imagePath: "assets/images/svg/profile.svg",
+              onChangeText: (String value) {},
+              isDisabled: true,
+              value: firstName,
+            )),
         Padding(
             padding: const EdgeInsets.all(10),
             child: CustomTextInput(
                 hintText: "Last Name",
                 imagePath: "assets/images/svg/profile-line.svg",
-                onChangeText: isDisable ? (String e) => {} : onLastNameChanged,
+                isDisabled: true,
                 value: lastName,
-                isDisabled: isDisable)),
+                onChangeText: (String value) {})),
         Padding(
           padding: const EdgeInsets.all(10),
           child: CustomTextInput(
@@ -58,11 +46,12 @@ class PersonalDetail extends StatelessWidget {
         Padding(
             padding: const EdgeInsets.all(10),
             child: CustomTextInput(
-                hintText: "Email",
-                imagePath: "assets/images/svg/email.svg",
-                onChangeText: isDisable ? (String e) => {} : onEmailChanged,
-                value: email,
-                isDisabled: isDisable)),
+              hintText: "Email",
+              imagePath: "assets/images/svg/email.svg",
+              onChangeText: (String value) {},
+              isDisabled: true,
+              value: email,
+            )),
       ],
     );
   }

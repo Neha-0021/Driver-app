@@ -23,6 +23,8 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
 
   AlertBundle alert = AlertBundle();
 
+  bool isDisableText = false;
+
   Future<void> selectProfileImage(BuildContext context, profileState) async {
     final selectedImage = await showModalBottomSheet(
       context: context,
@@ -102,16 +104,6 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
                             );
                           },
                           child: PersonalDetail(
-                            isDisable: profileState.isDisableText,
-                            onEmailChanged: (value) {
-                              profileState.updateState("email", value);
-                            },
-                            onFirstNameChanged: (value) {
-                              profileState.updateState("firstname", value);
-                            },
-                            onLastNameChanged: (value) {
-                              profileState.updateState("lastname", value);
-                            },
                             firstName:
                                 profileState.driverData["firstname"] ?? "",
                             lastName: profileState.driverData["lastname"] ?? "",
@@ -125,9 +117,9 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
                       top: 120,
                       left: (MediaQuery.of(context).size.width - 130) / 2,
                       child: GestureDetector(
-                        onTap: () => profileState.isDisableText
+                        onTap: isDisableText
                             ? null
-                            : selectProfileImage(context, profileState),
+                            : () => selectProfileImage(context, profileState),
                         child: Stack(
                           alignment: Alignment.bottomRight,
                           children: [
@@ -144,18 +136,11 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
                               child: ClipOval(
                                 child: AspectRatio(
                                   aspectRatio: 1,
-                                  child: profileState
-                                              .driverData["profile_photo"] !=
-                                          null
-                                      ? profileImage == null
-                                          ? Image.network(
-                                              profileState
-                                                  .driverData["profile_photo"],
-                                              fit: BoxFit.cover)
-                                          : Image.file(
-                                              File(profileImage!.path),
-                                              fit: BoxFit.cover,
-                                            )
+                                  child: profileImage != null
+                                      ? Image.file(
+                                          File(profileImage!.path),
+                                          fit: BoxFit.cover,
+                                        )
                                       : Image.asset(
                                           "assets/images/view.png",
                                           fit: BoxFit.cover,

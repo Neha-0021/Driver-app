@@ -9,7 +9,7 @@ class ProfileService {
 
   PhoneStorage storage = PhoneStorage();
 
-  getDriverProfile(Map map) async {
+  getDriverProfile() async {
     String? token = await storage.getStringValue("token");
     Map<String, dynamic> headers = {
       'Authorization': "Bearer $token",
