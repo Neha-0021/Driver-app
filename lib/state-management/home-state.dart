@@ -7,7 +7,7 @@ import 'package:driver_app/utils/storage.dart';
 
 class HomeState extends ChangeNotifier {
   String driverId = "";
-  String driverUsername = "";
+  String driverMobile = "";
   String driverPassword = "";
   Map<String, dynamic> saveDriverDetails = {
     "_id": "",
@@ -28,8 +28,8 @@ class HomeState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateDriverUsername(String username) {
-    driverUsername = username;
+   void updateDriverMobile(String mobile) {
+    driverMobile = mobile;
     notifyListeners();
   }
 
@@ -39,9 +39,9 @@ class HomeState extends ChangeNotifier {
   }
 
   Future<dynamic> createDriverAccount() async {
-    if (driverUsername.isNotEmpty && driverPassword.isNotEmpty) {
+    if (driverMobile.isNotEmpty && driverPassword.isNotEmpty) {
       Response response = await driverService.createDriver({
-        "username": driverUsername,
+        "username": driverMobile,
         "password": driverPassword,
       });
       return {
@@ -57,7 +57,7 @@ class HomeState extends ChangeNotifier {
   }
 
   Future<dynamic> driverLogin() async {
-    if (driverUsername.isEmpty || driverPassword.isEmpty) {
+    if (driverMobile.isEmpty || driverPassword.isEmpty) {
       return {
         "code": 400,
         "message": "Please enter both username and password.",
@@ -65,7 +65,7 @@ class HomeState extends ChangeNotifier {
     }
 
     Response response = await driverService.driverLogin({
-      "mobile": driverUsername,
+      "mobile": driverMobile,
       "password": driverPassword,
     });
 

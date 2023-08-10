@@ -1,39 +1,31 @@
 import 'package:dio/dio.dart';
-import 'package:driver_app/service/login/login.dart';
-import 'package:driver_app/utils/alert.dart';
-import 'package:flutter/material.dart';
-
-import 'package:driver_app/utils/storage.dart';
+import 'package:driver_app/service/Driver/Driver.dart';
+import 'package:flutter/foundation.dart';
 
 class DriverRatingState extends ChangeNotifier {
+  List<dynamic> driverRating = [];
+  final DriverRatingService _driverRatingService = DriverRatingService();
 
- List<dynamic> driverRating = [];
-
-  DriverService driverService = DriverService();
-  AlertBundle alert = AlertBundle();
-  PhoneStorage storage = PhoneStorage();
-
-  void DriverRating(String rating) {
-    driverRating = ['rating'];
-    notifyListeners();
-  }
-
-  void DeleteDriverRating(String rating) {
-    driverRating = ['rating'];
-    notifyListeners();
-  }
-
-  Future<void> rateDriver(String driverId, int rating) async {
+  Future<void> DriverRating(String bookingId, String rating) async {
     try {
-      Response response = await driverService.rateDriver(driverId, rating);
+      await _driverRatingService.DriverRating(bookingId, rating);
     } catch (error) {
-      print('Error rating driver: $error');
+      print('Error submitting driver rating: $error');
     }
   }
 
-  Future<void> deleteDriverRating(String driverId) async {
+  Future<void> getDriverRatingByBookingId(String bookingId) async {
     try {
-      Response response = await driverService.deleteDriverRating(driverId);
+      Response response =
+          await _driverRatingService.getDriverRatingByBookingId(bookingId);
+    } catch (error) {
+      print('Error fetching driver rating by booking ID: $error');
+    }
+  }
+
+  Future<void> deleteDriverRating(String ratingId) async {
+    try {
+      await _driverRatingService.deleteDriverRating(ratingId);
     } catch (error) {
       print('Error deleting driver rating: $error');
     }
