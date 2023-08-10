@@ -21,7 +21,7 @@ class LoginComponent extends State<Login> {
   AlertBundle alert = AlertBundle();
   PhoneStorage storage = PhoneStorage();
 
- driverLogin(context, homeState) async {
+  driverLogin(context, homeState) async {
     if (homeState.driverMobile.isNotEmpty &&
         homeState.driverPassword.isNotEmpty) {
       homeState.driverLogin().then((value) => {
@@ -87,8 +87,7 @@ class LoginComponent extends State<Login> {
                   child: CustomTextInput(
                     hintText: "Enter Username",
                     imagePath: "assets/images/svg/profile.svg",
-                    onChangeText: (String e) =>
-                        homeState.updateDriverMobile(e),
+                    onChangeText: (String e) => homeState.updateDriverMobile(e),
                     keyboardType: TextInputType.text,
                   ),
                 ),

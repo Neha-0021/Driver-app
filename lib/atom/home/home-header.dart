@@ -16,13 +16,6 @@ class HomeHeader extends StatefulWidget {
 
 class HomeHeaderComponent extends State<HomeHeader> {
   @override
-  void initState() {
-    super.initState();
-    final stateCall = Provider.of<HomeState>(context, listen: false);
-    stateCall.getDriverProfile();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return (Consumer<HomeState>(
         builder: (context, homeState, child) => Container(
@@ -33,20 +26,20 @@ class HomeHeaderComponent extends State<HomeHeader> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
+                    const Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Hello ${homeState.saveDriverDetails["firstname"]} ,",
-                            style: const TextStyle(
+                            "Hello Ramesh",
+                            style: TextStyle(
                               color: Colors.white,
                               fontSize: 24,
                               fontFamily: 'PublicaSans',
                               fontWeight: FontWeight.w700,
                             ),
                           ),
-                          const Text(
+                          Text(
                             'Start a journey!',
                             style: TextStyle(
                               color: Color(0xFF75879B),

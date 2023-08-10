@@ -70,11 +70,11 @@ class MyAppComponent extends State<MyApp> {
           ChangeNotifierProvider(create: (context) => RouteDetailState()),
           ChangeNotifierProvider(create: (context) => ShuttleTrackingState()),
           ChangeNotifierProvider(create: (context) => StopRideState()),
-             ChangeNotifierProvider(create: (context) => ShuttleTrackingState()),
+          ChangeNotifierProvider(create: (context) => ShuttleTrackingState()),
         ],
         child: MaterialApp(
           title: 'DRIVER',
-          initialRoute: 'login',
+          initialRoute: 'bottom-tabbar',
           routes: {
             'personal-details-page': (context) => PersonalDetailPage(),
             'DriverRating': (context) => const DriverRating(),
