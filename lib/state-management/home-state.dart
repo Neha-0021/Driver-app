@@ -91,7 +91,7 @@ class HomeState extends ChangeNotifier {
     }
   }
 
-  Future<dynamic> deleteDriverAccount() async {
+ Future<dynamic> deleteDriverAccount() async {
     if (driverId.isEmpty) {
       return {
         "code": 400,
@@ -118,7 +118,3 @@ class HomeState extends ChangeNotifier {
     }
   }
 }
-
-
- 
-
