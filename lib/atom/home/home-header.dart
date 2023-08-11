@@ -1,3 +1,5 @@
+import 'package:driver_app/Organism/Profile-drawer.dart';
+import 'package:driver_app/state-management/profile-state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,8 +19,8 @@ class HomeHeader extends StatefulWidget {
 class HomeHeaderComponent extends State<HomeHeader> {
   @override
   Widget build(BuildContext context) {
-    return (Consumer<HomeState>(
-        builder: (context, homeState, child) => Container(
+    return (Consumer<ProfileState>(
+        builder: (context, profileState, child) => Container(
               decoration: const BoxDecoration(color: Color(0xFF192B46)),
               child: Padding(
                 padding:
@@ -26,20 +28,15 @@ class HomeHeaderComponent extends State<HomeHeader> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Expanded(
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Hello Ramesh",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontFamily: 'PublicaSans',
-                              fontWeight: FontWeight.w700,
-                            ),
+                            "Hello ${profileState.driverData['firstname']} ,",
+                            style: textHeadingstyle,
                           ),
-                          Text(
+                          const Text(
                             'Start a journey!',
                             style: TextStyle(
                               color: Color(0xFF75879B),
