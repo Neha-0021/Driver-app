@@ -6,7 +6,6 @@ class DriverListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Extracting driver details from the data
     final driver = data['driver'][0];
     final user = data['user'][0];
 
@@ -20,68 +19,62 @@ class DriverListCard extends StatelessWidget {
             ),
           ),
         ),
-        child: Row(
-          children: [
-            Expanded(
-              flex: 1,
-              child: Image.network(
-                user['profile_photo'], // Using the profile photo URL from user data
-                height: 31,
-                width: 31,
-              ),
+        child: Row(children: [
+          Expanded(
+            flex: 1,
+            child: Image.network(
+              user['profile_photo'], // Using the profile photo URL from user data
+              height: 31,
+              width: 31,
             ),
-            Expanded(
-              flex: 3,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    '${user['firstname']} ${user['lastname']}', // Displaying user's full name
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                      fontFamily: 'PublicaSans',
-                      fontWeight: FontWeight.w400,
+          ),
+          Expanded(
+            flex: 3,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '${user['firstname']} ${user['lastname']}', // Displaying user's full name
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontFamily: 'PublicaSans',
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                Text(
+                  '${user['workplace']} - ${user['address']} • ${user['officeTimeFrom']}',
+                  style: const TextStyle(
+                    color: Color(0xFF75879B),
+                    fontSize: 10,
+                    fontFamily: 'PublicaSans',
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.star,
+                      size: 16,
+                      color: Colors.green,
                     ),
-                  ),
-                 Text(
-  '${user['workplace']} - ${user['address']} • ${user['officeTimeFrom']}',
-  style: const TextStyle(
-    color: Color(0xFF75879B),
-    fontSize: 10,
-    fontFamily: 'PublicaSans',
-    fontWeight: FontWeight.w300,
-  ),
-),
-
-            Expanded(
-              flex: 1,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.star,
-                    size: 16,
-                    color: Colors.green,
-                  ),
-                  Text(
-                    '${driver['rating']}', // Displaying driver's rating from data
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 13,
-                      fontFamily: 'PublicaSans',
-                      fontWeight: FontWeight.w500,
+                    Text(
+                      '${driver['rating']}', // Displaying driver's rating
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 13,
+                        fontFamily: 'PublicaSans',
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-          ]
-        ),
+          ),
+        ]),
       ),
     );
   }

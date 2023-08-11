@@ -1,14 +1,14 @@
+import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:driver_app/service/Driver/Driver.dart';
-import 'package:flutter/foundation.dart';
 
 class DriverRatingState extends ChangeNotifier {
   List<dynamic> driverRating = [];
   final DriverRatingService _driverRatingService = DriverRatingService();
 
-  Future<void> DriverRating(String bookingId, String rating) async {
+  Future<void> submitDriverRating(String bookingId, String rating) async {
     try {
-      await _driverRatingService.DriverRating(bookingId, rating);
+      await _driverRatingService.driverRating(bookingId, rating);
     } catch (error) {
       print('Error submitting driver rating: $error');
     }
@@ -16,8 +16,10 @@ class DriverRatingState extends ChangeNotifier {
 
   Future<void> getDriverRatingByBookingId(String bookingId) async {
     try {
-      Response response =
+      Response<dynamic> response =
           await _driverRatingService.getDriverRatingByBookingId(bookingId);
+      driverRating = response.data;
+      notifyListeners();
     } catch (error) {
       print('Error fetching driver rating by booking ID: $error');
     }
@@ -31,3 +33,4 @@ class DriverRatingState extends ChangeNotifier {
     }
   }
 }
+

@@ -44,10 +44,10 @@ class MyAppComponent extends State<MyApp> {
   }
 
   void initializeNotificationService() async {
-    // Create an instance of the NotificationService class
+   
     NotificationHandler notificationService = NotificationHandler();
 
-    // Get the FCM token using the notification service
+    
     String? token = await notificationService.getFcmToken();
     if (token != "") {
       print('FCM Token: $token');
@@ -70,11 +70,11 @@ class MyAppComponent extends State<MyApp> {
           ChangeNotifierProvider(create: (context) => RouteDetailState()),
           ChangeNotifierProvider(create: (context) => ShuttleTrackingState()),
           ChangeNotifierProvider(create: (context) => StopRideState()),
-             ChangeNotifierProvider(create: (context) => ShuttleTrackingState()),
+          ChangeNotifierProvider(create: (context) => ShuttleTrackingState()),
         ],
         child: MaterialApp(
           title: 'DRIVER',
-          initialRoute: 'personal-details-page',
+          initialRoute: 'DriverRating',
           routes: {
             'personal-details-page': (context) => PersonalDetailPage(),
             'DriverRating': (context) => const DriverRating(),

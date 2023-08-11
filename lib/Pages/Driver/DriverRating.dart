@@ -19,8 +19,11 @@ class _DriverRatingState extends State<DriverRating> {
   @override
   void initState() {
     super.initState();
-    final driverRatingState = Provider.of<DriverRatingState>(context, listen: false);
-    driverRatingState.getDriverRatingByBookingId('64a1583d964565929b270bf7');
+    Future.microtask(() {
+      final driverRatingState =
+          Provider.of<DriverRatingState>(context, listen: false);
+      driverRatingState.getDriverRatingByBookingId('64a1583d964565929b270bf7');
+    });
   }
 
   @override
@@ -66,7 +69,8 @@ class _DriverRatingState extends State<DriverRating> {
                   child: const Row(
                     children: [
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 20),
                         child: Text(
                           'Customer Name & Ratings',
                           style: TextStyle(
@@ -85,6 +89,7 @@ class _DriverRatingState extends State<DriverRating> {
                   itemCount: driverRatingState.driverRating.length,
                   itemBuilder: (context, index) {
                     final driver = driverRatingState.driverRating[index];
+                    // Assuming 'DriverListCard' takes a 'Map<String, dynamic>' named 'data'
                     return DriverListCard(data: driver);
                   },
                 ),
@@ -96,4 +101,3 @@ class _DriverRatingState extends State<DriverRating> {
     );
   }
 }
-

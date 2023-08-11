@@ -6,29 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:driver_app/utils/storage.dart';
 
 class HomeState extends ChangeNotifier {
-  String driverId = "";
   String driverMobile = "";
   String driverPassword = "";
-  Map<String, dynamic> saveDriverDetails = {
-    "_id": "",
-    "firstname": "",
-    "lastname": "",
-    "email": "",
-    "mobile": "",
-    "password": "",
-  };
 
-  DriverService driverService = DriverService();
+  DriverService services = DriverService();
   AlertBundle alert = AlertBundle();
   PhoneStorage storage = PhoneStorage();
   ProfileService profileService = ProfileService();
 
-  void updateDriverId(String id) {
-    driverId = id;
-    notifyListeners();
-  }
-
-   void updateDriverMobile(String mobile) {
+  void updateDriverMobile(String mobile) {
     driverMobile = mobile;
     notifyListeners();
   }
@@ -40,7 +26,7 @@ class HomeState extends ChangeNotifier {
 
   Future<dynamic> createDriverAccount() async {
     if (driverMobile.isNotEmpty && driverPassword.isNotEmpty) {
-      Response response = await driverService.createDriver({
+      Response response = await services.createDriver({
         "username": driverMobile,
         "password": driverPassword,
       });
@@ -64,7 +50,7 @@ class HomeState extends ChangeNotifier {
       };
     }
 
-    Response response = await driverService.driverLogin({
+    Response response = await services.driverLogin({
       "mobile": driverMobile,
       "password": driverPassword,
     });
@@ -88,33 +74,6 @@ class HomeState extends ChangeNotifier {
         "code": response.statusCode,
         "message": response.data["message"],
       };
-    }
-  }
-
- Future<dynamic> deleteDriverAccount() async {
-    if (driverId.isEmpty) {
-      return {
-        "code": 400,
-        "message": "Driver ID is required to delete the driver account.",
-      };
-    }
-
-    Response response = await driverService.deleteDriver(driverId);
-    return {
-      "code": response.statusCode,
-      "message": response.data["message"],
-    };
-  }
-
-  Future<dynamic> getDriverProfile() async {
-    Response getDriverDetailsAPIcallBack =
-        await profileService.getDriverProfile({});
-    if (getDriverDetailsAPIcallBack.statusCode == 200) {
-      saveDriverDetails = getDriverDetailsAPIcallBack.data["driver"];
-      notifyListeners();
-      return {"code": 200, "message": "failed to get user details."};
-    } else {
-      return {"code": 400, "message": "failed to get user details."};
     }
   }
 }
