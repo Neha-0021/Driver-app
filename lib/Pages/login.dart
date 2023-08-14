@@ -23,8 +23,7 @@ class LoginComponent extends State<Login> {
   
 
   driverLogin(context, homeState) async {
-    if (homeState.driverMobile.isNotEmpty &&
-        homeState.driverPassword.isNotEmpty) {
+    if (homeState.driverMobile != "" && homeState.driverPassword != "") {
       homeState.driverLogin().then((value) => {
             alert.SnackBarNotify(context, value['message']),
             if (value["code"] == 200)
