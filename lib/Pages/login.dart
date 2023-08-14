@@ -21,6 +21,8 @@ class LoginComponent extends State<Login> {
   AlertBundle alert = AlertBundle();
   PhoneStorage storage = PhoneStorage();
 
+  final String token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkcml2ZXJJRCI6IjY0YzllOGM0ZmVhYmI3Nzk5YjU0NTcxZCIsImlhdCI6MTY5MTk4ODc0MCwiZXhwIjoxNjkyNDIwNzQwfQ.MyC_CtTvS4YmjAM1zxUoK4_YOdIeqHh8Eg1fET1o8Y8';
+
   driverLogin(context, homeState) async {
     if (homeState.driverMobile.isNotEmpty &&
         homeState.driverPassword.isNotEmpty) {

@@ -136,11 +136,18 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
                               child: ClipOval(
                                 child: AspectRatio(
                                   aspectRatio: 1,
-                                  child: profileImage != null
-                                      ? Image.file(
-                                          File(profileImage!.path),
-                                          fit: BoxFit.cover,
-                                        )
+                                  child: profileState
+                                              .driverData["profile_photo"] !=
+                                          null
+                                      ? profileImage == null
+                                          ? Image.network(
+                                              profileState
+                                                  .driverData["profile_photo"],
+                                              fit: BoxFit.cover)
+                                          : Image.file(
+                                              File(profileImage!.path),
+                                              fit: BoxFit.cover,
+                                            )
                                       : Image.asset(
                                           "assets/images/view.png",
                                           fit: BoxFit.cover,
@@ -170,7 +177,7 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
                                         showModalBottomSheet(
                                           context: context,
                                           builder: (BuildContext context) {
-                                            return CameraGallerySheet();
+                                            return const CameraGallerySheet();
                                           },
                                         );
                                       },
