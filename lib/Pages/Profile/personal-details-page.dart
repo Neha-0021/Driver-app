@@ -49,7 +49,7 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final stateCall = Provider.of<HomeState>(context, listen: false);
+  
 
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(

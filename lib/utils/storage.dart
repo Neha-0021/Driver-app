@@ -1,9 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PhoneStorage {
-
-
-  void setStringValue(key,value) async {
+  void setStringValue(key, value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(key, value);
   }
@@ -14,12 +12,11 @@ class PhoneStorage {
   }
 
   Future<void> removeElement(String key) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.remove(key);
-}
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove(key);
+  }
 
-
-  void setIntValue(key,value) async {
+  void setIntValue(key, value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt(key, value);
   }
@@ -29,7 +26,7 @@ class PhoneStorage {
     return prefs.getInt(key);
   }
 
-    void setBoolValue(key,value) async {
+  void setBoolValue(key, value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool(key, value);
   }
@@ -39,5 +36,8 @@ class PhoneStorage {
     return prefs.getBool(key);
   }
 
-
+  Future<void> saveToken(String token) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('token', token);
+  }
 }

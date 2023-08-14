@@ -53,6 +53,7 @@ class HomeState extends ChangeNotifier {
     Response response = await services.driverLogin({
       "mobile": driverMobile,
       "password": driverPassword,
+      "fcm": "",
     });
 
     if (response.statusCode == 200) {
@@ -76,6 +77,4 @@ class HomeState extends ChangeNotifier {
       };
     }
   }
-
- 
 }
