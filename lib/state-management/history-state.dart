@@ -1,16 +1,16 @@
-import 'package:driver_app/service/History/history.dart';
-import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:driver_app/service/History/history.dart';
+import 'package:flutter/foundation.dart';
 
 class DriverHistoryState extends ChangeNotifier {
+  final DriverHistoryService historyService = DriverHistoryService();
+
   List<dynamic> upcomingBookings = [];
   List<dynamic> completeHistory = [];
 
-  DriverHistoryService driverService = DriverHistoryService();
-
   Future<void> getDriverUpcomingBookings() async {
     try {
-      Response response = await driverService.getDriverUpcomingBookings();
+      Response response = await historyService.getDriverUpcomingBookings();
       upcomingBookings = response.data;
       notifyListeners();
     } catch (error) {
@@ -18,19 +18,28 @@ class DriverHistoryState extends ChangeNotifier {
     }
   }
 
-  Future<void> getDriverCompleteHistor() async {
+  Future<void> getDriverCompleteHistory() async {
     try {
-      Response response = await driverService.getDriverCompleteHistory();
-      completeHistory = response.data;
+      Response response = await historyService.getDriverCompleteHistory();
+      completeHistory = response.data["bookings"].reversed.toList();
+
+      List<String> ids = response.data["bookings"]
+          .map<String>((obj) => obj["_id"].toString())
+          .toList();
+
       notifyListeners();
     } catch (error) {
-      print('Error fetching complete history: $error');
+      print('Error fetching notifications: $error');
     }
   }
 
-  Future<void> bulkUpdateBookingStatus(String driverId) async {
+  Future<void> bulkUpdateBookingStatus(String bookingId, String date) async {
     try {
-      Response response = await driverService.bulkUpdateBookingStatus(driverId);
+      Response response = await historyService.bulkUpdateBookingStatus(
+        bookingId,
+        date,
+      );
+      // Handle response as needed
     } catch (error) {
       print('Error updating booking status: $error');
     }

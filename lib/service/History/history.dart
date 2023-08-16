@@ -1,44 +1,71 @@
 import 'package:dio/dio.dart';
 import 'package:driver_app/service/config.dart';
+import 'package:driver_app/utils/storage.dart';
 
 final dio = Dio();
 
-class DriverHistoryService {
+class  DriverHistoryService {
   String baseUrl = ServiceConfig.baseUrl;
+  PhoneStorage storage = PhoneStorage();
 
   Future<Response> getDriverUpcomingBookings() async {
+    final String token = await storage.getStringValue("token") ?? "";
+    Map<String, dynamic> headers = {
+      'Authorization': "Bearer $token",
+      'Content-Type': 'application/json',
+    };
+
     try {
-      Response response = await dio.get("$baseUrl/api/driver/get-driver-upcomming-booking");
-      return response;
+      return await dio.get(
+        "$baseUrl/api/driver/get-driver-upcomming-booking",
+        options: Options(headers: headers),
+      );
     } catch (err) {
-      if (err is DioError) {
+      if (err is DioException) {
         return err.response!;
       }
-      throw err;
+      rethrow;
     }
   }
 
   Future<Response> getDriverCompleteHistory() async {
+    final String token = await storage.getStringValue("token") ?? "";
+    Map<String, dynamic> headers = {
+      'Authorization': "Bearer $token",
+      'Content-Type': 'application/json',
+    };
+
     try {
-      Response response = await dio.get("$baseUrl/api/driver/get-driver-complete-history");
-      return response;
+      return await dio.get(
+        "$baseUrl/api/driver/get-driver-complete-history",
+        options: Options(headers: headers),
+      );
     } catch (err) {
-      if (err is DioError) {
+      if (err is DioException) {
         return err.response!;
       }
-      throw err;
+      rethrow;
     }
   }
 
-  Future<Response> bulkUpdateBookingStatus(String driverId) async {
+  Future<Response> bulkUpdateBookingStatus(
+      String bookingId, String date) async {
+    final String token = await storage.getStringValue("token") ?? "";
+    Map<String, dynamic> headers = {
+      'Authorization': "Bearer $token",
+      'Content-Type': 'application/json',
+    };
+
     try {
-      Response response = await dio.put("$baseUrl/api/driver/bulk-update-booking-status/$driverId");
-      return response;
+      return await dio.put(
+        "$baseUrl/api/driver/bulk-update-booking-status/$bookingId/$date",
+        options: Options(headers: headers),
+      );
     } catch (err) {
-      if (err is DioError) {
+      if (err is DioException) {
         return err.response!;
       }
-      throw err;
+      rethrow;
     }
   }
 }
