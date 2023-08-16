@@ -4,43 +4,30 @@ import 'package:driver_app/service/profile/profile.dart';
 import 'package:driver_app/utils/alert.dart';
 import 'package:flutter/material.dart';
 
-
 class ProfileState extends ChangeNotifier {
   final ProfileService service = ProfileService();
-   CommonService common = CommonService();
+  CommonService common = CommonService();
   AlertBundle alert = AlertBundle();
-   bool isDisableText = true;
+  bool isDisableText = true;
 
-  Map<String, dynamic> driver = {};
+  Map<String, dynamic> driverData = {};
 
   String profileImagePath = "";
 
-   void updateProfileImage(image) {
+  void updateProfileImage(image) {
     profileImagePath = image.path;
     notifyListeners();
   }
 
-   void updateState(String key, dynamic value) {
-    driver[key] = value;
-    notifyListeners();
-  }
-
-   void toggleEdit() {
+  void toggleEdit() {
     isDisableText = !isDisableText;
     notifyListeners();
   }
 
-  
-
-
-  Future<void> getDriverProfile() async {
-    try {
-      final response = await service.getDriverProfile();
-      driver = response.data; 
-      notifyListeners();
-    } catch (error) {
-      print('Error fetching driver profile: $error');
-    }
+  void getDriver() async {
+    Response driverDetails = await service.getDriverProfile();
+    driverData = driverDetails.data["driver"];
+    notifyListeners();
   }
 
   void submit(context) async {
@@ -64,7 +51,7 @@ class ProfileState extends ChangeNotifier {
     });
     Response fileCallback = await common.uploadFile(sendingData);
     if (fileCallback.statusCode == 200) {
-      driver["profile_photo"] = fileCallback.data["result"];
+      driverData["profile_photo"] = fileCallback.data["result"];
       notifyListeners();
       alert.SnackBarNotify(context, "profile photo Updated");
     } else {

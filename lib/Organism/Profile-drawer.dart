@@ -42,11 +42,11 @@ class ProfileDrawer extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                        image: profileState.driver != null &&
-                                profileState.driver!['profile_photo'] !=
+                        image: profileState.driverData != null &&
+                                profileState.driverData!['profile_photo'] !=
                                     null
                             ? NetworkImage(
-                                    profileState.driver!['profile_photo'])
+                                    profileState.driverData!['profile_photo'])
                                 as ImageProvider<Object>
                             : const AssetImage('assets/images/view.png'),
                         fit: BoxFit.cover,
@@ -62,13 +62,13 @@ class ProfileDrawer extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${profileState.driver['firstname']} ${profileState.driver['lastname']}',
+                        '${profileState.driverData['name']} ${profileState.driverData['lastName']}',
                         style: textHeadingstyle,
                       ),
                       Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           child: Text(
-                              'Driver ID: ${profileState.driver['_id'].toString().substring(0, 3)}',
+                              'Driver ID: ${profileState.driverData['_id'].toString().substring(0, 3)}',
                               style: textSubHeadingStyle)),
                     ],
                   ),

@@ -49,8 +49,6 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-  
-
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Color(0xFF192B46),
@@ -87,12 +85,12 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
                         Padding(
                           padding: const EdgeInsets.only(top: 75),
                           child: Text(
-                            "${profileState.driver['firstname']} ${profileState.driver['lastname']}",
+                            "${profileState.driverData['name']} ${profileState.driverData['lastName']}",
                             style: textHeadingstyle,
                           ),
                         ),
                         Text(
-                            "Driver id : ${profileState.driver['_id'].toString().substring(0, 3)}",
+                            'Driver ID: ${profileState.driverData['_id'].toString().substring(0, 3)}',
                             style: textSubHeadingStyle),
                         GestureDetector(
                           onTap: () {
@@ -103,14 +101,8 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
                               },
                             );
                           },
-                          child: PersonalDetail(
-                            firstName:
-                                profileState.driver["firstname"] ?? "",
-                            lastName: profileState.driver["lastname"] ?? "",
-                            email: profileState.driver["email"] ?? "",
-                            phone: profileState.driver["mobile"] ?? "",
-                          ),
-                        ),
+                          child: const PersonalDetail(),
+                        )
                       ],
                     ),
                     Positioned(
@@ -137,12 +129,12 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
                                 child: AspectRatio(
                                   aspectRatio: 1,
                                   child: profileState
-                                              .driver["profile_photo"] !=
+                                              .driverData["profile_photo"] !=
                                           null
                                       ? profileImage == null
                                           ? Image.network(
                                               profileState
-                                                  .driver["profile_photo"],
+                                                  .driverData["profile_photo"],
                                               fit: BoxFit.cover)
                                           : Image.file(
                                               File(profileImage!.path),
