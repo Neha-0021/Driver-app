@@ -4,7 +4,6 @@ import 'package:driver_app/Pages/Profile/About-us.dart';
 import 'package:driver_app/Pages/Profile/personal-details-page.dart';
 import 'package:driver_app/Pages/login.dart';
 import 'package:driver_app/atom/Profile/Profile-list.dart';
-import 'package:driver_app/state-management/home-state.dart';
 import 'package:driver_app/state-management/profile-state.dart';
 import 'package:driver_app/utils/storage.dart';
 import 'package:flutter/material.dart';
@@ -43,11 +42,11 @@ class ProfileDrawer extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                        image: profileState.driverData != null &&
-                                profileState.driverData!['profile_photo'] !=
+                        image: profileState.driver != null &&
+                                profileState.driver!['profile_photo'] !=
                                     null
                             ? NetworkImage(
-                                    profileState.driverData!['profile_photo'])
+                                    profileState.driver!['profile_photo'])
                                 as ImageProvider<Object>
                             : const AssetImage('assets/images/view.png'),
                         fit: BoxFit.cover,
@@ -63,13 +62,13 @@ class ProfileDrawer extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${profileState.driverData['firstname']} ${profileState.driverData['lastname']}',
+                        '${profileState.driver['firstname']} ${profileState.driver['lastname']}',
                         style: textHeadingstyle,
                       ),
                       Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           child: Text(
-                              'Driver ID: ${profileState.driverData['_id'].toString().substring(0, 3)}',
+                              'Driver ID: ${profileState.driver['_id'].toString().substring(0, 3)}',
                               style: textSubHeadingStyle)),
                     ],
                   ),

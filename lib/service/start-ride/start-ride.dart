@@ -3,13 +3,13 @@ import 'package:driver_app/service/config.dart';
 import 'package:driver_app/utils/storage.dart';
 
 class ShuttleTrackingService {
-  final Dio _dio = Dio();
+  final Dio dio = Dio();
   final String baseUrl = ServiceConfig.baseUrl;
-  final PhoneStorage _storage = PhoneStorage();
+  final PhoneStorage storage = PhoneStorage();
 
   Future<Response<dynamic>> startShuttleTracking(
       double driverLatitude, double driverLongitude) async {
-    final String token = await _storage.getStringValue('token') ?? '';
+   String? token = await storage.getStringValue("token");
     final headers = {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
@@ -21,7 +21,7 @@ class ShuttleTrackingService {
     };
 
     try {
-      return await _dio.post(
+      return await dio.post(
         '$baseUrl/api/driver/start-shuttle-tracking',
         data: body,
         options: Options(headers: headers),
@@ -33,7 +33,7 @@ class ShuttleTrackingService {
 
   Future<Response<dynamic>> updateShuttleTracking(
       String id, String driverCurrentLocation) async {
-    final String token = await _storage.getStringValue('token') ?? '';
+    final String token = await storage.getStringValue('token') ?? '';
     final headers = {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ class ShuttleTrackingService {
     };
 
     try {
-      return await _dio.put(
+      return await dio.put(
         '$baseUrl/api/driver/update-shuttle-tracking/$id',
         data: body,
         options: Options(headers: headers),

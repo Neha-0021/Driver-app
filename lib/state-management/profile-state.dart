@@ -11,7 +11,7 @@ class ProfileState extends ChangeNotifier {
   AlertBundle alert = AlertBundle();
    bool isDisableText = true;
 
-  Map<String, dynamic> driverData = {};
+  Map<String, dynamic> driver = {};
 
   String profileImagePath = "";
 
@@ -21,7 +21,7 @@ class ProfileState extends ChangeNotifier {
   }
 
    void updateState(String key, dynamic value) {
-    driverData[key] = value;
+    driver[key] = value;
     notifyListeners();
   }
 
@@ -36,7 +36,7 @@ class ProfileState extends ChangeNotifier {
   Future<void> getDriverProfile() async {
     try {
       final response = await service.getDriverProfile();
-      driverData = response.data; 
+      driver = response.data; 
       notifyListeners();
     } catch (error) {
       print('Error fetching driver profile: $error');
@@ -64,7 +64,7 @@ class ProfileState extends ChangeNotifier {
     });
     Response fileCallback = await common.uploadFile(sendingData);
     if (fileCallback.statusCode == 200) {
-      driverData["profile_photo"] = fileCallback.data["result"];
+      driver["profile_photo"] = fileCallback.data["result"];
       notifyListeners();
       alert.SnackBarNotify(context, "profile photo Updated");
     } else {

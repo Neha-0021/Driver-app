@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:driver_app/service/config.dart';
 
 class DriverRatingService {
-  final Dio _dio = Dio();
-  final String _baseUrl = ServiceConfig.baseUrl;
+  final Dio dio = Dio();
+  final String baseUrl = ServiceConfig.baseUrl;
 
   Future<Response<dynamic>> driverRating(String bookingId, String rating) async {
     final Map<String, dynamic> data = {
@@ -12,8 +12,8 @@ class DriverRatingService {
     };
 
     try {
-      return await _dio.post(
-        "$_baseUrl/api/driver/driver-rating",
+      return await dio.post(
+        "$baseUrl/api/driver/driver-rating",
         data: data,
       );
     } catch (err) {
@@ -26,8 +26,8 @@ class DriverRatingService {
 
   Future<Response<dynamic>> getDriverRatingByBookingId(String bookingId) async {
     try {
-      return await _dio.get(
-        "$_baseUrl/api/driver/get-driverRating-by-userId/$bookingId",
+      return await dio.get(
+        "$baseUrl/api/driver/get-driverRating-by-userId/$bookingId",
       );
     } catch (err) {
       if (err is DioException) {
@@ -39,8 +39,8 @@ class DriverRatingService {
 
   Future<Response<dynamic>> deleteDriverRating(String ratingId) async {
     try {
-      return await _dio.delete(
-        "$_baseUrl/api/driver/delete-driver-rating/$ratingId",
+      return await dio.delete(
+        "$baseUrl/api/driver/delete-driver-rating/$ratingId",
       );
     } catch (err) {
       if (err is DioException) {
