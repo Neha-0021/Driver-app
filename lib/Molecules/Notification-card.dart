@@ -80,7 +80,7 @@ class NotificationCard extends StatelessWidget {
                       notification["createdOn"] == ""
                           ? ""
                           : DateFormat('hh:mm a dd-MMM-yy')
-                              .format(DateTime.parse(notification["createdAt"]))
+                              .format(DateTime.parse(notification["createdOn"]))
                               .toString(),
                       style: textSubHeadingStyle.copyWith(
                         decoration: TextDecoration.none,

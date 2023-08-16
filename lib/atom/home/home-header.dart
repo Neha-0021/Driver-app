@@ -4,8 +4,6 @@ import 'package:driver_app/state-management/profile-state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../state-management/home-state.dart';
-
 class HomeHeader extends StatefulWidget {
   final void Function() openSideDrawer;
 
@@ -34,7 +32,7 @@ class HomeHeaderComponent extends State<HomeHeader> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Hello ${profileState.driverData['firstname']} ,",
+                            "Hello ${profileState.driver['firstname']} ,",
                             style: textHeadingstyle,
                           ),
                           const Text(
@@ -49,24 +47,25 @@ class HomeHeaderComponent extends State<HomeHeader> {
                         ],
                       ),
                     ),
-                     Expanded(
-                    flex: 1,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        GestureDetector(
-                            onTap: widget.openSideDrawer,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(50),
-                              child: Image.network(
-                                profileState.driverData["profile_photo"] ??CommonConstant.profileImage,
-                                width: 42,
-                                height: 42,
-                                fit: BoxFit.cover,
-                              ),
-                            ))
-                      ],
-                    ))
+                    Expanded(
+                        flex: 1,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            GestureDetector(
+                                onTap: widget.openSideDrawer,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(50),
+                                  child: Image.network(
+                                    profileState.driver["profile_photo"] ??
+                                        CommonConstant.profileImage,
+                                    width: 42,
+                                    height: 42,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ))
+                          ],
+                        ))
                   ],
                 ),
               ),

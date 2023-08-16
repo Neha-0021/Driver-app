@@ -9,7 +9,7 @@ class DriverNotificationService {
   String baseUrl = ServiceConfig.baseUrl;
   PhoneStorage storage = PhoneStorage();
 
-  Future<Response<dynamic>> createDriverNotification() async {
+  Future<Response> createDriverNotification() async {
     final String token = await storage.getStringValue("token") ?? "";
     Map<String, dynamic> headers = {
       'Authorization': "Bearer $token",
@@ -29,6 +29,7 @@ class DriverNotificationService {
         options: Options(headers: headers),
       );
     } catch (err) {
+      
       if (err is DioException) {
         return err.response!;
       }
@@ -36,24 +37,31 @@ class DriverNotificationService {
     }
   }
 
-  Future<Response<dynamic>> getDriverNotification() async {
-    try {
-      final String token = await storage.getStringValue("token") ?? "";
-      Map<String, dynamic> headers = {
-        'Authorization': "Bearer $token",
-        'Content-Type': 'application/json',
-      };
-      return await dio.get(
-        "$baseUrl/api/driverNotification/get-driver-notification",
-        options: Options(headers: headers),
-      );
-    } catch (err) {
-      if (err is DioException) {
-        return err.response!;
-      }
-      rethrow;
+Future<Response<dynamic>> getDriverNotification() async {
+  try {
+    final String token = await storage.getStringValue("token") ?? "";
+    Map<String, dynamic> headers = {
+      'Authorization': "Bearer $token",
+      'Content-Type': 'application/json',
+    };
+    
+    final response = await dio.get(
+      "$baseUrl/api/driverNotification/get-driver-notification",
+      options: Options(headers: headers),
+    );
+
+    print('Response status code: ${response.statusCode}');
+    print('Response data: ${response.data}');
+    
+    return response;
+  } catch (err) {
+    if (err is DioException) {
+      print('DioException: ${err.message}');
+      return err.response!;
     }
+    rethrow;
   }
+}
 
   Future<Response<dynamic>> getViewedDriverNotification() async {
     try {
@@ -76,7 +84,7 @@ class DriverNotificationService {
   }
 
   Future<Response<dynamic>> updateBulkDriverNotificationIsView(
-      List<String> notificationIds) async {
+      List<String> driverNotificationIds) async {
     final String token = await storage.getStringValue("token") ?? "";
     Map<String, dynamic> headers = {
       'Authorization': "Bearer $token",
@@ -87,7 +95,7 @@ class DriverNotificationService {
       return await dio.put(
         "$baseUrl/api/driverNotification/bulk-update-driver-notification",
         data: {
-          "ids": notificationIds,
+          "ids": driverNotificationIds,
         },
         options: Options(headers: headers),
       );
