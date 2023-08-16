@@ -4,11 +4,11 @@ import 'package:driver_app/service/Driver/Driver.dart';
 
 class DriverRatingState extends ChangeNotifier {
   List<dynamic> driverRating = [];
-  final DriverRatingService driverRatingService = DriverRatingService();
+  final DriverRatingService _driverRatingService = DriverRatingService();
 
   Future<void> submitDriverRating(String bookingId, String rating) async {
     try {
-      await driverRatingService.driverRating(bookingId, rating);
+      await _driverRatingService.driverRating(bookingId, rating);
     } catch (error) {
       print('Error submitting driver rating: $error');
     }
@@ -17,7 +17,7 @@ class DriverRatingState extends ChangeNotifier {
   Future<void> getDriverRatingByBookingId(String bookingId) async {
     try {
       Response<dynamic> response =
-          await driverRatingService.getDriverRatingByBookingId(bookingId);
+          await _driverRatingService.getDriverRatingByBookingId(bookingId);
       driverRating = response.data;
       notifyListeners();
     } catch (error) {
@@ -27,7 +27,7 @@ class DriverRatingState extends ChangeNotifier {
 
   Future<void> deleteDriverRating(String ratingId) async {
     try {
-      await driverRatingService.deleteDriverRating(ratingId);
+      await _driverRatingService.deleteDriverRating(ratingId);
     } catch (error) {
       print('Error deleting driver rating: $error');
     }

@@ -1,5 +1,5 @@
-class RatingModal {
-  RatingModal({
+class RatingModel {
+  RatingModel({
     required this.status,
     required this.driver,
     required this.user,
@@ -8,7 +8,7 @@ class RatingModal {
   late final List<Driver> driver;
   late final List<User> user;
   
-  RatingModal.fromJson(Map<String, dynamic> json){
+  RatingModel.fromJson(Map<String, dynamic> json){
     status = json['status'];
     driver = List.from(json['driver']).map((e)=>Driver.fromJson(e)).toList();
     user = List.from(json['user']).map((e)=>User.fromJson(e)).toList();
@@ -156,4 +156,3 @@ class User {
     return _data;
   }
 }
-
