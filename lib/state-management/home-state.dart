@@ -9,6 +9,8 @@ class HomeState extends ChangeNotifier {
   String driverMobile = "";
   String driverPassword = "";
 
+  Map<String, dynamic> driverData = {};
+
   DriverService services = DriverService();
   AlertBundle alert = AlertBundle();
   PhoneStorage storage = PhoneStorage();
@@ -75,6 +77,18 @@ class HomeState extends ChangeNotifier {
         "code": response.statusCode,
         "message": response.data["message"],
       };
+    }
+  }
+
+  Future<dynamic> getDriverProfile() async {
+    Response getUserDetailsAPIcallBack =
+        await profileService.getDriverProfile();
+    if (getUserDetailsAPIcallBack.statusCode == 200) {
+      driverData = getUserDetailsAPIcallBack.data["driver"];
+      notifyListeners();
+      return {"code": 200, "message": "failed to get user details."};
+    } else {
+      return {"code": 400, "message": "failed to get user details."};
     }
   }
 }

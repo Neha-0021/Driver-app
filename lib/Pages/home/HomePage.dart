@@ -2,6 +2,7 @@ import 'package:driver_app/Organism/Profile-drawer.dart';
 import 'package:driver_app/atom/home/home-header.dart';
 import 'package:driver_app/Molecules/mapper.dart';
 import 'package:driver_app/state-management/home-state.dart';
+import 'package:driver_app/state-management/profile-state.dart';
 
 import 'package:driver_app/utils/alert.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,8 @@ class _HomePageState extends State<HomePage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+     final myProvider = Provider.of<ProfileState>(context, listen: false);
+      myProvider.getDriver();
   }
 
   @override
@@ -40,7 +43,7 @@ class _HomePageState extends State<HomePage>
       _scaffoldKey.currentState?.openDrawer();
     }
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return Consumer<HomeState>(
