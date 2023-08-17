@@ -1,3 +1,4 @@
+import 'package:driver_app/Modal/RatingModal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -11,20 +12,28 @@ class DriverRating extends StatefulWidget {
   const DriverRating({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _DriverRatingState createState() => _DriverRatingState();
 }
-
 class _DriverRatingState extends State<DriverRating> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
+    Future.microtask(() async {
       final driverRatingState =
           Provider.of<DriverRatingState>(context, listen: false);
-      driverRatingState.getDriverRatingByBookingId('64a1583d964565929b270bf7');
+
+      String bookingId = '64a1583d964565929b270bf7';
+      
+      // Create a RatingModel instance with appropriate data
+      RatingModel ratingModel = RatingModel(
+        id: bookingId,
+        rating: 5.0,
+        comment: 'Great driver!',
+      );
+
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +98,7 @@ class _DriverRatingState extends State<DriverRating> {
                   itemCount: driverRatingState.driverRating.length,
                   itemBuilder: (context, index) {
                     final driver = driverRatingState.driverRating[index];
-                    return DriverListCard(data: driver);
+                    return DriverListCard(data:driver);
                   },
                 ),
               ],

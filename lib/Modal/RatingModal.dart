@@ -1,5 +1,30 @@
 class RatingModel {
+  final String id;
+  final double rating;
+  final String comment;
+
   RatingModel({
+    required this.id,
+    required this.rating,
+    required this.comment,
+  });
+
+  // Convert RatingModel to a JSON map
+  factory RatingModel.fromJson(Map<String, dynamic> json) {
+    return RatingModel(
+      id: json['id'],
+      rating: json['rating'],
+      comment: json['comment'],
+    );
+  }
+}
+
+
+
+
+
+class RatingModels {
+  RatingModels({
     required this.status,
     required this.driver,
     required this.user,
@@ -8,7 +33,7 @@ class RatingModel {
   late final List<Driver> driver;
   late final List<User> user;
   
-  RatingModel.fromJson(Map<String, dynamic> json){
+  RatingModels.fromJson(Map<String, dynamic> json){
     status = json['status'];
     driver = List.from(json['driver']).map((e)=>Driver.fromJson(e)).toList();
     user = List.from(json['user']).map((e)=>User.fromJson(e)).toList();

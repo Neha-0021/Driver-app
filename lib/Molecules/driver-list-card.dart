@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:driver_app/Modal/RatingModal.dart'; // Make sure to import the correct path for RatingModel
 
 class DriverListCard extends StatelessWidget {
-  final Map<String, dynamic> data;
+  final RatingModels data;
   const DriverListCard({Key? key, required this.data}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final driver = data['driver'][0];
-    final user = data['user'][0];
+    final Driver driver = data.driver[0]; // Accessing the driver property from RatingModel
+    final User user = data.user[0]; // Accessing the user property from RatingModel
 
     return SingleChildScrollView(
       child: Container(
@@ -23,7 +24,7 @@ class DriverListCard extends StatelessWidget {
           Expanded(
             flex: 1,
             child: Image.network(
-              user['profile_photo'], // Using the profile photo URL from user data
+              user.profilePhoto, // Using the profile photo URL from user data
               height: 31,
               width: 31,
             ),
@@ -35,7 +36,7 @@ class DriverListCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  '${user['firstname']} ${user['lastname']}', // Displaying user's full name
+                  '${user.firstname} ${user.lastname}', // Displaying user's full name
                   style: const TextStyle(
                     color: Colors.black,
                     fontSize: 14,
@@ -44,7 +45,7 @@ class DriverListCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${user['workplace']} - ${user['address']} • ${user['officeTimeFrom']}',
+                  '${user.workplace} - ${user.address} • ${user.officeTimeFrom}',
                   style: const TextStyle(
                     color: Color(0xFF75879B),
                     fontSize: 10,
@@ -61,7 +62,7 @@ class DriverListCard extends StatelessWidget {
                       color: Colors.green,
                     ),
                     Text(
-                      '${driver['rating']}', // Displaying driver's rating
+                      '${driver.rating}', // Displaying driver's rating
                       style: const TextStyle(
                         color: Colors.black,
                         fontSize: 13,
