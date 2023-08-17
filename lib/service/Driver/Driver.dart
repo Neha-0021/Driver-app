@@ -5,17 +5,18 @@ class DriverRatingService {
   final Dio dio = Dio();
   final String baseUrl = ServiceConfig.baseUrl;
 
-  Future<Response<dynamic>> driverRating(String bookingId, String rating) async {
+  Future<Response> driverRating(String bookingId, int rating) async {
     final Map<String, dynamic> data = {
       "bookingId": bookingId,
-      "rating": rating,
+      "rating": rating.toString(),
     };
 
     try {
-      return await dio.post(
+      final response = await dio.post(
         "$baseUrl/api/driver/driver-rating",
         data: data,
       );
+      return response;
     } catch (err) {
       if (err is DioException) {
         return err.response!;
@@ -24,30 +25,32 @@ class DriverRatingService {
     }
   }
 
-  Future<Response<dynamic>> getDriverRatingByBookingId(String bookingId) async {
+  Future<Response> deleteDriverRating(String ratingId) async {
     try {
-      return await dio.get(
-        "$baseUrl/api/driver/get-driverRating-by-userId/$bookingId",
-      );
-    } catch (err) {
-      if (err is DioException) {
-        return err.response!;
-      }
-      rethrow;
-    }
-  }
-
-  Future<Response<dynamic>> deleteDriverRating(String ratingId) async {
-    try {
-      return await dio.delete(
+      final response = await dio.delete(
         "$baseUrl/api/driver/delete-driver-rating/$ratingId",
       );
+      return response;
     } catch (err) {
       if (err is DioException) {
         return err.response!;
       }
       rethrow;
     }
+  }
+
+  Future<Response> getDriverRatingByBookingId(String bookingId) async {
+  try {
+    final response = await dio.get(
+      "$baseUrl/api/driver/get-driverRating/$bookingId",
+    );
+    return response;
+  } catch (err) {
+    if (err is DioException) {
+      return err.response!;
+    }
+    rethrow;
   }
 }
 
+}

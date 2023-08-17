@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:driver_app/model/rating-model.dart';
 
 class DriverListCard extends StatelessWidget {
-  final Map<String, dynamic> data;
-  const DriverListCard({Key? key, required this.data}) : super(key: key);
+  final Driver driver;
+  final User user;
+
+  const DriverListCard({Key? key, required this.driver, required this.user})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final driver = data['driver'][0];
-    final user = data['user'][0];
-
     return SingleChildScrollView(
       child: Container(
         height: 70,
@@ -22,10 +23,16 @@ class DriverListCard extends StatelessWidget {
         child: Row(children: [
           Expanded(
             flex: 1,
-            child: Image.network(
-              user['profile_photo'], // Using the profile photo URL from user data
+            child: Container(
               height: 31,
               width: 31,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                  image: NetworkImage(user.profilePhoto ?? ''),
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
           ),
           Expanded(
@@ -35,7 +42,7 @@ class DriverListCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  '${user['firstname']} ${user['lastname']}', // Displaying user's full name
+                  '${user.firstname} ${user.lastname}',
                   style: const TextStyle(
                     color: Colors.black,
                     fontSize: 14,
@@ -44,7 +51,7 @@ class DriverListCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${user['workplace']} - ${user['address']} • ${user['officeTimeFrom']}',
+                  '${user.workplace} - ${user.address} • ${user.officeTimeFrom}',
                   style: const TextStyle(
                     color: Color(0xFF75879B),
                     fontSize: 10,
@@ -52,28 +59,27 @@ class DriverListCard extends StatelessWidget {
                     fontWeight: FontWeight.w300,
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.star,
-                      size: 16,
-                      color: Colors.green,
-                    ),
-                    Text(
-                      '${driver['rating']}', // Displaying driver's rating
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 13,
-                        fontFamily: 'PublicaSans',
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
               ],
             ),
           ),
+          Expanded(
+              flex: 1,
+              child: Row(children: [
+                const Icon(
+                  Icons.star,
+                  size: 16,
+                  color: Colors.green,
+                ),
+                Text(
+                  '${driver.rating ?? 0}',
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 13,
+                    fontFamily: 'PublicaSans',
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ])),
         ]),
       ),
     );

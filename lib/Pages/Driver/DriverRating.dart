@@ -19,11 +19,10 @@ class _DriverRatingState extends State<DriverRating> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      final driverRatingState =
-          Provider.of<DriverRatingState>(context, listen: false);
-      driverRatingState.getDriverRatingByBookingId('64a1583d964565929b270bf7');
-    });
+
+    final driverRatingState =
+        Provider.of<DriverRatingState>(context, listen: false);
+    driverRatingState.getDriverRatingByBookingId('64a1583d964565929b270bf7');
   }
 
   @override
@@ -86,11 +85,14 @@ class _DriverRatingState extends State<DriverRating> {
                 ),
                 ListView.builder(
                   shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: driverRatingState.driverRating.length,
                   itemBuilder: (context, index) {
-                    final driver = driverRatingState.driverRating[index];
-
-                    return DriverListCard(data: driver);
+                    if (index < driverRatingState.user.length) {
+                      final driver = driverRatingState.driverRating[index];
+                      final user = driverRatingState.user[index];
+                      return DriverListCard(driver: driver, user: user);
+                    }
                   },
                 ),
               ],

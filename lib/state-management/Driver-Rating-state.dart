@@ -1,36 +1,44 @@
-import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
+import 'package:driver_app/model/rating-model.dart';
 import 'package:driver_app/service/Driver/Driver.dart';
+import 'package:flutter/foundation.dart';
+import 'package:dio/dio.dart';
 
 class DriverRatingState extends ChangeNotifier {
-  List<dynamic> driverRating = [];
-  final DriverRatingService _driverRatingService = DriverRatingService();
+  final DriverRatingService ratingService = DriverRatingService();
 
-  Future<void> submitDriverRating(String bookingId, String rating) async {
-    try {
-      await _driverRatingService.driverRating(bookingId, rating);
-    } catch (error) {
-      print('Error submitting driver rating: $error');
-    }
-  }
+  List<Driver> driverRating = [];
+  List<User> user = [];
 
-  Future<void> getDriverRatingByBookingId(String bookingId) async {
+  Future<void> addDriverRating(String bookingId, int rating) async {
     try {
-      Response<dynamic> response =
-          await _driverRatingService.getDriverRatingByBookingId(bookingId);
-      driverRating = response.data;
+      Response response = await ratingService.driverRating(bookingId, rating);
+
       notifyListeners();
     } catch (error) {
-      print('Error fetching driver rating by booking ID: $error');
+      print('Error add driverRating: $error');
     }
   }
 
   Future<void> deleteDriverRating(String ratingId) async {
     try {
-      await _driverRatingService.deleteDriverRating(ratingId);
+      Response response = await ratingService.deleteDriverRating(ratingId);
+
+      notifyListeners();
     } catch (error) {
       print('Error deleting driver rating: $error');
     }
   }
-}
 
+  Future<void> getDriverRatingByBookingId(String bookingId) async {
+    try {
+      Response response =
+          await ratingService.getDriverRatingByBookingId(bookingId);
+      RatingModel ratingModel = RatingModel.fromJson(response.data);
+
+      driverRating = ratingModel.driver!;
+      user = ratingModel.user!;
+    } catch (error) {
+      print('Error getting driver rating by booking ID: $error');
+    }
+  }
+}
