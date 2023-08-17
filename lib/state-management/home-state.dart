@@ -81,10 +81,10 @@ class HomeState extends ChangeNotifier {
   }
 
   Future<dynamic> getDriverProfile() async {
-    Response getUserDetailsAPIcallBack =
+    Response getDriverDetailsAPIcallBack =
         await profileService.getDriverProfile();
-    if (getUserDetailsAPIcallBack.statusCode == 200) {
-      driverData = getUserDetailsAPIcallBack.data["driver"];
+    if (getDriverDetailsAPIcallBack.statusCode == 200) {
+      driverData = getDriverDetailsAPIcallBack.data["driver"];
       notifyListeners();
       return {"code": 200, "message": "failed to get user details."};
     } else {

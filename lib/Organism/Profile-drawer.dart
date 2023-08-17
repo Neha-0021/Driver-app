@@ -42,13 +42,8 @@ class ProfileDrawer extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                        image: profileState.driverData != null &&
-                                profileState.driverData!['profile_photo'] !=
-                                    null
-                            ? NetworkImage(
-                                    profileState.driverData!['profile_photo'])
-                                as ImageProvider<Object>
-                            : const AssetImage('assets/images/view.png'),
+                        image: NetworkImage(
+                            profileState.driverData["profile_photo"]),
                         fit: BoxFit.cover,
                       ),
                     ),

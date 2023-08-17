@@ -66,7 +66,7 @@ class MyAppComponent extends State<MyApp> {
           ChangeNotifierProvider(create: (context) => DriverHistoryState()),
           ChangeNotifierProvider(
               create: (context) => DriverNotificationState()),
-          ChangeNotifierProvider(create: (context) => NextStoppageState()),
+          ChangeNotifierProvider(create: (context) => NextStoppageProvider()),
           ChangeNotifierProvider(create: (context) => RouteDetailState()),
           ChangeNotifierProvider(create: (context) => ShuttleTrackingState()),
           ChangeNotifierProvider(create: (context) => StopRideState()),
