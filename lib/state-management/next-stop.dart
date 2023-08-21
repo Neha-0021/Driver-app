@@ -6,7 +6,7 @@ class NextStoppageState extends ChangeNotifier {
   final NextStoppageService service = NextStoppageService();
 
   List<Map<String, dynamic>> nextStoppageDetails = [];
-  List<Map<String, dynamic>> userDetails = []; // Keep it as a list
+  List<Map<String, dynamic>> userDetails = []; 
 
   Future<void> getNextStoppage(String driverId, String routeId) async {
     try {

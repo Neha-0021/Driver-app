@@ -10,6 +10,7 @@ class NotificationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(notification);
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),

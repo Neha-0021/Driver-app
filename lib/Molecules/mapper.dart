@@ -128,6 +128,8 @@ class MapperComponent extends State<Mapper> {
     routeState.getRouteDetailsByDriver('2023-07-26');
   }
 
+  bool isFullScreen = false;
+
   @override
   Widget build(BuildContext context) {
     return Consumer<RouteDetailState>(
@@ -201,7 +203,7 @@ class MapperComponent extends State<Mapper> {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return const StopRide();
+                          return StopRide();
                         },
                       );
                     },

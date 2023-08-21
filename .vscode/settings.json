@@ -1,3 +1,4 @@
 {
-    "C_Cpp.errorSquiggles": "enabled"
+    "C_Cpp.errorSquiggles": "enabled",
+    "cmake.sourceDirectory": "C:/Users/Neha Pandey/OneDrive/Desktop/Driver-app/linux"
 }
