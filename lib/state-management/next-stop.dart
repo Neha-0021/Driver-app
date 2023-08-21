@@ -1,29 +1,26 @@
-import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 import 'package:driver_app/service/next-stop/next-stop.dart';
+import 'package:flutter/material.dart';
 
-class NextStoppageProvider extends ChangeNotifier {
+class NextStoppageState extends ChangeNotifier {
   final NextStoppageService service = NextStoppageService();
 
-  List<Map<String, dynamic>> nextStoppages = [];
+  List<Map<String, dynamic>> nextStoppageDetails = [];
+  List<Map<String, dynamic>> userDetails = []; // Keep it as a list
 
-  Future<void> fetchNextStoppages(String driverId, String stoppageId) async {
+  Future<void> getNextStoppage(String driverId, String routeId) async {
     try {
-      final response = await service.getNextStoppage(driverId, stoppageId);
-       print('Response Data: ${response.data}');
-      if (response.data['status'] == 'success') {
-        nextStoppages = List<Map<String, dynamic>>.from(
-          response.data['nextStoppageDetails'],
-        );
-        notifyListeners();
-      } else {
-        print('Error: ${response.data['status']}');
-      }
+      Response response = await service.getNextStoppage(driverId, routeId);
+      print('API Response: ${response.data}');
+
+      nextStoppageDetails =
+          List<Map<String, dynamic>>.from(response.data["nextStoppageDetails"]);
+      userDetails =
+          List<Map<String, dynamic>>.from(response.data["userDetails"]);
+
+      notifyListeners();
     } catch (error) {
-      print('Error fetching next stoppage data: $error');
+      print('Error fetching next stoppage data and user details: $error');
     }
   }
 }
-
-
-
-

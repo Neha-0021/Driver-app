@@ -185,7 +185,7 @@ class MapperComponent extends State<Mapper> {
                         final shuttleTrackingState =
                             Provider.of<ShuttleTrackingState>(context,
                                 listen: false);
-                         await shuttleTrackingState.startShuttleTracking(
+                        await shuttleTrackingState.startShuttleTracking(
                             userLocation.latitude, userLocation.longitude);
                         shuttleTrackingState.updateShuttleTracking(
                             '64ca3d885068bb8bb9fb4d60',
@@ -210,7 +210,45 @@ class MapperComponent extends State<Mapper> {
                   ),
                 ],
               ),
-              const HomeListCard(),
+              Padding(
+                padding: const EdgeInsets.only(top: 15),
+                child: Container(
+                  height: 50,
+                  decoration: const BoxDecoration(color: Color(0xFF6A7B8D)),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          'assets/images/Vectorm.png',
+                          width: 20,
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: Text(
+                            'Next Stop & Customers',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontFamily: 'PublicaSans',
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: routeState.allStoppages.length,
+                itemBuilder: (context, index) {
+                  final home = routeState.allStoppages[index];
+                  return HomeListCard(data: home);
+                },
+              ),
               Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
