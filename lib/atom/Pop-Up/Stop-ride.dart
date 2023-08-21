@@ -1,17 +1,18 @@
-import 'package:driver_app/atom/custom-radioButton.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:driver_app/state-management/stop-ride.dart';
-
+import 'package:driver_app/atom/custom-radioButton.dart';
+import 'package:driver_app/service/stop-ride.dart';
 
 class StopRide extends StatefulWidget {
-  const StopRide({Key? key}) : super(key: key);
-
+ 
   @override
   _StopRideState createState() => _StopRideState();
 }
 
 class _StopRideState extends State<StopRide> {
+  StopRideService service = StopRideService();
+  String error = '';
+
   bool isFirstReasonSelected = false;
   bool isSecondReasonSelected = false;
 
@@ -29,6 +30,31 @@ class _StopRideState extends State<StopRide> {
     });
   }
 
+  void stopRide( context) async {
+    try {
+      String selectedReason = isFirstReasonSelected
+          ? 'Vehicle Breakdown'
+          : isSecondReasonSelected
+              ? 'All users dropped'
+              : ''; // You can add more logic if needed
+
+      Response response = await service.stopRide(selectedReason);
+
+      if (response.statusCode == 200) {
+        // Handle success, e.g., show a success message or navigate somewhere
+        Navigator.pop(context); // Close the dialog
+      } else {
+        setState(() {
+          error = "Failed to stop ride";
+        });
+      }
+    } catch (err) {
+      setState(() {
+        error = "An error occurred: $err";
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -36,7 +62,9 @@ class _StopRideState extends State<StopRide> {
         height: 200,
         decoration: ShapeDecoration(
           color: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
         ),
         child: Column(
           children: [
@@ -100,7 +128,7 @@ class _StopRideState extends State<StopRide> {
                           padding: EdgeInsets.zero,
                         ),
                         onPressed: () {
-                          Navigator.pop(context);
+                          Navigator.pop(context); // Close the dialog
                         },
                         child: const Text(
                           'Go Back',
@@ -116,15 +144,7 @@ class _StopRideState extends State<StopRide> {
                     Expanded(
                       child: TextButton(
                         onPressed: () {
-                          final stopRideState =
-                              Provider.of<StopRideState>(context, listen: false);
-                          if (!stopRideState.isLoading) {
-                            String selectedReason = isFirstReasonSelected
-                                ? 'Vehicle Breakdown'
-                                : 'All users dropped';
-                            stopRideState.stopRide(selectedReason);
-                            Navigator.pop(context);
-                          }
+                          stopRide(context); 
                         },
                         style: TextButton.styleFrom(
                           minimumSize: const Size(130, 41),

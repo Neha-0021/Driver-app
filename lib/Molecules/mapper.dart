@@ -203,7 +203,7 @@ class MapperComponent extends State<Mapper> {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return const StopRide();
+                          return StopRide();
                         },
                       );
                     },
