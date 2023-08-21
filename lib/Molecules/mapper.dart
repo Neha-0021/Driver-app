@@ -55,7 +55,6 @@ class MapperComponent extends State<Mapper> {
         position: userLocation,
       );
     });
-    getDirection("$latitude,$longitude", "21.1904, 81.2849");
   }
 
   getDirection(origin, destination) async {
@@ -133,7 +132,6 @@ class MapperComponent extends State<Mapper> {
 
   @override
   void dispose() {
-    // Cancel the timer when the widget is disposed
     locationUpdateTimer?.cancel();
     super.dispose();
   }
@@ -142,24 +140,16 @@ class MapperComponent extends State<Mapper> {
 
   void startShuttle(BuildContext context) async {
     try {
-      // Call the startShuttleTracking method here
       Response response = await service.startShuttleTracking(
         userLocation.latitude,
         userLocation.longitude,
       );
-      // Handle the response as needed
       if (response.statusCode == 200) {
-        // Shuttle tracking started successfully
-        // You can update your UI or take further actions here
       } else {
-        // Handle errors or show appropriate messages
         print(
             "Error: Shuttle tracking request failed with status code ${response.statusCode}");
-        // You can also log additional error details if available in the response
-        // print("Error Details: ${response.body}");
       }
     } catch (error) {
-      // Handle exceptions, e.g., network errors
       print("Error: $error");
     }
   }
@@ -206,6 +196,9 @@ class MapperComponent extends State<Mapper> {
                             zoom: 10.0,
                           ),
                         ));
+                        getDirection(
+                            "${userLocation.latitude},${userLocation.longitude}",
+                            "21.1904, 81.2849");
 
                         checkAndStartRide();
                       }
@@ -218,6 +211,23 @@ class MapperComponent extends State<Mapper> {
                     disabled: !rideStarted,
                     onPressed: () async {
                       if (rideStarted) {
+                        await getCurrentLocation();
+                        final GoogleMapController controller =
+                            await _controller.future;
+                        if (userLocation.latitude != 0.0 &&
+                            userLocation.longitude != 0.0) {
+                          controller
+                              .animateCamera(CameraUpdate.newCameraPosition(
+                            CameraPosition(
+                              target: userLocation,
+                              zoom: 10.0,
+                            ),
+                          ));
+                          getDirection(
+                              "${userLocation.latitude},${userLocation.longitude}",
+                              "22.0797, 82.1409");
+                        }
+
                         startShuttle(context);
                       }
                     },
