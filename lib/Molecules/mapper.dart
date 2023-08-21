@@ -4,11 +4,10 @@ import 'package:driver_app/Pages/Next-stop.dart';
 import 'package:driver_app/atom/Button.dart';
 import 'package:driver_app/atom/Pop-Up/Stop-ride.dart';
 import 'package:driver_app/atom/home/HomeListCard.dart';
-
 import 'package:driver_app/atom/home/MapButton.dart';
 import 'package:driver_app/service/mapper/map.dart';
+import 'package:driver_app/service/start-ride/start-ride.dart';
 import 'package:driver_app/state-management/route-state.dart';
-import 'package:driver_app/state-management/start-ride.dart';
 import 'package:driver_app/utils/distance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -56,7 +55,7 @@ class MapperComponent extends State<Mapper> {
         position: userLocation,
       );
     });
-    getDirection("$latitude,$longitude", "$targetLat, $targetLon");
+    getDirection("$latitude,$longitude", "21.1904, 81.2849");
   }
 
   getDirection(origin, destination) async {
@@ -127,7 +126,7 @@ class MapperComponent extends State<Mapper> {
     super.initState();
     final routeState = Provider.of<RouteDetailState>(context, listen: false);
     routeState.getRouteDetailsByDriver('2023-07-26');
-    locationUpdateTimer = Timer.periodic(Duration(seconds: 5), (timer) {
+    locationUpdateTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
       getCurrentLocation();
     });
   }
@@ -137,6 +136,32 @@ class MapperComponent extends State<Mapper> {
     // Cancel the timer when the widget is disposed
     locationUpdateTimer?.cancel();
     super.dispose();
+  }
+
+  ShuttleTrackingService service = ShuttleTrackingService();
+
+  void startShuttle(BuildContext context) async {
+    try {
+      // Call the startShuttleTracking method here
+      Response response = await service.startShuttleTracking(
+        userLocation.latitude,
+        userLocation.longitude,
+      );
+      // Handle the response as needed
+      if (response.statusCode == 200) {
+        // Shuttle tracking started successfully
+        // You can update your UI or take further actions here
+      } else {
+        // Handle errors or show appropriate messages
+        print(
+            "Error: Shuttle tracking request failed with status code ${response.statusCode}");
+        // You can also log additional error details if available in the response
+        // print("Error Details: ${response.body}");
+      }
+    } catch (error) {
+      // Handle exceptions, e.g., network errors
+      print("Error: $error");
+    }
   }
 
   @override
@@ -193,14 +218,7 @@ class MapperComponent extends State<Mapper> {
                     disabled: !rideStarted,
                     onPressed: () async {
                       if (rideStarted) {
-                        final shuttleTrackingState =
-                            Provider.of<ShuttleTrackingState>(context,
-                                listen: false);
-                        await shuttleTrackingState.startShuttleTracking(
-                            userLocation.latitude, userLocation.longitude);
-                        await shuttleTrackingState.updateShuttleTracking(
-                            '64ca3d885068bb8bb9fb4d60',
-                            userLocation.toString());
+                        startShuttle(context);
                       }
                     },
                     width: 110,
