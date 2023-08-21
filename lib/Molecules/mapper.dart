@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:driver_app/Pages/Next-stop.dart';
 import 'package:driver_app/atom/Button.dart';
+import 'package:driver_app/atom/Pop-Up/CompleteRide.dart';
 import 'package:driver_app/atom/Pop-Up/Stop-ride.dart';
 import 'package:driver_app/atom/home/HomeListCard.dart';
 import 'package:driver_app/atom/home/MapButton.dart';
@@ -36,6 +37,29 @@ class MapperComponent extends State<Mapper> {
 
   Marker userMarker = Marker(markerId: MarkerId("userMarker"));
 
+  Marker startPointMarker = const Marker(
+    markerId: MarkerId("startPointMarker"),
+  );
+  Marker endPointMarker = const Marker(
+    markerId: MarkerId("endPointMarker"),
+  );
+
+  Marker firstStopMarker = const Marker(
+    markerId: MarkerId("firstStopMarker"),
+  );
+
+  Marker secondStopMarker = const Marker(
+    markerId: MarkerId("secondStopMarker"),
+  );
+
+  Marker thirdStopMarker = const Marker(
+    markerId: MarkerId("thirdStopMarker"),
+  );
+
+  Marker forthStopMarker = const Marker(
+    markerId: MarkerId("thirdStopMarker"),
+  );
+
   static const CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(21.1904, 81.2849),
     zoom: 14.4746,
@@ -50,10 +74,37 @@ class MapperComponent extends State<Mapper> {
     setState(() {
       userLocation = LatLng(latitude, longitude);
       userMarker = Marker(
-        markerId: const MarkerId("userMarker"),
-        icon: BitmapDescriptor.defaultMarker,
-        position: userLocation,
-      );
+          markerId: const MarkerId("userMarker"),
+          icon: BitmapDescriptor.defaultMarker,
+          position: userLocation);
+      startPointMarker = const Marker(
+          markerId: MarkerId("startPointMarker"),
+          icon: BitmapDescriptor.defaultMarker,
+          position: LatLng(21.1904, 81.2849));
+      endPointMarker = const Marker(
+          markerId: MarkerId("endPointMarker"),
+          icon: BitmapDescriptor.defaultMarker,
+          position: LatLng(22.0797, 82.1409));
+      firstStopMarker = Marker(
+          markerId: MarkerId("firstStopMarker"),
+          icon:
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+          position: LatLng(21.199617, 81.335226));
+      secondStopMarker = Marker(
+          markerId: MarkerId("secondStopMarker"),
+          icon:
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+          position: LatLng(21.252625, 81.518494));
+      thirdStopMarker = Marker(
+          markerId: MarkerId("thirdStopMarker"),
+          icon:
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+          position: LatLng(21.251385, 81.629639));
+      forthStopMarker = Marker(
+          markerId: MarkerId("forthStopMarker"),
+          icon:
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+          position: LatLng(21.732599, 81.946098));
     });
   }
 
@@ -120,6 +171,22 @@ class MapperComponent extends State<Mapper> {
     }
   }
 
+  double endLat = 22.0797;
+  double endLon = 82.1409;
+  bool isRideComplete = false;
+  void destination() async {
+    String distanceString = await distanceUtils
+        .getCurrentLocationAndCalculateDistance(endLat, endLon);
+
+    double distance = double.parse(distanceString);
+
+    if (distance <= thresholdDistance) {
+      setState(() {
+        isRideComplete = true;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -171,6 +238,12 @@ class MapperComponent extends State<Mapper> {
                     initialCameraPosition: _kGooglePlex,
                     markers: {
                       userMarker,
+                      startPointMarker,
+                      endPointMarker,
+                      firstStopMarker,
+                      secondStopMarker,
+                      thirdStopMarker,
+                      forthStopMarker,
                     },
                     polylines: _routeCoordinates,
                     onMapCreated: (GoogleMapController controller) {
@@ -207,10 +280,18 @@ class MapperComponent extends State<Mapper> {
                     color: const Color(0xFF192B46),
                   ),
                   MapButton(
-                    buttonText: 'Start Ride',
+                    buttonText: isRideComplete ? 'Complete Ride' : 'Start Ride',
                     disabled: !rideStarted,
                     onPressed: () async {
-                      if (rideStarted) {
+                      if (isRideComplete) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return const CompleteRide();
+                          },
+                        );
+                      } else if (rideStarted) {
+                        startShuttle(context);
                         await getCurrentLocation();
                         final GoogleMapController controller =
                             await _controller.future;
@@ -225,10 +306,8 @@ class MapperComponent extends State<Mapper> {
                           ));
                           getDirection(
                               "${userLocation.latitude},${userLocation.longitude}",
-                              "22.0797, 82.1409");
+                              "$endLat, $endLon");
                         }
-
-                        startShuttle(context);
                       }
                     },
                     width: 110,
