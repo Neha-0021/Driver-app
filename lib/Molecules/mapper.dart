@@ -26,6 +26,7 @@ class Mapper extends StatefulWidget {
 }
 
 class MapperComponent extends State<Mapper> {
+  Timer? locationUpdateTimer;
   MapperMap map = MapperMap();
   Set<Polyline> _routeCoordinates = Set<Polyline>();
   int polylineCounter = 1;
@@ -50,9 +51,10 @@ class MapperComponent extends State<Mapper> {
     setState(() {
       userLocation = LatLng(latitude, longitude);
       userMarker = Marker(
-          markerId: const MarkerId("userMarker"),
-          icon: BitmapDescriptor.defaultMarker,
-          position: userLocation);
+        markerId: const MarkerId("userMarker"),
+        icon: BitmapDescriptor.defaultMarker,
+        position: userLocation,
+      );
     });
     getDirection("$latitude,$longitude", "$targetLat, $targetLon");
   }
@@ -124,11 +126,18 @@ class MapperComponent extends State<Mapper> {
   void initState() {
     super.initState();
     final routeState = Provider.of<RouteDetailState>(context, listen: false);
-
     routeState.getRouteDetailsByDriver('2023-07-26');
+    locationUpdateTimer = Timer.periodic(Duration(seconds: 5), (timer) {
+      getCurrentLocation();
+    });
   }
 
-  bool isFullScreen = false;
+  @override
+  void dispose() {
+    // Cancel the timer when the widget is disposed
+    locationUpdateTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -189,7 +198,7 @@ class MapperComponent extends State<Mapper> {
                                 listen: false);
                         await shuttleTrackingState.startShuttleTracking(
                             userLocation.latitude, userLocation.longitude);
-                        shuttleTrackingState.updateShuttleTracking(
+                        await shuttleTrackingState.updateShuttleTracking(
                             '64ca3d885068bb8bb9fb4d60',
                             userLocation.toString());
                       }
