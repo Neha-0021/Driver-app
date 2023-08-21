@@ -1,27 +1,36 @@
 import 'package:driver_app/Pages/home/HomePage.dart';
 import 'package:driver_app/Pages/login.dart';
+import 'package:driver_app/state-management/profile-state.dart';
 import 'package:driver_app/utils/storage.dart';
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
 
 class LogOutSheet extends StatelessWidget {
-  
-
   PhoneStorage storage = PhoneStorage();
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Column(
+    return Consumer<ProfileState>(
+      builder: (context, profileState, child) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20),
-            child: Image.asset("assets/images/view.png", width: 104, height: 104),
+            child: Container(
+              width: 104,
+              height: 104,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                  image: NetworkImage(profileState.driverData["profile_photo"]),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
           ),
           const Text(
             'Do you want to exit?',
-            style: textHeadingstyle,
+            style: textHeadingStyle,
           ),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 62),
@@ -61,12 +70,11 @@ class LogOutSheet extends StatelessWidget {
                 Expanded(
                   child: TextButton(
                     onPressed: () {
-                        storage.removeElement("token");
+                      storage.removeElement("token");
                       Navigator.pop(
                         context,
-                        ); 
+                      );
                     },
-                    
                     style: TextButton.styleFrom(
                       minimumSize: const Size(160, 41),
                       backgroundColor: const Color(0xFF192B46),
@@ -96,9 +104,7 @@ class LogOutSheet extends StatelessWidget {
   }
 }
 
-
-
-const TextStyle textHeadingstyle = TextStyle(
+const TextStyle textHeadingStyle = TextStyle(
   fontFamily: 'PublicaSans',
   fontSize: 18,
   fontWeight: FontWeight.w700,
