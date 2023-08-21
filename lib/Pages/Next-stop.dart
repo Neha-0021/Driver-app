@@ -15,14 +15,6 @@ class NextStop extends StatefulWidget {
 }
 
 class _NextStopState extends State<NextStop> {
-  int selectedIndex = -1;
-
-  void toggleCustomerDetails(int index) {
-    setState(() {
-      selectedIndex = selectedIndex == index ? -1 : index;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -37,50 +29,17 @@ class _NextStopState extends State<NextStop> {
     final nextstopState = Provider.of<NextStoppageState>(context);
     final stepperList = nextstopState.nextStoppageDetails.map((stoppage) {
       return StepperStep(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              stoppage['stoppage_name'],
-              style: textHeadingStyle,
-            ),
-            GestureDetector(
-              onTap: () {
-                toggleCustomerDetails(
-                    nextstopState.nextStoppageDetails.indexOf(stoppage));
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(left: 170),
-                child: Icon(
-                  selectedIndex ==
-                          nextstopState.nextStoppageDetails.indexOf(stoppage)
-                      ? Icons.keyboard_arrow_up
-                      : Icons.keyboard_arrow_down,
-                  color: selectedIndex ==
-                          nextstopState.nextStoppageDetails.indexOf(stoppage)
-                      ? Colors.black
-                      : const Color(0XFF75879B),
-                ),
-              ),
-            ),
-          ],
-        ),
-        leading: SvgPicture.asset('assets/images/svg/drop-s.svg'),
-        view: Column(
-          children: [
-            if (selectedIndex ==
-                nextstopState.nextStoppageDetails.indexOf(stoppage))
-              CustomerDetails(
-                name:
-                    '${nextstopState.userDetails[0]['firstname']} ${nextstopState.userDetails[0]['lastname']}',
-                rideId: 'Ride ID: ${nextstopState.userDetails[0]['_id']}',
-              )
-            else
-              Container(),
-          ],
-        ),
-      );
+          title: Text(
+            stoppage['stoppage_name'],
+            style: textHeadingStyle,
+          ),
+          isExpanded: false,
+          leading: SvgPicture.asset('assets/images/svg/drop-s.svg'),
+          view: CustomerDetails(
+            name:
+                '${nextstopState.userDetails[0]['firstname']} ${nextstopState.userDetails[0]['lastname']}',
+            rideId: 'Ride ID: ${nextstopState.userDetails[0]['_id']}',
+          ));
     }).toList();
 
     return Consumer<NextStoppageState>(
@@ -105,6 +64,7 @@ class _NextStopState extends State<NextStop> {
                   child: CasaVerticalStepperView(
                     steps: stepperList,
                     seperatorColor: Colors.transparent,
+                    isExpandable: true,
                   ),
                 ),
               ],

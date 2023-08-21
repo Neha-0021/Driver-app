@@ -3,7 +3,7 @@ import 'package:driver_app/Molecules/Profile/Personal-details.dart';
 import 'package:driver_app/Molecules/Profile/camera-gallery.dart';
 import 'package:driver_app/atom/Pop-Up/NoteAlert.dart';
 import 'package:driver_app/atom/Profile/header.dart';
-import 'package:driver_app/state-management/home-state.dart';
+
 import 'package:driver_app/state-management/profile-state.dart';
 import 'package:driver_app/utils/alert.dart';
 import 'package:flutter/material.dart';

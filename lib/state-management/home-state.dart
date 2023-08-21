@@ -86,9 +86,9 @@ class HomeState extends ChangeNotifier {
     if (getDriverDetailsAPIcallBack.statusCode == 200) {
       driverData = getDriverDetailsAPIcallBack.data["driver"];
       notifyListeners();
-      return {"code": 200, "message": "failed to get user details."};
+      return {"code": 200, "message": "failed to get driver details."};
     } else {
-      return {"code": 400, "message": "failed to get user details."};
+      return {"code": 400, "message": "failed to get driver details."};
     }
   }
 }
