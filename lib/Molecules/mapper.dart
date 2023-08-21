@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:driver_app/Pages/Next-stop.dart';
 import 'package:driver_app/atom/Button.dart';
-import 'package:driver_app/atom/Pop-Up/CompleteRide.dart';
 import 'package:driver_app/atom/Pop-Up/Stop-ride.dart';
 import 'package:driver_app/atom/home/HomeListCard.dart';
 import 'package:driver_app/atom/home/MapButton.dart';
@@ -28,15 +27,14 @@ class Mapper extends StatefulWidget {
 class MapperComponent extends State<Mapper> {
   Timer? locationUpdateTimer;
   MapperMap map = MapperMap();
-   bool rideCompleted = false;
   Set<Polyline> _routeCoordinates = Set<Polyline>();
   int polylineCounter = 1;
-  LatLng userLocation = const LatLng(0.0, 0.0);
+  LatLng userLocation = LatLng(0.0, 0.0);
 
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
-  Marker userMarker = const Marker(markerId: MarkerId("userMarker"));
+  Marker userMarker = Marker(markerId: MarkerId("userMarker"));
 
   static const CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(21.1904, 81.2849),
@@ -119,7 +117,6 @@ class MapperComponent extends State<Mapper> {
         distance <= thresholdDistance) {
       setState(() {
         rideStarted = true;
-        rideCompleted = true;
       });
     }
   }
@@ -166,6 +163,7 @@ class MapperComponent extends State<Mapper> {
       print("Error: $error");
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<RouteDetailState>(
@@ -215,20 +213,11 @@ class MapperComponent extends State<Mapper> {
                     width: 140,
                     color: const Color(0xFF192B46),
                   ),
-                   MapButton(
-                    buttonText: rideCompleted ? 'Complete Ride' : 'Start Ride',
+                  MapButton(
+                    buttonText: 'Start Ride',
                     disabled: !rideStarted,
                     onPressed: () async {
-                      if (rideCompleted) {
-                        // Perform actions to complete the ride
-                         showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return CompleteRide();
-                        },
-                      );
-                        // For example, show a dialog or navigate to a completion screen
-                      } else if (rideStarted) {
+                      if (rideStarted) {
                         startShuttle(context);
                       }
                     },
