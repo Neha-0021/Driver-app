@@ -32,13 +32,13 @@ class _StopRideState extends State<StopRide> {
 
   void stopRide( context) async {
     try {
-      String selectedReason = isFirstReasonSelected
+      String reason = isFirstReasonSelected
           ? 'Vehicle Breakdown'
           : isSecondReasonSelected
               ? 'All users dropped'
               : ''; // You can add more logic if needed
 
-      Response response = await service.stopRide(selectedReason);
+      Response response = await service.stopRide(reason);
 
       if (response.statusCode == 200) {
         // Handle success, e.g., show a success message or navigate somewhere
