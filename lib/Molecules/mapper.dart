@@ -82,29 +82,35 @@ class MapperComponent extends State<Mapper> {
           icon: BitmapDescriptor.defaultMarker,
           position: LatLng(21.1904, 81.2849));
       endPointMarker = const Marker(
-          markerId: MarkerId("endPointMarker"),
-          icon: BitmapDescriptor.defaultMarker,
-          position: LatLng(22.0797, 82.1409));
-      firstStopMarker = Marker(
-          markerId: MarkerId("firstStopMarker"),
-          icon:
-              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-          position: LatLng(21.199617, 81.335226));
-      secondStopMarker = Marker(
-          markerId: MarkerId("secondStopMarker"),
-          icon:
-              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-          position: LatLng(21.252625, 81.518494));
-      thirdStopMarker = Marker(
-          markerId: MarkerId("thirdStopMarker"),
-          icon:
-              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-          position: LatLng(21.251385, 81.629639));
-      forthStopMarker = Marker(
-          markerId: MarkerId("forthStopMarker"),
-          icon:
-              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-          position: LatLng(21.732599, 81.946098));
+        markerId: MarkerId("endPointMarker"),
+        icon: BitmapDescriptor.defaultMarker,
+        position: LatLng(22.0797, 82.1409),
+        infoWindow: InfoWindow(title: "5"),
+      );
+      firstStopMarker = const Marker(
+        markerId: MarkerId("firstStopMarker"),
+        icon: BitmapDescriptor.defaultMarker,
+        position: LatLng(21.199617, 81.335226),
+        infoWindow: InfoWindow(title: "1"),
+      );
+      secondStopMarker = const Marker(
+        markerId: MarkerId("secondStopMarker"),
+        icon: BitmapDescriptor.defaultMarker,
+        position: LatLng(21.252625, 81.518494),
+        infoWindow: InfoWindow(title: "2"),
+      );
+      thirdStopMarker = const Marker(
+        markerId: MarkerId("thirdStopMarker"),
+        icon: BitmapDescriptor.defaultMarker,
+        position: LatLng(21.251385, 81.629639),
+        infoWindow: InfoWindow(title: "3"),
+      );
+      forthStopMarker = const Marker(
+        markerId: MarkerId("forthStopMarker"),
+        icon: BitmapDescriptor.defaultMarker,
+        position: LatLng(21.732599, 81.946098),
+        infoWindow: InfoWindow(title: "4"),
+      );
     });
   }
 
