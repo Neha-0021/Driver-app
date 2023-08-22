@@ -57,7 +57,7 @@ class MapperComponent extends State<Mapper> {
   );
 
   Marker forthStopMarker = const Marker(
-    markerId: MarkerId("thirdStopMarker"),
+    markerId: MarkerId("forthStopMarker"),
   );
 
   static const CameraPosition _kGooglePlex = CameraPosition(
@@ -237,13 +237,18 @@ class MapperComponent extends State<Mapper> {
                     mapType: MapType.normal,
                     initialCameraPosition: _kGooglePlex,
                     markers: {
-                      userMarker,
-                      startPointMarker,
-                      endPointMarker,
-                      firstStopMarker,
-                      secondStopMarker,
-                      thirdStopMarker,
-                      forthStopMarker,
+                      if (rideStarted) ...[
+                        userMarker,
+                        endPointMarker,
+                        firstStopMarker,
+                        secondStopMarker,
+                        thirdStopMarker,
+                        forthStopMarker,
+                      ],
+                      if (!rideStarted) ...[
+                        userMarker,
+                        startPointMarker,
+                      ],
                     },
                     polylines: _routeCoordinates,
                     onMapCreated: (GoogleMapController controller) {
