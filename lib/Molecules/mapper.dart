@@ -211,7 +211,7 @@ class MapperComponent extends State<Mapper> {
 
   ShuttleTrackingService service = ShuttleTrackingService();
 
-  void startShuttle(BuildContext context) async {
+  void startShuttletrack(BuildContext context) async {
     try {
       Response response = await service.startShuttleTracking(
         userLocation.latitude,
@@ -235,8 +235,7 @@ class MapperComponent extends State<Mapper> {
           child: Column(
             children: [
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                padding: const EdgeInsets.symmetric(vertical: 15),
                 child: Container(
                   height: 390,
                   child: GoogleMap(
@@ -270,22 +269,56 @@ class MapperComponent extends State<Mapper> {
                     buttonText: 'Go to starting Point',
                     onPressed: () async {
                       await getCurrentLocation();
-                      final GoogleMapController controller =
-                          await _controller.future;
-                      if (userLocation.latitude != 0.0 &&
-                          userLocation.longitude != 0.0) {
-                        controller.animateCamera(CameraUpdate.newCameraPosition(
-                          CameraPosition(
-                            target: userLocation,
-                            zoom: 10.0,
-                          ),
-                        ));
-                        getDirection(
-                            "${userLocation.latitude},${userLocation.longitude}",
-                            "21.1904, 81.2849");
+                      final List<LatLng> destinations = [
+                        LatLng(21.1904, 81.2849), 
+                        LatLng(28.7041, 77.1025), 
+                        LatLng(19.075983, 72.877655), 
+                        LatLng(22.572645, 88.363892), 
+                      ];
 
-                        checkAndStartRide();
+                      int currentDestinationIndex = 0;
+
+                      // Function to update the destination and fetch directions.
+                      void updateDestinationAndDirections() async {
+                        if (currentDestinationIndex < destinations.length) {
+                          final LatLng destination =
+                              destinations[currentDestinationIndex];
+
+                          // Fetch directions from current location to the destination.
+                          await getDirection(
+                            "${userLocation.latitude},${userLocation.longitude}",
+                            "${destination.latitude},${destination.longitude}",
+                          );
+
+                          // Animate the camera to the new destination.
+                          final GoogleMapController controller =
+                              await _controller.future;
+                          controller
+                              .animateCamera(CameraUpdate.newCameraPosition(
+                            CameraPosition(
+                              target: destination,
+                              zoom: 10.0,
+                            ),
+                          ));
+
+                          currentDestinationIndex++; // Move to the next destination.
+                        } else {
+                          // All destinations reached.
+                          // You can perform additional actions here if needed.
+                        }
                       }
+
+                      // Start a timer to update the map every 2 seconds.
+                      Timer.periodic(const Duration(seconds: 2), (timer) {
+                        updateDestinationAndDirections();
+                        if (currentDestinationIndex >= destinations.length) {
+                          timer
+                              .cancel(); // Stop the timer when all destinations are reached.
+                        }
+                      });
+
+                      // Initial call to start the process.
+                      updateDestinationAndDirections();
                     },
                     width: 140,
                     color: const Color(0xFF192B46),
@@ -302,7 +335,7 @@ class MapperComponent extends State<Mapper> {
                           },
                         );
                       } else if (rideStarted) {
-                        startShuttle(context);
+                        startShuttletrack(context);
                         await getCurrentLocation();
                         final GoogleMapController controller =
                             await _controller.future;
