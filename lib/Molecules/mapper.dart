@@ -147,30 +147,13 @@ class MapperComponent extends State<Mapper> {
   DistanceUtils distanceUtils = DistanceUtils();
   double targetLat = 21.1904;
   double targetLon = 81.2849;
-  String targetTime = "08:00 AM";
-
   double thresholdDistance = 10.0;
-  int thresholdTimeDifferenceMinutes = 10;
   bool rideStarted = false;
   void checkAndStartRide() async {
     String distanceString = await distanceUtils
         .getCurrentLocationAndCalculateDistance(targetLat, targetLon);
-
     double distance = double.parse(distanceString);
-
-    DateTime now = DateTime.now();
-    DateTime targetDateTime = DateTime(
-      now.year,
-      now.month,
-      now.day,
-      int.parse(targetTime.split(':')[0]),
-      int.parse(targetTime.split(':')[1].split(' ')[0]),
-    );
-
-    Duration timeDifference = targetDateTime.difference(now);
-
-    if (timeDifference.inMinutes <= thresholdTimeDifferenceMinutes &&
-        distance <= thresholdDistance) {
+    if (distance <= thresholdDistance) {
       setState(() {
         rideStarted = true;
       });
@@ -183,9 +166,7 @@ class MapperComponent extends State<Mapper> {
   void destination() async {
     String distanceString = await distanceUtils
         .getCurrentLocationAndCalculateDistance(endLat, endLon);
-
     double distance = double.parse(distanceString);
-
     if (distance <= thresholdDistance) {
       setState(() {
         isRideComplete = true;
@@ -211,7 +192,7 @@ class MapperComponent extends State<Mapper> {
 
   ShuttleTrackingService service = ShuttleTrackingService();
 
-  void startShuttletrack(BuildContext context) async {
+  void startShuttle(BuildContext context) async {
     try {
       Response response = await service.startShuttleTracking(
         userLocation.latitude,
@@ -235,7 +216,8 @@ class MapperComponent extends State<Mapper> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 15),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                 child: Container(
                   height: 390,
                   child: GoogleMap(
@@ -269,56 +251,22 @@ class MapperComponent extends State<Mapper> {
                     buttonText: 'Go to starting Point',
                     onPressed: () async {
                       await getCurrentLocation();
-                      final List<LatLng> destinations = [
-                        LatLng(21.1904, 81.2849), 
-                        LatLng(28.7041, 77.1025), 
-                        LatLng(19.075983, 72.877655), 
-                        LatLng(22.572645, 88.363892), 
-                      ];
-
-                      int currentDestinationIndex = 0;
-
-                      // Function to update the destination and fetch directions.
-                      void updateDestinationAndDirections() async {
-                        if (currentDestinationIndex < destinations.length) {
-                          final LatLng destination =
-                              destinations[currentDestinationIndex];
-
-                          // Fetch directions from current location to the destination.
-                          await getDirection(
+                      final GoogleMapController controller =
+                          await _controller.future;
+                      if (userLocation.latitude != 0.0 &&
+                          userLocation.longitude != 0.0) {
+                        controller.animateCamera(CameraUpdate.newCameraPosition(
+                          CameraPosition(
+                            target: userLocation,
+                            zoom: 10.0,
+                          ),
+                        ));
+                        getDirection(
                             "${userLocation.latitude},${userLocation.longitude}",
-                            "${destination.latitude},${destination.longitude}",
-                          );
+                            "21.1904, 81.2849");
 
-                          // Animate the camera to the new destination.
-                          final GoogleMapController controller =
-                              await _controller.future;
-                          controller
-                              .animateCamera(CameraUpdate.newCameraPosition(
-                            CameraPosition(
-                              target: destination,
-                              zoom: 10.0,
-                            ),
-                          ));
-
-                          currentDestinationIndex++; // Move to the next destination.
-                        } else {
-                          // All destinations reached.
-                          // You can perform additional actions here if needed.
-                        }
+                        checkAndStartRide();
                       }
-
-                      // Start a timer to update the map every 2 seconds.
-                      Timer.periodic(const Duration(seconds: 2), (timer) {
-                        updateDestinationAndDirections();
-                        if (currentDestinationIndex >= destinations.length) {
-                          timer
-                              .cancel(); // Stop the timer when all destinations are reached.
-                        }
-                      });
-
-                      // Initial call to start the process.
-                      updateDestinationAndDirections();
                     },
                     width: 140,
                     color: const Color(0xFF192B46),
@@ -335,23 +283,63 @@ class MapperComponent extends State<Mapper> {
                           },
                         );
                       } else if (rideStarted) {
-                        startShuttletrack(context);
+                        startShuttle(context);
                         await getCurrentLocation();
-                        final GoogleMapController controller =
-                            await _controller.future;
-                        if (userLocation.latitude != 0.0 &&
-                            userLocation.longitude != 0.0) {
-                          controller
-                              .animateCamera(CameraUpdate.newCameraPosition(
-                            CameraPosition(
-                              target: userLocation,
-                              zoom: 10.0,
-                            ),
-                          ));
-                          getDirection(
+                        final List<LatLng> destinations = [
+                          LatLng(21.199617, 81.335226), // First Stop
+                          LatLng(21.252625, 81.518494), // Second Stop
+                          LatLng(21.251385, 81.629639), // Third Stop
+                          LatLng(21.732599, 81.946098), // Fourth Stop
+                          LatLng(22.0797, 82.1409), // end Stop
+                        ];
+                        int currentDestinationIndex = 0;
+
+                        // Function to update the destination and fetch directions.
+                        void updateDestinationAndDirections() async {
+                          if (currentDestinationIndex < destinations.length) {
+                            final LatLng destination =
+                                destinations[currentDestinationIndex];
+
+                            // Fetch directions from current location to the destination.
+                            await getDirection(
                               "${userLocation.latitude},${userLocation.longitude}",
-                              "$endLat, $endLon");
+                              "${destination.latitude},${destination.longitude}",
+                            );
+
+                            // Animate the camera to the new destination.
+                            final GoogleMapController controller =
+                                await _controller.future;
+                            controller
+                                .animateCamera(CameraUpdate.newCameraPosition(
+                              CameraPosition(
+                                target: userLocation,
+                                zoom: 10.0,
+                              ),
+                            ));
+
+                            currentDestinationIndex++; // Move to the next destination.
+
+                            if (currentDestinationIndex < destinations.length) {
+                              // After reaching the current destination, you can update
+                              // the next destination's coordinates. For example:
+                              // destinations[currentDestinationIndex] = LatLng(newLatitude, newLongitude);
+                            }
+                          } else {
+                            // All destinations reached.
+                          }
                         }
+
+                        // Start a timer to update the map every 2 seconds.
+                        Timer.periodic(const Duration(seconds: 2), (timer) {
+                          updateDestinationAndDirections();
+                          if (currentDestinationIndex >= destinations.length) {
+                            timer
+                                .cancel(); // Stop the timer when all destinations are reached.
+                          }
+                        });
+
+                        // Initial call to start the process.
+                        updateDestinationAndDirections();
                       }
                     },
                     width: 110,

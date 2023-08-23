@@ -32,33 +32,9 @@ class DistanceUtils {
     double userLat = position.latitude;
     double userLon = position.longitude;
 
-    double totalDistance = calculateDistance(userLat, userLon, targetLat, targetLon);
+    double totalDistance =
+        calculateDistance(userLat, userLon, targetLat, targetLon);
 
     return totalDistance.toStringAsFixed(2) + " m";
-  }
-}
-
-
-class TimeUtils {
-  Duration calculateTimeDifference(DateTime targetTime) {
-    DateTime currentTime = DateTime.now();
-    return targetTime.difference(currentTime);
-  }
-
-  String formatDuration(Duration duration) {
-    int hours = duration.inHours;
-    int minutes = duration.inMinutes.remainder(60);
-    int seconds = duration.inSeconds.remainder(60);
-
-    return '$hours hours, $minutes minutes, $seconds seconds';
-  }
-
-  Future<String> getTimeDifferenceToTargetTime(int targetHour, int targetMinute) async {
-    DateTime now = DateTime.now();
-    DateTime targetTime = DateTime(now.year, now.month, now.day, targetHour, targetMinute);
-
-    Duration timeDifference = calculateTimeDifference(targetTime);
-
-    return formatDuration(timeDifference);
   }
 }
