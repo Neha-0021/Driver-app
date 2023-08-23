@@ -3,6 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../atom/Profile/Profile-header.dart';
+
+
+
 class CameraGallerySheet extends StatelessWidget {
   final Function(XFile)? onImageSelected;
 
@@ -10,22 +14,19 @@ class CameraGallerySheet extends StatelessWidget {
 
   Future<void> getImageFromGallery(BuildContext context) async {
     final imagePicker = ImagePicker();
-    final pickedImage =
-        await imagePicker.pickImage(source: ImageSource.gallery);
+    final pickedImage = await imagePicker.pickImage(source: ImageSource.gallery);
 
     if (pickedImage != null) {
       if (onImageSelected != null) {
         onImageSelected!(XFile(pickedImage.path));
       }
     }
-    // ignore: use_build_context_synchronously
-    Navigator.pop(context, pickedImage);
+   // Navigator.pop(context, pickedImage);
   }
 
   Future<void> captureImageFromCamera(BuildContext context) async {
     final imagePicker = ImagePicker();
-    final capturedImage =
-        await imagePicker.pickImage(source: ImageSource.camera);
+    final capturedImage = await imagePicker.pickImage(source: ImageSource.camera);
 
     if (capturedImage != null) {
       if (onImageSelected != null) {
@@ -116,19 +117,3 @@ class CameraGallerySheet extends StatelessWidget {
     );
   }
 }
-
-const TextStyle textHeadingstyle = TextStyle(
-  fontFamily: 'PublicaSans',
-  fontSize: 24,
-  fontWeight: FontWeight.w700,
-  letterSpacing: 0.0,
-  color: Color(0xFF000000),
-);
-
-const TextStyle textSubHeadingStyle = TextStyle(
-  fontFamily: 'PublicaSans',
-  fontSize: 16,
-  fontWeight: FontWeight.w400,
-  letterSpacing: 0.0,
-  color: Color(0xFF75879B),
-);

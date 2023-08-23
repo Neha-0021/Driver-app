@@ -23,9 +23,9 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-     final myProvider = Provider.of<ProfileState>(context, listen: false);
-      myProvider.getDriver();
+    _tabController = TabController(length: 1, vsync: this);
+    final myProvider = Provider.of<ProfileState>(context, listen: false);
+    myProvider.getDriver();
   }
 
   @override
@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage>
       _scaffoldKey.currentState?.openDrawer();
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Consumer<HomeState>(
@@ -78,23 +78,13 @@ class _HomePageState extends State<HomePage>
                         ),
                       ),
                     ),
-                    Tab(
-                      child: Text(
-                        'List',
-                        style: TextStyle(
-                          fontFamily: 'PublicaSans',
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
               Expanded(
                 child: TabBarView(
                   controller: _tabController,
-                  children:  [Mapper()],
+                  children: [Mapper()],
                 ),
               ),
             ],

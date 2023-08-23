@@ -147,6 +147,7 @@ class MapperComponent extends State<Mapper> {
   DistanceUtils distanceUtils = DistanceUtils();
   double targetLat = 21.1904;
   double targetLon = 81.2849;
+
   double thresholdDistance = 10.0;
   bool rideStarted = false;
   void checkAndStartRide() async {

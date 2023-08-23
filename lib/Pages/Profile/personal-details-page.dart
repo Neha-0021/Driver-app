@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:driver_app/Molecules/Profile/Personal-details.dart';
 import 'package:driver_app/Molecules/Profile/camera-gallery.dart';
 import 'package:driver_app/atom/Pop-Up/NoteAlert.dart';
@@ -26,16 +27,17 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
   bool isDisableText = false;
 
   Future<void> selectProfileImage(BuildContext context, profileState) async {
-    final selectedImage = await showModalBottomSheet(
+    final selectedImage = await showModalBottomSheet<XFile>(
       context: context,
       builder: (BuildContext context) {
         return CameraGallerySheet(
           onImageSelected: (XFile image) async {
-            profileState.updateProfileImage(image);
+            await profileState.uploadFileAndGetLink(context, image);
+           await profileState.updateProfileImage(image);
+                   Navigator.pop(context);
             setState(() {
               profileImage = image;
             });
-             await profileState.uploadFileAndGetLink(context);
           },
         );
       },
@@ -110,9 +112,7 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
                       top: 120,
                       left: (MediaQuery.of(context).size.width - 130) / 2,
                       child: GestureDetector(
-                        onTap: isDisableText
-                            ? null
-                            : () => selectProfileImage(context, profileState),
+                        onTap: () => selectProfileImage(context, profileState),
                         child: Stack(
                           alignment: Alignment.bottomRight,
                           children: [

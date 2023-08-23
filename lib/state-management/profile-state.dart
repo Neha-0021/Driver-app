@@ -9,19 +9,13 @@ class ProfileState extends ChangeNotifier {
   final ProfileService service = ProfileService();
   CommonService common = CommonService();
   AlertBundle alert = AlertBundle();
-  bool isDisableText = true;
 
   Map<String, dynamic> driverData = {};
 
   String profileImagePath = "";
 
-  void updateProfileImage(image) {
-    profileImagePath = image.path;
-    notifyListeners();
-  }
-
-  void toggleEdit() {
-    isDisableText = !isDisableText;
+  void updateProfileImage(image) async {
+   profileImagePath = image.path;
     notifyListeners();
   }
 
@@ -31,13 +25,16 @@ class ProfileState extends ChangeNotifier {
     notifyListeners();
   }
 
-  uploadFileAndGetLink(context) async {
+  uploadFileAndGetLink(context, image) async {
+    debugPrint(image.path);
     var sendingData = FormData.fromMap({
-      'file': await MultipartFile.fromFile(profileImagePath),
+      'file': await MultipartFile.fromFile(image.path),
     });
+
     Response fileCallback = await common.uploadFile(sendingData);
+    debugPrint(fileCallback.data.toString());
     if (fileCallback.statusCode == 200) {
-      driverData["profile_photo"] = fileCallback.data["result"];
+     driverData["profile_photo"] = fileCallback.data["result"];
       notifyListeners();
       alert.SnackBarNotify(context, "profile photo Updated");
     } else {
@@ -45,6 +42,4 @@ class ProfileState extends ChangeNotifier {
           context, "Oops error while uploading your profile photo.");
     }
   }
-
-  notifyListeners();
 }
