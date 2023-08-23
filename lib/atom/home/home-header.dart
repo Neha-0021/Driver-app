@@ -17,18 +17,17 @@ class HomeHeader extends StatefulWidget {
 }
 
 class HomeHeaderComponent extends State<HomeHeader> {
-
-  
   @override
   void initState() {
     super.initState();
-    final stateCall = Provider.of<HomeState>(context, listen: false);
-    stateCall.getDriverProfile();
+    final stateCall = Provider.of<ProfileState>(context, listen: false);
+    stateCall.getDriver();
   }
+
   @override
   Widget build(BuildContext context) {
-    return (Consumer<HomeState>(
-        builder: (context, homeState, child) => Container(
+    return (Consumer<ProfileState>(
+        builder: (context, profileState, child) => Container(
               decoration: const BoxDecoration(color: Color(0xFF192B46)),
               child: Padding(
                 padding:
@@ -41,7 +40,7 @@ class HomeHeaderComponent extends State<HomeHeader> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Hello ${homeState.driverData['name']} ,",
+                            "Hello ${profileState.driverData['name']} ,",
                             style: textHeadingstyle,
                           ),
                           const Text(
@@ -66,7 +65,7 @@ class HomeHeaderComponent extends State<HomeHeader> {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(50),
                                   child: Image.network(
-                                    homeState.driverData["profile_photo"] ??
+                                    profileState.driverData["profile_photo"] ??
                                         CommonConstant.profileImage,
                                     width: 42,
                                     height: 42,
