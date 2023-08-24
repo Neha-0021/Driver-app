@@ -62,7 +62,7 @@ class _NotificationPageState extends State<NotificationPage> {
                 notificationState.notifications.isEmpty
                     ? GestureDetector(
                         onTap: () =>
-                            {notificationState.getViewedDriverNotification()},
+                            {notificationState.getViewedNotification()},
                         child: Padding(
                             padding: const EdgeInsets.all(20),
                             child: Text(
