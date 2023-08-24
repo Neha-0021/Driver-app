@@ -32,9 +32,7 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
       builder: (BuildContext context) {
         return CameraGallerySheet(
           onImageSelected: (XFile image) async {
-            await profileState.uploadFileAndGetLink(context, image);
-           await profileState.updateProfileImage(image);
-                   Navigator.pop(context);
+            await profileState.updateProfileImage(image);
             setState(() {
               profileImage = image;
             });
@@ -46,6 +44,7 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
     if (selectedImage != null) {
       setState(() {
         profileImage = selectedImage;
+        profileState.update(context);
       });
     }
   }

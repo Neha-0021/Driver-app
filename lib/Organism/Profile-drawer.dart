@@ -109,7 +109,7 @@ class ProfileDrawer extends StatelessWidget {
               );
             },
             child: const ProfileList(
-              imagePath: 'assets/images/svg/Rating-icon.svg',
+              imagePath: 'assets/images/svg/rating.svg',
               title: 'Driver Rating',
               actionImagePath: 'assets/images/go.png',
             ),

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:driver_app/service/common.dart';
+import 'package:driver_app/service/login/login.dart';
 
 import 'package:driver_app/service/profile/profile.dart';
 import 'package:driver_app/utils/alert.dart';
@@ -9,13 +10,15 @@ class ProfileState extends ChangeNotifier {
   final ProfileService service = ProfileService();
   CommonService common = CommonService();
   AlertBundle alert = AlertBundle();
+  DriverService services = DriverService();
 
   Map<String, dynamic> driverData = {};
+  
 
   String profileImagePath = "";
 
   void updateProfileImage(image) async {
-   profileImagePath = image.path;
+    profileImagePath = image.path;
     notifyListeners();
   }
 
@@ -25,16 +28,29 @@ class ProfileState extends ChangeNotifier {
     notifyListeners();
   }
 
-  uploadFileAndGetLink(context, image) async {
-    debugPrint(image.path);
-    var sendingData = FormData.fromMap({
-      'file': await MultipartFile.fromFile(image.path),
-    });
+  void update(context) async {
+    if (profileImagePath != "") {
+      await uploadFileAndGetLink(context);
+    }
+    Response callback =
+        await services.updateDriver('64dc9b484b5c501a96a11892', driverData);
+    if (callback.statusCode == 200) {
+      alert.SnackBarNotify(context, "Profile Updated");
+    } else {
+      alert.SnackBarNotify(
+          context, "Unable to update profile please try again.");
+    }
+    notifyListeners();
+  }
 
+  uploadFileAndGetLink(context) async {
+    debugPrint(profileImagePath);
+    var sendingData = FormData.fromMap({
+      'file': await MultipartFile.fromFile(profileImagePath),
+    });
     Response fileCallback = await common.uploadFile(sendingData);
-    debugPrint(fileCallback.data.toString());
     if (fileCallback.statusCode == 200) {
-     driverData["profile_photo"] = fileCallback.data["result"];
+    driverData["profile_photo"] = fileCallback.data["result"];
       notifyListeners();
       alert.SnackBarNotify(context, "profile photo Updated");
     } else {
