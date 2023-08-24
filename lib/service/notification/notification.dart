@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:driver_app/service/config.dart';
 import 'package:driver_app/utils/storage.dart';
 
-
 final dio = Dio();
 
 class DriverNotificationService {
@@ -29,7 +28,6 @@ class DriverNotificationService {
         options: Options(headers: headers),
       );
     } catch (err) {
-      
       if (err is DioException) {
         return err.response!;
       }
@@ -37,31 +35,28 @@ class DriverNotificationService {
     }
   }
 
-Future<Response<dynamic>> getDriverNotification() async {
-  try {
-    final String token = await storage.getStringValue("token") ?? "";
-    Map<String, dynamic> headers = {
-      'Authorization': "Bearer $token",
-      'Content-Type': 'application/json',
-    };
-    
-    final response = await dio.get(
-      "$baseUrl/api/driverNotification/get-driver-notification",
-      options: Options(headers: headers),
-    );
+  Future<Response<dynamic>> getDriverNotification() async {
+    try {
+      final String token = await storage.getStringValue("token") ?? "";
+      Map<String, dynamic> headers = {
+        'Authorization': "Bearer $token",
+        'Content-Type': 'application/json',
+      };
 
-    print('Response status code: ${response.statusCode}');
-    print('Response data: ${response.data}');
-    
-    return response;
-  } catch (err) {
-    if (err is DioException) {
-      print('DioException: ${err.message}');
-      return err.response!;
+      final response = await dio.get(
+        "$baseUrl/api/driverNotification/get-driver-notification",
+        options: Options(headers: headers),
+      );
+
+      return response;
+    } catch (err) {
+      if (err is DioException) {
+        print('DioException: ${err.message}');
+        return err.response!;
+      }
+      rethrow;
     }
-    rethrow;
   }
-}
 
   Future<Response<dynamic>> getViewedDriverNotification() async {
     try {
@@ -71,12 +66,18 @@ Future<Response<dynamic>> getDriverNotification() async {
         'Content-Type': 'application/json',
       };
 
-      return await dio.get(
+      final response = await dio.get(
         "$baseUrl/api/driverNotification/get-viewed-driver-notification",
         options: Options(headers: headers),
       );
+
+      print('Response status code: ${response.statusCode}');
+      print('Response data: ${response.data}');
+
+      return response;
     } catch (err) {
       if (err is DioException) {
+        print('DioException: ${err.message}');
         return err.response!;
       }
       rethrow;

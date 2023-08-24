@@ -26,11 +26,13 @@ class DriverNotificationState extends ChangeNotifier {
     }
   }
 
- Future<void> getViewedNotification() async {
+  Future<void> getViewedNotification() async {
     try {
       print("inside");
-      Response response = await driverNotificationService.getViewedDriverNotification();
-      viewedNotifications = response.data["notification"].reversed.toList();
+      Response response =
+          await driverNotificationService.getViewedDriverNotification();
+      viewedNotifications =
+          response.data["driverNotification"].reversed.toList();
       notifyListeners();
     } catch (error) {
       print('Error fetching viewed notifications: $error');

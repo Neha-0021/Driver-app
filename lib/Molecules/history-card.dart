@@ -9,7 +9,6 @@ class HistoryCard extends StatelessWidget {
     required this.data,
   });
 
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -34,30 +33,30 @@ class HistoryCard extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(3),
                     child: Image.network(
-                    data["route_details"]["image"],
+                      data["route_details"]["image"],
                       width: 30,
                       height: 30,
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
-               Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "${data["stoppage_from_details"]["stoppage_name"]} - ${data["stoppage_to_details"]["stoppage_name"]}",
-                      style: textHeadingstyle,
-                    ),
-                    Text(
-                      '${DateFormat("dd MMM yy").format(DateTime.parse(data['date']))} • 08:30 AM to 03:30 PM',
-                      style: textSubHeadingStyle,
-                    ),
-                  ],
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "${data["stoppage_from_details"]["stoppage_name"]} - ${data["stoppage_to_details"]["stoppage_name"]}",
+                        style: textHeadingstyle,
+                      ),
+                      Text(
+                        '${DateFormat("dd MMM yy").format(DateTime.parse(data['date']))} •${data["route_details"]["timing_form"]} to ${data["route_details"]["timing_to"]}',
+                        style: textSubHeadingStyle,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              HistoryStatus(
+                HistoryStatus(
                     containerColor: const Color(0xFF00BD79),
                     labelText: 'Completed')
               ],

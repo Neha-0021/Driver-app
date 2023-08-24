@@ -9,6 +9,7 @@ import 'package:driver_app/atom/home/MapButton.dart';
 import 'package:driver_app/service/mapper/map.dart';
 import 'package:driver_app/service/start-ride/start-ride.dart';
 import 'package:driver_app/state-management/route-state.dart';
+import 'package:driver_app/utils/alert.dart';
 import 'package:driver_app/utils/distance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -194,6 +195,7 @@ class MapperComponent extends State<Mapper> {
   }
 
   ShuttleTrackingService service = ShuttleTrackingService();
+  AlertBundle alert = AlertBundle();
 
   void startShuttle(BuildContext context) async {
     try {
@@ -202,9 +204,9 @@ class MapperComponent extends State<Mapper> {
         userLocation.longitude,
       );
       if (response.statusCode == 200) {
+        alert.SnackBarNotify(context, "Shuttle tracking started");
       } else {
-        print(
-            "Error: Shuttle tracking request failed with status code ${response.statusCode}");
+        alert.SnackBarNotify(context, "Shuttle tracking not started try again");
       }
     } catch (error) {
       print("Error: $error");
