@@ -126,7 +126,6 @@ class MapperComponent extends State<Mapper> {
 
   DistanceUtils distanceUtils = DistanceUtils();
 
-  double thresholdDistance = 10.0;
   bool rideStarted = false;
   bool isRideComplete = false;
   void checkAndStartRide(BuildContext context) async {
@@ -138,8 +137,9 @@ class MapperComponent extends State<Mapper> {
     String distanceString =
         await distanceUtils.getCurrentLocationAndCalculateDistance(
             startingPointLatitude, startingPointLongitude);
-    double distance = double.parse(distanceString);
-    if (distance <= thresholdDistance) {
+    String startingpoint = distanceString.replaceAll(RegExp(r'[^0-9.]'), '');
+    double? distance = double.tryParse(startingpoint);
+    if (distance != null && distance <= 10.0) {
       setState(() {
         rideStarted = true;
       });
@@ -152,8 +152,9 @@ class MapperComponent extends State<Mapper> {
     double endLong = double.parse(routeState.endPoint["longitude"]);
     String distanceString = await distanceUtils
         .getCurrentLocationAndCalculateDistance(endLat, endLong);
-    double distance = double.parse(distanceString);
-    if (distance <= thresholdDistance) {
+    String endpoint = distanceString.replaceAll(RegExp(r'[^0-9.]'), '');
+    double? distance = double.tryParse(endpoint);
+    if (distance != null && distance <= 10.0) {
       setState(() {
         isRideComplete = true;
       });
@@ -226,11 +227,11 @@ class MapperComponent extends State<Mapper> {
                         markers: {
                           if (rideStarted) ...[
                             userMarker,
-                            ...stoppageMarkers,
                           ],
                           if (!rideStarted) ...[
                             userMarker,
                             startPointMarker,
+                            ...stoppageMarkers,
                           ],
                         },
                         polylines: _routeCoordinates,
@@ -287,8 +288,6 @@ class MapperComponent extends State<Mapper> {
                           isRideComplete ? 'Complete Ride' : 'Start Ride',
                       disabled: !rideStarted,
                       onPressed: () async {
-                        checkAndStartRide(context);
-                        destination(context);
                         if (isRideComplete) {
                           showDialog(
                             context: context,
@@ -298,8 +297,8 @@ class MapperComponent extends State<Mapper> {
                           );
                         } else if (rideStarted) {
                           startShuttle(context);
-                          await getCurrentLocation();
 
+                          await getCurrentLocation();
                           List<LatLng> destinations = [];
                           for (var stoppage in routeState.stoppageWithDetails) {
                             double latitude =
@@ -310,47 +309,43 @@ class MapperComponent extends State<Mapper> {
                             destinations.add(location);
                           }
                           int currentDestinationIndex = 0;
-
-                          // Function to update the destination and fetch directions.
                           void updateDestinationAndDirections() async {
                             if (currentDestinationIndex < destinations.length) {
                               final LatLng destination =
                                   destinations[currentDestinationIndex];
-
                               // Fetch directions from current location to the destination.
                               await getDirection(
                                 "${userLocation.latitude},${userLocation.longitude}",
                                 "${destination.latitude},${destination.longitude}",
                               );
-
                               // Animate the camera to the new destination.
                               final GoogleMapController controller =
                                   await _controller.future;
                               controller
                                   .animateCamera(CameraUpdate.newCameraPosition(
                                 CameraPosition(
-                                  target: userLocation,
-                                  zoom: 10.0,
+                                  target: destination,
+                                  zoom: 15.0,
                                 ),
                               ));
-
-                              currentDestinationIndex++; // Move to the next destination.
-                            } else {
-                              // All destinations reached.
+                              String destinationdistaion = await distanceUtils
+                                  .getCurrentLocationAndCalculateDistance(
+                                      destination.latitude,
+                                      destination.longitude);
+                              String distanceString = destinationdistaion
+                                  .replaceAll(RegExp(r'[^0-9.]'), '');
+                              double? distance =
+                                  double.tryParse(distanceString);
+                              Timer.periodic(const Duration(seconds: 2),
+                                  (timer) {
+                                if (distance != null && distance <= 10.0) {
+                                  currentDestinationIndex++;
+                                  updateDestinationAndDirections();
+                                }
+                              });
                             }
                           }
 
-                          // Start a timer to update the map every 2 seconds.
-                          Timer.periodic(const Duration(seconds: 2), (timer) {
-                            updateDestinationAndDirections();
-                            if (currentDestinationIndex >=
-                                destinations.length) {
-                              timer
-                                  .cancel(); // Stop the timer when all destinations are reached.
-                            }
-                          });
-
-                          // Initial call to start the process.
                           updateDestinationAndDirections();
                         }
                       },
