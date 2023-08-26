@@ -36,30 +36,17 @@ class MapperComponent extends State<Mapper> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
-  Marker userMarker = Marker(markerId: MarkerId("userMarker"));
+  Marker userMarker = const Marker(markerId: MarkerId("userMarker"));
 
   Marker startPointMarker = const Marker(
     markerId: MarkerId("startPointMarker"),
   );
-  Marker endPointMarker = const Marker(
-    markerId: MarkerId("endPointMarker"),
+
+  Marker destinationMark = const Marker(
+    markerId: MarkerId("destinationMarker"),
   );
 
-  Marker firstStopMarker = const Marker(
-    markerId: MarkerId("firstStopMarker"),
-  );
-
-  Marker secondStopMarker = const Marker(
-    markerId: MarkerId("secondStopMarker"),
-  );
-
-  Marker thirdStopMarker = const Marker(
-    markerId: MarkerId("thirdStopMarker"),
-  );
-
-  Marker forthStopMarker = const Marker(
-    markerId: MarkerId("forthStopMarker"),
-  );
+  List<Marker> stoppageMarkers = [];
 
   static const CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(21.1904, 81.2849),
@@ -74,45 +61,35 @@ class MapperComponent extends State<Mapper> {
     double longitude = position.longitude;
     if (mounted) {
       setState(() {
+        final routeState =
+            Provider.of<RouteDetailState>(context, listen: false);
+        double startingPointLatitude =
+            double.parse(routeState.startingPoint["latitude"]);
+        double startingPointLongitude =
+            double.parse(routeState.startingPoint["longitude"]);
+
         userLocation = LatLng(latitude, longitude);
         userMarker = Marker(
             markerId: const MarkerId("userMarker"),
             icon: BitmapDescriptor.defaultMarker,
             position: userLocation);
-        startPointMarker = const Marker(
-            markerId: MarkerId("startPointMarker"),
+        startPointMarker = Marker(
+            markerId: const MarkerId("startPointMarker"),
             icon: BitmapDescriptor.defaultMarker,
-            position: LatLng(21.1904, 81.2849));
-        endPointMarker = const Marker(
-          markerId: MarkerId("endPointMarker"),
-          icon: BitmapDescriptor.defaultMarker,
-          position: LatLng(22.0797, 82.1409),
-          infoWindow: InfoWindow(title: "5"),
-        );
-        firstStopMarker = const Marker(
-          markerId: MarkerId("firstStopMarker"),
-          icon: BitmapDescriptor.defaultMarker,
-          position: LatLng(21.199617, 81.335226),
-          infoWindow: InfoWindow(title: "1"),
-        );
-        secondStopMarker = const Marker(
-          markerId: MarkerId("secondStopMarker"),
-          icon: BitmapDescriptor.defaultMarker,
-          position: LatLng(21.252625, 81.518494),
-          infoWindow: InfoWindow(title: "2"),
-        );
-        thirdStopMarker = const Marker(
-          markerId: MarkerId("thirdStopMarker"),
-          icon: BitmapDescriptor.defaultMarker,
-          position: LatLng(21.251385, 81.629639),
-          infoWindow: InfoWindow(title: "3"),
-        );
-        forthStopMarker = const Marker(
-          markerId: MarkerId("forthStopMarker"),
-          icon: BitmapDescriptor.defaultMarker,
-          position: LatLng(21.732599, 81.946098),
-          infoWindow: InfoWindow(title: "4"),
-        );
+            position: LatLng(startingPointLatitude, startingPointLongitude));
+
+        for (var stoppage in routeState.stoppageWithDetails) {
+          double stoppageLatitude =
+              double.parse(stoppage["stoppage"]["latitude"]);
+          double stoppageLongitude =
+              double.parse(stoppage["stoppage"]["longitude"]);
+          Marker stoppageMarker = Marker(
+            markerId: MarkerId("stoppage_${stoppage["stoppage"]["_id"]}"),
+            icon: BitmapDescriptor.defaultMarker,
+            position: LatLng(stoppageLatitude, stoppageLongitude),
+          );
+          stoppageMarkers.add(stoppageMarker);
+        }
       });
     }
   }
@@ -148,14 +125,19 @@ class MapperComponent extends State<Mapper> {
   }
 
   DistanceUtils distanceUtils = DistanceUtils();
-  double targetLat = 21.1904;
-  double targetLon = 81.2849;
 
   double thresholdDistance = 10.0;
   bool rideStarted = false;
-  void checkAndStartRide() async {
-    String distanceString = await distanceUtils
-        .getCurrentLocationAndCalculateDistance(targetLat, targetLon);
+  bool isRideComplete = false;
+  void checkAndStartRide(BuildContext context) async {
+    final routeState = Provider.of<RouteDetailState>(context, listen: false);
+    double startingPointLatitude =
+        double.parse(routeState.startingPoint["latitude"]);
+    double startingPointLongitude =
+        double.parse(routeState.startingPoint["longitude"]);
+    String distanceString =
+        await distanceUtils.getCurrentLocationAndCalculateDistance(
+            startingPointLatitude, startingPointLongitude);
     double distance = double.parse(distanceString);
     if (distance <= thresholdDistance) {
       setState(() {
@@ -164,12 +146,12 @@ class MapperComponent extends State<Mapper> {
     }
   }
 
-  double endLat = 22.0797;
-  double endLon = 82.1409;
-  bool isRideComplete = false;
-  void destination() async {
+  void destination(BuildContext context) async {
+    final routeState = Provider.of<RouteDetailState>(context, listen: false);
+    double endLat = double.parse(routeState.endPoint["latitude"]);
+    double endLong = double.parse(routeState.endPoint["longitude"]);
     String distanceString = await distanceUtils
-        .getCurrentLocationAndCalculateDistance(endLat, endLon);
+        .getCurrentLocationAndCalculateDistance(endLat, endLong);
     double distance = double.parse(distanceString);
     if (distance <= thresholdDistance) {
       setState(() {
@@ -213,6 +195,14 @@ class MapperComponent extends State<Mapper> {
     }
   }
 
+  bool fullScreen = false;
+
+  void toggleMapSize() {
+    setState(() {
+      fullScreen = !fullScreen;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<RouteDetailState>(
@@ -220,201 +210,229 @@ class MapperComponent extends State<Mapper> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                child: Container(
-                  height: 390,
-                  child: GoogleMap(
-                    mapType: MapType.normal,
-                    initialCameraPosition: _kGooglePlex,
-                    markers: {
-                      if (rideStarted) ...[
-                        userMarker,
-                        endPointMarker,
-                        firstStopMarker,
-                        secondStopMarker,
-                        thirdStopMarker,
-                        forthStopMarker,
-                      ],
-                      if (!rideStarted) ...[
-                        userMarker,
-                        startPointMarker,
-                      ],
-                    },
-                    polylines: _routeCoordinates,
-                    onMapCreated: (GoogleMapController controller) {
-                      _controller.complete(controller);
-                    },
-                  ),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              Stack(
+                alignment: Alignment.topRight,
                 children: [
-                  MapButton(
-                    buttonText: 'Go to starting Point',
-                    onPressed: () async {
-                      await getCurrentLocation();
-                      final GoogleMapController controller =
-                          await _controller.future;
-                      if (userLocation.latitude != 0.0 &&
-                          userLocation.longitude != 0.0) {
-                        controller.animateCamera(CameraUpdate.newCameraPosition(
-                          CameraPosition(
-                            target: userLocation,
-                            zoom: 10.0,
-                          ),
-                        ));
-                        getDirection(
-                            "${userLocation.latitude},${userLocation.longitude}",
-                            "21.1904, 81.2849");
-
-                        checkAndStartRide();
-                      }
-                    },
-                    width: 140,
-                    color: const Color(0xFF192B46),
-                  ),
-                  MapButton(
-                    buttonText: isRideComplete ? 'Complete Ride' : 'Start Ride',
-                    disabled: !rideStarted,
-                    onPressed: () async {
-                      if (isRideComplete) {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return const CompleteRide();
-                          },
-                        );
-                      } else if (rideStarted) {
-                        startShuttle(context);
-                        await getCurrentLocation();
-                        final List<LatLng> destinations = [
-                          LatLng(21.199617, 81.335226), // First Stop
-                          LatLng(21.252625, 81.518494), // Second Stop
-                          LatLng(21.251385, 81.629639), // Third Stop
-                          LatLng(21.732599, 81.946098), // Fourth Stop
-                          LatLng(22.0797, 82.1409), // end Stop
-                        ];
-                        int currentDestinationIndex = 0;
-
-                        // Function to update the destination and fetch directions.
-                        void updateDestinationAndDirections() async {
-                          if (currentDestinationIndex < destinations.length) {
-                            final LatLng destination =
-                                destinations[currentDestinationIndex];
-
-                            // Fetch directions from current location to the destination.
-                            await getDirection(
-                              "${userLocation.latitude},${userLocation.longitude}",
-                              "${destination.latitude},${destination.longitude}",
-                            );
-
-                            // Animate the camera to the new destination.
-                            final GoogleMapController controller =
-                                await _controller.future;
-                            controller
-                                .animateCamera(CameraUpdate.newCameraPosition(
-                              CameraPosition(
-                                target: userLocation,
-                                zoom: 10.0,
-                              ),
-                            ));
-
-                            currentDestinationIndex++; // Move to the next destination.
-
-                            if (currentDestinationIndex < destinations.length) {
-                              // After reaching the current destination, you can update
-                              // the next destination's coordinates. For example:
-                              // destinations[currentDestinationIndex] = LatLng(newLatitude, newLongitude);
-                            }
-                          } else {
-                            // All destinations reached.
-                          }
-                        }
-
-                        // Start a timer to update the map every 2 seconds.
-                        Timer.periodic(const Duration(seconds: 2), (timer) {
-                          updateDestinationAndDirections();
-                          if (currentDestinationIndex >= destinations.length) {
-                            timer
-                                .cancel(); // Stop the timer when all destinations are reached.
-                          }
-                        });
-
-                        // Initial call to start the process.
-                        updateDestinationAndDirections();
-                      }
-                    },
-                    width: 110,
-                    color: const Color(0xFF192B46),
-                  ),
-                  MapButton(
-                    buttonText: 'Stop Ride',
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return StopRide();
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: 300),
+                      height: fullScreen
+                          ? MediaQuery.of(context).size.height
+                          : 390.0,
+                      child: GoogleMap(
+                        mapType: MapType.normal,
+                        initialCameraPosition: _kGooglePlex,
+                        markers: {
+                          if (rideStarted) ...[
+                            userMarker,
+                            ...stoppageMarkers,
+                          ],
+                          if (!rideStarted) ...[
+                            userMarker,
+                            startPointMarker,
+                          ],
                         },
-                      );
-                    },
-                    color: Color(0xFFECB21E),
-                    width: 85,
+                        polylines: _routeCoordinates,
+                        onMapCreated: (GoogleMapController controller) {
+                          _controller.complete(controller);
+                        },
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: IconButton(
+                      icon: Icon(
+                        fullScreen ? Icons.fullscreen_exit : Icons.fullscreen,
+                        size: 32,
+                      ),
+                      onPressed: () {
+                        toggleMapSize();
+                      },
+                    ),
                   ),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 15),
-                child: Container(
-                  height: 50,
-                  decoration: const BoxDecoration(color: Color(0xFF6A7B8D)),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      children: [
-                        Image.asset(
-                          'assets/images/Vectorm.png',
-                          width: 20,
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10),
-                          child: Text(
-                            'Next Stop & Customers',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 15,
-                              fontFamily: 'PublicaSans',
-                              fontWeight: FontWeight.w500,
+              Visibility(
+                visible: !fullScreen,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    MapButton(
+                      buttonText: 'Go to starting Point',
+                      onPressed: () async {
+                        await getCurrentLocation();
+                        final GoogleMapController controller =
+                            await _controller.future;
+                        if (userLocation.latitude != 0.0 &&
+                            userLocation.longitude != 0.0) {
+                          controller
+                              .animateCamera(CameraUpdate.newCameraPosition(
+                            CameraPosition(
+                              target: userLocation,
+                              zoom: 10.0,
+                            ),
+                          ));
+                          getDirection(
+                              "${userLocation.latitude},${userLocation.longitude}",
+                              "${routeState.startingPoint["latitude"]},${routeState.startingPoint["longitude"]}");
+                        }
+                      },
+                      width: 140,
+                      color: const Color(0xFF192B46),
+                    ),
+                    MapButton(
+                      buttonText:
+                          isRideComplete ? 'Complete Ride' : 'Start Ride',
+                      disabled: !rideStarted,
+                      onPressed: () async {
+                        checkAndStartRide(context);
+                        destination(context);
+                        if (isRideComplete) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return const CompleteRide();
+                            },
+                          );
+                        } else if (rideStarted) {
+                          startShuttle(context);
+                          await getCurrentLocation();
+
+                          List<LatLng> destinations = [];
+                          for (var stoppage in routeState.stoppageWithDetails) {
+                            double latitude =
+                                double.parse(stoppage["stoppage"]["latitude"]);
+                            double longitude =
+                                double.parse(stoppage["stoppage"]["longitude"]);
+                            LatLng location = LatLng(latitude, longitude);
+                            destinations.add(location);
+                          }
+                          int currentDestinationIndex = 0;
+
+                          // Function to update the destination and fetch directions.
+                          void updateDestinationAndDirections() async {
+                            if (currentDestinationIndex < destinations.length) {
+                              final LatLng destination =
+                                  destinations[currentDestinationIndex];
+
+                              // Fetch directions from current location to the destination.
+                              await getDirection(
+                                "${userLocation.latitude},${userLocation.longitude}",
+                                "${destination.latitude},${destination.longitude}",
+                              );
+
+                              // Animate the camera to the new destination.
+                              final GoogleMapController controller =
+                                  await _controller.future;
+                              controller
+                                  .animateCamera(CameraUpdate.newCameraPosition(
+                                CameraPosition(
+                                  target: userLocation,
+                                  zoom: 10.0,
+                                ),
+                              ));
+
+                              currentDestinationIndex++; // Move to the next destination.
+                            } else {
+                              // All destinations reached.
+                            }
+                          }
+
+                          // Start a timer to update the map every 2 seconds.
+                          Timer.periodic(const Duration(seconds: 2), (timer) {
+                            updateDestinationAndDirections();
+                            if (currentDestinationIndex >=
+                                destinations.length) {
+                              timer
+                                  .cancel(); // Stop the timer when all destinations are reached.
+                            }
+                          });
+
+                          // Initial call to start the process.
+                          updateDestinationAndDirections();
+                        }
+                      },
+                      width: 110,
+                      color: const Color(0xFF192B46),
+                    ),
+                    MapButton(
+                      buttonText: 'Stop Ride',
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return StopRide();
+                          },
+                        );
+                      },
+                      color: Color(0xFFECB21E),
+                      width: 85,
+                    ),
+                  ],
+                ),
+              ),
+              Visibility(
+                visible: !fullScreen,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 15),
+                  child: Container(
+                    height: 50,
+                    decoration: const BoxDecoration(color: Color(0xFF6A7B8D)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            'assets/images/Vectorm.png',
+                            width: 20,
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            child: Text(
+                              'Next Stop & Customers',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontFamily: 'PublicaSans',
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: routeState.allStoppages.length,
-                itemBuilder: (context, index) {
-                  final home = routeState.allStoppages[index];
-                  return HomeListCard(data: home);
-                },
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-                child: CustomButton(
-                  label: 'View All',
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => NextStop()),
-                    );
+              Visibility(
+                visible: !fullScreen,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: routeState.stoppageWithDetails.length,
+                  itemBuilder: (context, index) {
+                    final home = routeState.stoppageWithDetails[index];
+
+                    return HomeListCard(data: home);
                   },
+                ),
+              ),
+              Visibility(
+                visible: !fullScreen,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                  child: CustomButton(
+                    label: 'View All',
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => NextStop()),
+                      );
+                    },
+                  ),
                 ),
               ),
             ],

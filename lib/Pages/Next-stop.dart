@@ -27,19 +27,29 @@ class _NextStopState extends State<NextStop> {
   @override
   Widget build(BuildContext context) {
     final nextstopState = Provider.of<NextStoppageState>(context);
-    final stepperList = nextstopState.nextStoppageDetails.map((stoppage) {
+    final stepperList = nextstopState.nextStoppageUserDetails.map((stoppage) {
+      final users = stoppage['users'];
+      final customerDetailsList = users.map((user) {
+        return CustomerDetails(
+          name: '${user['firstname']} ${user['lastname']}',
+          rideId: 'Ride ID: ${user['_id']}',
+        );
+      }).toList();
+
       return StepperStep(
-          title: Text(
-            stoppage['stoppage_name'],
-            style: textHeadingStyle,
-          ),
-          isExpanded: false,
-          leading: SvgPicture.asset('assets/images/svg/drop-s.svg'),
-          view: CustomerDetails(
-            name:
-                '${nextstopState.userDetails[0]['firstname']} ${nextstopState.userDetails[0]['lastname']}',
-            rideId: 'Ride ID: ${nextstopState.userDetails[0]['_id']}',
-          ));
+        title: Text(
+          stoppage['stoppage_name'],
+          style: textHeadingStyle,
+        ),
+        isExpanded: false,
+        leading: SvgPicture.asset('assets/images/svg/drop-s.svg'),
+        view: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ...customerDetailsList, // Spread operator to unpack the list
+          ],
+        ),
+      );
     }).toList();
 
     return Consumer<NextStoppageState>(
@@ -55,7 +65,8 @@ class _NextStopState extends State<NextStop> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const BottomBar()),
+                        builder: (context) => const BottomBar(),
+                      ),
                     );
                   },
                 ),

@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeListCard extends StatelessWidget {
   final Map<String, dynamic> data;
+
   const HomeListCard({
     super.key,
     required this.data,
@@ -10,7 +11,6 @@ class HomeListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int totalPeopleToPickup = data["totalPeopleToPickup"] ?? 0;
     return Column(
       children: [
         Container(
@@ -25,7 +25,7 @@ class HomeListCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Text(
-                    "${data["stoppage_name"]}",
+                    "${data["stoppage"]["stoppage_name"]}",
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 14,
@@ -47,7 +47,7 @@ class HomeListCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: Text(
-                    "Total People to Pickup: $totalPeopleToPickup",
+                    "${data['customerCount']} Customer at this stop",
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 14,

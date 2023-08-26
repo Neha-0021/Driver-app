@@ -5,18 +5,13 @@ import 'package:flutter/material.dart';
 class NextStoppageState extends ChangeNotifier {
   final NextStoppageService service = NextStoppageService();
 
-  List<Map<String, dynamic>> nextStoppageDetails = [];
-  List<Map<String, dynamic>> userDetails = []; 
+  List<Map<String, dynamic>> nextStoppageUserDetails = [];
 
   Future<void> getNextStoppage(String driverId, String routeId) async {
     try {
       Response response = await service.getNextStoppage(driverId, routeId);
-      print('API Response: ${response.data}');
-
-      nextStoppageDetails =
-          List<Map<String, dynamic>>.from(response.data["nextStoppageDetails"]);
-      userDetails =
-          List<Map<String, dynamic>>.from(response.data["userDetails"]);
+       nextStoppageUserDetails = List<Map<String, dynamic>>.from(
+          response.data["nextStoppageUserDetails"]);
 
       notifyListeners();
     } catch (error) {
