@@ -39,10 +39,10 @@ class DriverRatingService {
     }
   }
 
-  Future<Response> getDriverRatingByBookingId(String bookingId) async {
+  Future<Response> getDriverRatingByDriverId(String driverId) async {
   try {
     final response = await dio.get(
-      "$baseUrl/api/driver/get-driverRating/$bookingId",
+      "$baseUrl/api/driver/get-driverRating/$driverId",
     );
     return response;
   } catch (err) {

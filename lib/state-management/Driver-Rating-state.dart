@@ -29,10 +29,10 @@ class DriverRatingState extends ChangeNotifier {
     }
   }
 
-  Future<void> getDriverRatingByBookingId(String bookingId) async {
+  Future<void> getDriverRatingByDriverId(String driverId) async {
     try {
       Response response =
-          await ratingService.getDriverRatingByBookingId(bookingId);
+          await ratingService.getDriverRatingByDriverId(driverId);
       RatingModel ratingModel = RatingModel.fromJson(response.data);
 
       driverRating = ratingModel.driver!;

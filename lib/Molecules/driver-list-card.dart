@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:driver_app/model/rating-model.dart';
 
 class DriverListCard extends StatelessWidget {
-  final Driver driver;
+     final Driver driver;
   final User user;
-
-  const DriverListCard({Key? key, required this.driver, required this.user})
-      : super(key: key);
-
-  @override
+  const DriverListCard({
+    super.key,
+    required this.driver, required this.user,
+  });
+   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(

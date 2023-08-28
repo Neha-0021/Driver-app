@@ -9,7 +9,7 @@ class NextStoppageService {
   PhoneStorage storage = PhoneStorage();
 
   Future<Response<dynamic>> getNextStoppage(
-      String driverId, String routeId) async {
+      String routeId, String stoppageId) async {
     try {
       final String token = await storage.getStringValue("token") ?? "";
       Map<String, dynamic> headers = {
@@ -18,7 +18,7 @@ class NextStoppageService {
       };
 
       final response = await dio.get(
-        "$baseUrl/api/driver/get-next-stoppage/$driverId/$routeId",
+        "$baseUrl/api/driver/get-next-stoppage/$routeId/$stoppageId",
         options: Options(headers: headers),
       );
 
@@ -29,6 +29,33 @@ class NextStoppageService {
         return err.response!;
       }
       rethrow;
+    }
+  }
+
+  getAllRoutes() async {
+    try {
+      Response response = await dio.get(
+        "$baseUrl/api/core/get-all-route",
+      );
+      return response;
+    } catch (err) {
+      print(err);
+      if (err is DioException) {
+        return (err.response);
+      }
+    }
+  }
+  getStoppagesByRouteId(String routeId) async {
+    try {
+      Response response = await dio.get(
+        "$baseUrl/api/core/get-stoppage-by-routeID/$routeId",
+      );
+      return response;
+    } catch (err) {
+      print(err);
+      if (err is DioException) {
+        return (err.response);
+      }
     }
   }
 }

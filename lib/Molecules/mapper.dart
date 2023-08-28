@@ -165,11 +165,14 @@ class MapperComponent extends State<Mapper> {
   void initState() {
     super.initState();
     final routeState = Provider.of<RouteDetailState>(context, listen: false);
-    routeState.getRouteDetailsByDriver('2023-07-26');
-    locationUpdateTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
+     String currentDate = DateTime.now().toLocal().toString().split(' ')[0];
+      routeState.getRouteDetailsByDriver(currentDate);
+      locationUpdateTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
       getCurrentLocation();
     });
   }
+
+
 
   @override
   void dispose() {
@@ -383,11 +386,11 @@ class MapperComponent extends State<Mapper> {
                             'assets/images/Vectorm.png',
                             width: 20,
                           ),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 10),
+                         Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: Text(
-                              'Next Stop & Customers',
-                              style: TextStyle(
+                                 rideStarted ? 'Next Stop & Customers' : 'Total People to Pickup • ${routeState.totalUsers} Customers',
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 15,
                                 fontFamily: 'PublicaSans',

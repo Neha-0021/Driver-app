@@ -1,3 +1,4 @@
+import 'package:driver_app/state-management/profile-state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -19,10 +20,11 @@ class _DriverRatingState extends State<DriverRating> {
   @override
   void initState() {
     super.initState();
-
+    final stateCall = Provider.of<ProfileState>(context, listen: false);
+    String driverId = stateCall.driverData["_id"];
     final driverRatingState =
         Provider.of<DriverRatingState>(context, listen: false);
-    driverRatingState.getDriverRatingByBookingId('64eae55894173371943c429e');
+    driverRatingState.getDriverRatingByDriverId(driverId);
   }
 
   @override
@@ -91,7 +93,7 @@ class _DriverRatingState extends State<DriverRating> {
                     if (index < driverRatingState.user.length) {
                       final driver = driverRatingState.driverRating[index];
                       final user = driverRatingState.user[index];
-                      return DriverListCard(driver: driver, user: user);
+                      return DriverListCard(driver: driver, user: user,);
                     }
                   },
                 ),

@@ -9,15 +9,18 @@ class RouteDetailState extends ChangeNotifier {
   Map<String, dynamic> startingPoint = {};
   Map<String, dynamic> endPoint = {};
   List<dynamic> stoppageWithDetails = [];
+  int totalUsers = 0;
 
   Future<void> getRouteDetailsByDriver(String date) async {
     try {
       Response response = await service.getRouteDetailsByDriver(date);
       routeDetails = Map<String, dynamic>.from(response.data["routeDetails"]);
-    stoppageWithDetails = response.data["stoppageWithDetails"].reversed.toList();
+      stoppageWithDetails = response.data["stoppageWithDetails"];
+
       startingPoint = Map<String, dynamic>.from(response.data["startingPoint"]);
       endPoint = Map<String, dynamic>.from(response.data["endPoint"]);
       print('Stoppage with details: $stoppageWithDetails');
+      totalUsers = response.data["totalUsers"];
       notifyListeners();
     } catch (error) {
       print('Error fetching route details: $error');
