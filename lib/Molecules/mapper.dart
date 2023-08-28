@@ -166,7 +166,7 @@ class MapperComponent extends State<Mapper> {
     super.initState();
     final routeState = Provider.of<RouteDetailState>(context, listen: false);
     routeState.getRouteDetailsByDriver('2023-07-26');
-    locationUpdateTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+    locationUpdateTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
       getCurrentLocation();
     });
   }

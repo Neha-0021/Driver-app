@@ -22,7 +22,7 @@ class _DriverRatingState extends State<DriverRating> {
 
     final driverRatingState =
         Provider.of<DriverRatingState>(context, listen: false);
-    driverRatingState.getDriverRatingByBookingId('64a1583d964565929b270bf7');
+    driverRatingState.getDriverRatingByBookingId('64eae55894173371943c429e');
   }
 
   @override
