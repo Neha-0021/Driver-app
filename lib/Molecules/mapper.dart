@@ -139,7 +139,7 @@ class MapperComponent extends State<Mapper> {
             startingPointLatitude, startingPointLongitude);
     String startingpoint = distanceString.replaceAll(RegExp(r'[^0-9.]'), '');
     double? distance = double.tryParse(startingpoint);
-    if (distance != null && distance <= 20.0) {
+    if (distance != null && distance <= 703530.48) {
       setState(() {
         rideStarted = true;
       });
@@ -330,7 +330,7 @@ class MapperComponent extends State<Mapper> {
                                     double.tryParse(distanceString);
 
                                 if (distance != null &&
-                                    (distance <= 20.0 ||
+                                    (distance <= 704530.48 ||
                                         currentDestinationIndex ==
                                             destinations.length - 1)) {
                                   isRideCompleted = true;
@@ -339,7 +339,8 @@ class MapperComponent extends State<Mapper> {
 
                                 Timer.periodic(const Duration(seconds: 2),
                                     (timer) {
-                                  if (distance != null && distance <= 20.48) {
+                                  if (distance != null &&
+                                      distance <= 704530.48) {
                                     currentDestinationIndex++;
                                     if (currentDestinationIndex ==
                                         destinations.length) {
@@ -432,8 +433,7 @@ class MapperComponent extends State<Mapper> {
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => const NextStop()),
+                        MaterialPageRoute(builder: (context) => const NextStop()),
                       );
                     },
                   ),

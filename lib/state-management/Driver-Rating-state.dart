@@ -37,12 +37,12 @@ class DriverRatingState extends ChangeNotifier {
           await ratingService.getDriverRatingByDriverId(driverId);
       RatingModel ratingModel = RatingModel.fromJson(response.data);
 
-      driverRatings = ratingModel.driverRatings;
-      users = ratingModel.users;
-      totalUsers = ratingModel.totalUsers;
-      averageDriverRating = ratingModel.averageDriverRating.toDouble();
+      driverRatings = ratingModel.driverRatings!;
+      users = ratingModel.users!;
+      totalUsers = ratingModel.totalUsers!;
+      averageDriverRating = ratingModel.averageDriverRating!;
     } catch (error) {
-      print('Error getting driver rating by booking ID: $error');
+      print('Error getting driver rating by driver ID: $error');
     }
   }
 }

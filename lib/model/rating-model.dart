@@ -1,119 +1,134 @@
 class RatingModel {
-  RatingModel({
-    required this.status,
-    required this.driverRatings,
-    required this.users,
-    required this.totalUsers,
-    required this.averageDriverRating,
-  });
-  late final String status;
-  late final List<DriverRatings> driverRatings;
-  late final List<Users> users;
-  late final int totalUsers;
-  late final int averageDriverRating;
-  
-  RatingModel.fromJson(Map<String, dynamic> json){
+  String? status;
+  List<DriverRatings>? driverRatings;
+  List<Users>? users;
+  int? totalUsers;
+  double? averageDriverRating;
+
+  RatingModel(
+      {this.status,
+      this.driverRatings,
+      this.users,
+      this.totalUsers,
+      this.averageDriverRating});
+
+  RatingModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
-    driverRatings = List.from(json['driverRatings']).map((e)=>DriverRatings.fromJson(e)).toList();
-    users = List.from(json['users']).map((e)=>Users.fromJson(e)).toList();
+    if (json['driverRatings'] != null) {
+      driverRatings = <DriverRatings>[];
+      json['driverRatings'].forEach((v) {
+        driverRatings!.add(new DriverRatings.fromJson(v));
+      });
+    }
+    if (json['users'] != null) {
+      users = <Users>[];
+      json['users'].forEach((v) {
+        users!.add(new Users.fromJson(v));
+      });
+    }
     totalUsers = json['totalUsers'];
     averageDriverRating = json['averageDriverRating'];
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['status'] = status;
-    _data['driverRatings'] = driverRatings.map((e)=>e.toJson()).toList();
-    _data['users'] = users.map((e)=>e.toJson()).toList();
-    _data['totalUsers'] = totalUsers;
-    _data['averageDriverRating'] = averageDriverRating;
-    return _data;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['status'] = this.status;
+    if (this.driverRatings != null) {
+      data['driverRatings'] =
+          this.driverRatings!.map((v) => v.toJson()).toList();
+    }
+    if (this.users != null) {
+      data['users'] = this.users!.map((v) => v.toJson()).toList();
+    }
+    data['totalUsers'] = this.totalUsers;
+    data['averageDriverRating'] = this.averageDriverRating;
+    return data;
   }
 }
 
 class DriverRatings {
-  DriverRatings({
-    required this.id,
-    required this.driverId,
-    required this.rating,
-    required this.userId,
-    required this.createdOn,
-    required this.V,
-  });
-  late final String id;
-  late final String driverId;
-  late final int rating;
-  late final String userId;
-  late final String createdOn;
-  late final int V;
-  
-  DriverRatings.fromJson(Map<String, dynamic> json){
-    id = json['_id'];
+  String? sId;
+  String? driverId;
+  int? rating;
+  String? userId;
+  String? createdOn;
+  int? iV;
+
+  DriverRatings(
+      {this.sId,
+      this.driverId,
+      this.rating,
+      this.userId,
+      this.createdOn,
+      this.iV});
+
+  DriverRatings.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
     driverId = json['driverId'];
     rating = json['rating'];
     userId = json['userId'];
     createdOn = json['createdOn'];
-    V = json['__v'];
+    iV = json['__v'];
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['_id'] = id;
-    _data['driverId'] = driverId;
-    _data['rating'] = rating;
-    _data['userId'] = userId;
-    _data['createdOn'] = createdOn;
-    _data['__v'] = V;
-    return _data;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['driverId'] = this.driverId;
+    data['rating'] = this.rating;
+    data['userId'] = this.userId;
+    data['createdOn'] = this.createdOn;
+    data['__v'] = this.iV;
+    return data;
   }
 }
 
 class Users {
-  Users({
-    required this.id,
-    required this.firstname,
-    required this.lastname,
-    required this.email,
-    required this.address,
-    required this.workplace,
-    required this.mobile,
-    required this.password,
-    required this.isactive,
-    required this.isdelete,
-    required this.isblocked,
-    required this.isVerify,
-    required this.referralCode,
-    required this.referredBy,
-    required this.officeTimeFrom,
-    required this.officeTimeTo,
-    required this.profilePhoto,
-    required this.createdOn,
-    required this.updatedOn,
-    required this.V,
-  });
-  late final String id;
-  late final String firstname;
-  late final String lastname;
-  late final String email;
-  late final String address;
-  late final String workplace;
-  late final String mobile;
-  late final String password;
-  late final String isactive;
-  late final String isdelete;
-  late final String isblocked;
-  late final String isVerify;
-  late final String referralCode;
-  late final String referredBy;
-  late final String officeTimeFrom;
-  late final String officeTimeTo;
-  late final String profilePhoto;
-  late final String createdOn;
-  late final String updatedOn;
-  late final int V;
-  
-  Users.fromJson(Map<String, dynamic> json){
-    id = json['_id'];
+  String? sId;
+  String? firstname;
+  String? lastname;
+  String? email;
+  String? address;
+  String? workplace;
+  String? mobile;
+  String? password;
+  String? isactive;
+  String? isdelete;
+  String? isblocked;
+  String? isVerify;
+  String? referralCode;
+  String? referredBy;
+  String? officeTimeFrom;
+  String? officeTimeTo;
+  String? profilePhoto;
+  String? createdOn;
+  String? updatedOn;
+  int? iV;
+
+  Users(
+      {this.sId,
+      this.firstname,
+      this.lastname,
+      this.email,
+      this.address,
+      this.workplace,
+      this.mobile,
+      this.password,
+      this.isactive,
+      this.isdelete,
+      this.isblocked,
+      this.isVerify,
+      this.referralCode,
+      this.referredBy,
+      this.officeTimeFrom,
+      this.officeTimeTo,
+      this.profilePhoto,
+      this.createdOn,
+      this.updatedOn,
+      this.iV});
+
+  Users.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
     firstname = json['firstname'];
     lastname = json['lastname'];
     email = json['email'];
@@ -132,31 +147,31 @@ class Users {
     profilePhoto = json['profile_photo'];
     createdOn = json['createdOn'];
     updatedOn = json['updatedOn'];
-    V = json['__v'];
+    iV = json['__v'];
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['_id'] = id;
-    _data['firstname'] = firstname;
-    _data['lastname'] = lastname;
-    _data['email'] = email;
-    _data['address'] = address;
-    _data['workplace'] = workplace;
-    _data['mobile'] = mobile;
-    _data['password'] = password;
-    _data['isactive'] = isactive;
-    _data['isdelete'] = isdelete;
-    _data['isblocked'] = isblocked;
-    _data['isVerify'] = isVerify;
-    _data['referral_code'] = referralCode;
-    _data['referred_by'] = referredBy;
-    _data['officeTimeFrom'] = officeTimeFrom;
-    _data['officeTimeTo'] = officeTimeTo;
-    _data['profile_photo'] = profilePhoto;
-    _data['createdOn'] = createdOn;
-    _data['updatedOn'] = updatedOn;
-    _data['__v'] = V;
-    return _data;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['firstname'] = this.firstname;
+    data['lastname'] = this.lastname;
+    data['email'] = this.email;
+    data['address'] = this.address;
+    data['workplace'] = this.workplace;
+    data['mobile'] = this.mobile;
+    data['password'] = this.password;
+    data['isactive'] = this.isactive;
+    data['isdelete'] = this.isdelete;
+    data['isblocked'] = this.isblocked;
+    data['isVerify'] = this.isVerify;
+    data['referral_code'] = this.referralCode;
+    data['referred_by'] = this.referredBy;
+    data['officeTimeFrom'] = this.officeTimeFrom;
+    data['officeTimeTo'] = this.officeTimeTo;
+    data['profile_photo'] = this.profilePhoto;
+    data['createdOn'] = this.createdOn;
+    data['updatedOn'] = this.updatedOn;
+    data['__v'] = this.iV;
+    return data;
   }
 }
