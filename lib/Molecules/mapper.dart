@@ -127,7 +127,7 @@ class MapperComponent extends State<Mapper> {
   DistanceUtils distanceUtils = DistanceUtils();
 
   bool rideStarted = false;
-  bool isRideComplete = false;
+
   void checkAndStartRide(BuildContext context) async {
     final routeState = Provider.of<RouteDetailState>(context, listen: false);
     double startingPointLatitude =
@@ -139,24 +139,9 @@ class MapperComponent extends State<Mapper> {
             startingPointLatitude, startingPointLongitude);
     String startingpoint = distanceString.replaceAll(RegExp(r'[^0-9.]'), '');
     double? distance = double.tryParse(startingpoint);
-    if (distance != null && distance <= 10.0) {
+    if (distance != null && distance <= 20.0) {
       setState(() {
         rideStarted = true;
-      });
-    }
-  }
-
-  void destination(BuildContext context) async {
-    final routeState = Provider.of<RouteDetailState>(context, listen: false);
-    double endLat = double.parse(routeState.endPoint["latitude"]);
-    double endLong = double.parse(routeState.endPoint["longitude"]);
-    String distanceString = await distanceUtils
-        .getCurrentLocationAndCalculateDistance(endLat, endLong);
-    String endpoint = distanceString.replaceAll(RegExp(r'[^0-9.]'), '');
-    double? distance = double.tryParse(endpoint);
-    if (distance != null && distance <= 10.0) {
-      setState(() {
-        isRideComplete = true;
       });
     }
   }
@@ -165,14 +150,12 @@ class MapperComponent extends State<Mapper> {
   void initState() {
     super.initState();
     final routeState = Provider.of<RouteDetailState>(context, listen: false);
-     String currentDate = DateTime.now().toLocal().toString().split(' ')[0];
-      routeState.getRouteDetailsByDriver(currentDate);
-      locationUpdateTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
+    String currentDate = DateTime.now().toLocal().toString().split(' ')[0];
+    routeState.getRouteDetailsByDriver(currentDate);
+    locationUpdateTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
       getCurrentLocation();
     });
   }
-
-
 
   @override
   void dispose() {
@@ -200,6 +183,7 @@ class MapperComponent extends State<Mapper> {
   }
 
   bool fullScreen = false;
+  bool isRideCompleted = false;
 
   void toggleMapSize() {
     setState(() {
@@ -230,11 +214,11 @@ class MapperComponent extends State<Mapper> {
                         markers: {
                           if (rideStarted) ...[
                             userMarker,
+                            ...stoppageMarkers,
                           ],
                           if (!rideStarted) ...[
                             userMarker,
                             startPointMarker,
-                            ...stoppageMarkers,
                           ],
                         },
                         polylines: _routeCoordinates,
@@ -282,74 +266,93 @@ class MapperComponent extends State<Mapper> {
                               "${userLocation.latitude},${userLocation.longitude}",
                               "${routeState.startingPoint["latitude"]},${routeState.startingPoint["longitude"]}");
                         }
+                        checkAndStartRide(context);
                       },
                       width: 140,
                       color: const Color(0xFF192B46),
                     ),
                     MapButton(
                       buttonText:
-                          isRideComplete ? 'Complete Ride' : 'Start Ride',
+                          isRideCompleted ? 'Complete Ride' : 'Start Ride',
                       disabled: !rideStarted,
                       onPressed: () async {
-                        if (isRideComplete) {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return const CompleteRide();
-                            },
-                          );
-                        } else if (rideStarted) {
-                          startShuttle(context);
+                        if (rideStarted) {
+                          if (isRideCompleted) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return CompleteRide();
+                              },
+                            );
+                          } else {
+                            startShuttle(context);
 
-                          await getCurrentLocation();
-                          List<LatLng> destinations = [];
-                          for (var stoppage in routeState.stoppageWithDetails) {
-                            double latitude =
-                                double.parse(stoppage["stoppage"]["latitude"]);
-                            double longitude =
-                                double.parse(stoppage["stoppage"]["longitude"]);
-                            LatLng location = LatLng(latitude, longitude);
-                            destinations.add(location);
-                          }
-                          int currentDestinationIndex = 0;
-                          void updateDestinationAndDirections() async {
-                            if (currentDestinationIndex < destinations.length) {
-                              final LatLng destination =
-                                  destinations[currentDestinationIndex];
-                              // Fetch directions from current location to the destination.
-                              await getDirection(
-                                "${userLocation.latitude},${userLocation.longitude}",
-                                "${destination.latitude},${destination.longitude}",
-                              );
-                              // Animate the camera to the new destination.
-                              final GoogleMapController controller =
-                                  await _controller.future;
-                              controller
-                                  .animateCamera(CameraUpdate.newCameraPosition(
-                                CameraPosition(
-                                  target: destination,
-                                  zoom: 15.0,
-                                ),
-                              ));
-                              String destinationdistaion = await distanceUtils
-                                  .getCurrentLocationAndCalculateDistance(
-                                      destination.latitude,
-                                      destination.longitude);
-                              String distanceString = destinationdistaion
-                                  .replaceAll(RegExp(r'[^0-9.]'), '');
-                              double? distance =
-                                  double.tryParse(distanceString);
-                              Timer.periodic(const Duration(seconds: 2),
-                                  (timer) {
-                                if (distance != null && distance <= 10.0) {
-                                  currentDestinationIndex++;
-                                  updateDestinationAndDirections();
-                                }
-                              });
+                            await getCurrentLocation();
+                            List<LatLng> destinations = [];
+                            for (var stoppage
+                                in routeState.stoppageWithDetails) {
+                              double latitude = double.parse(
+                                  stoppage["stoppage"]["latitude"]);
+                              double longitude = double.parse(
+                                  stoppage["stoppage"]["longitude"]);
+                              LatLng location = LatLng(latitude, longitude);
+                              destinations.add(location);
                             }
-                          }
+                            int currentDestinationIndex = 0;
+                            void updateDestinationAndDirections() async {
+                              if (currentDestinationIndex <
+                                  destinations.length) {
+                                final LatLng destination =
+                                    destinations[currentDestinationIndex];
+                                // Fetch directions from current location to the destination.
+                                await getDirection(
+                                  "${userLocation.latitude},${userLocation.longitude}",
+                                  "${destination.latitude},${destination.longitude}",
+                                );
+                                // Animate the camera to the new destination.
+                                final GoogleMapController controller =
+                                    await _controller.future;
+                                controller.animateCamera(
+                                    CameraUpdate.newCameraPosition(
+                                  CameraPosition(
+                                    target: destination,
+                                    zoom: 15.0,
+                                  ),
+                                ));
+                                String destinationdistaion = await distanceUtils
+                                    .getCurrentLocationAndCalculateDistance(
+                                  destination.latitude,
+                                  destination.longitude,
+                                );
+                                String distanceString = destinationdistaion
+                                    .replaceAll(RegExp(r'[^0-9.]'), '');
+                                double? distance =
+                                    double.tryParse(distanceString);
 
-                          updateDestinationAndDirections();
+                                if (distance != null &&
+                                    (distance <= 20.0 ||
+                                        currentDestinationIndex ==
+                                            destinations.length - 1)) {
+                                  isRideCompleted = true;
+                                  setState(() {});
+                                }
+
+                                Timer.periodic(const Duration(seconds: 2),
+                                    (timer) {
+                                  if (distance != null && distance <= 20.48) {
+                                    currentDestinationIndex++;
+                                    if (currentDestinationIndex ==
+                                        destinations.length) {
+                                      isRideCompleted = true;
+                                    }
+                                    updateDestinationAndDirections();
+                                  }
+                                });
+                              }
+                            }
+
+                            updateDestinationAndDirections();
+                          }
                         }
                       },
                       width: 110,
@@ -365,7 +368,7 @@ class MapperComponent extends State<Mapper> {
                           },
                         );
                       },
-                      color: Color(0xFFECB21E),
+                      color: const Color(0xFFECB21E),
                       width: 85,
                     ),
                   ],
@@ -386,10 +389,12 @@ class MapperComponent extends State<Mapper> {
                             'assets/images/Vectorm.png',
                             width: 20,
                           ),
-                         Padding(
+                          Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: Text(
-                                 rideStarted ? 'Next Stop & Customers' : 'Total People to Pickup • ${routeState.totalUsers} Customers',
+                              rideStarted
+                                  ? 'Next Stop & Customers'
+                                  : 'Total People to Pickup • ${routeState.totalUsers} Customers',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 15,
@@ -427,7 +432,8 @@ class MapperComponent extends State<Mapper> {
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => NextStop()),
+                        MaterialPageRoute(
+                            builder: (context) => const NextStop()),
                       );
                     },
                   ),

@@ -33,15 +33,5 @@ class DriverHistoryState extends ChangeNotifier {
     }
   }
 
-  Future<void> bulkUpdateBookingStatus(String bookingId, String date) async {
-    try {
-      Response response = await historyService.bulkUpdateBookingStatus(
-        bookingId,
-        date,
-      );
-      // Handle response as needed
-    } catch (error) {
-      print('Error updating booking status: $error');
-    }
-  }
+  
 }

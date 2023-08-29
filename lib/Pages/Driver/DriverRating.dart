@@ -46,8 +46,8 @@ class _DriverRatingState extends State<DriverRating> {
                   Titletext: 'Driver Rating',
                   subtitletext: 'Check what your customers say about you!',
                 ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 30),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -55,12 +55,13 @@ class _DriverRatingState extends State<DriverRating> {
                       DriverContainer(
                         titleText: 'Total Customer',
                         imagePath: 'assets/images/svg/Vector.svg',
-                        subtitleText: '20',
+                        subtitleText: driverRatingState.totalUsers.toString(),
                       ),
                       DriverContainer(
                         titleText: 'Average Ratings',
                         imagePath: 'assets/images/svg/Vectorv.svg',
-                        subtitleText: '3.2',
+                        subtitleText:
+                            driverRatingState.averageDriverRating.toString(),
                       )
                     ],
                   ),
@@ -88,12 +89,15 @@ class _DriverRatingState extends State<DriverRating> {
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: driverRatingState.driverRating.length,
+                  itemCount: driverRatingState.driverRatings.length,
                   itemBuilder: (context, index) {
-                    if (index < driverRatingState.user.length) {
-                      final driver = driverRatingState.driverRating[index];
-                      final user = driverRatingState.user[index];
-                      return DriverListCard(driver: driver, user: user,);
+                    if (index < driverRatingState.users.length) {
+                      final driver = driverRatingState.driverRatings[index];
+                      final user = driverRatingState.users[index];
+                      return DriverListCard(
+                        driver: driver,
+                        user: user,
+                      );
                     }
                   },
                 ),

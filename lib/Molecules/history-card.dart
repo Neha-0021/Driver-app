@@ -57,8 +57,15 @@ class HistoryCard extends StatelessWidget {
                   ),
                 ),
                 HistoryStatus(
-                    containerColor: const Color(0xFF00BD79),
-                    labelText: 'Completed')
+                  containerColor: data["isdelete"] == "N"
+                      ? const Color(0xff00BD79)
+                      : const Color(0xFFF9A90C),
+                  labelText: data["isdelete"] == "N"
+                      ? "Completed"
+                      : data["isdelete"] == "Y"
+                          ? 'Stopped'
+                          : "",
+                ),
               ],
             ),
           ),

@@ -6,8 +6,10 @@ import 'package:dio/dio.dart';
 class DriverRatingState extends ChangeNotifier {
   final DriverRatingService ratingService = DriverRatingService();
 
-  List<Driver> driverRating = [];
-  List<User> user = [];
+  List<DriverRatings> driverRatings = [];
+  List<Users> users = [];
+  int totalUsers = 0;
+  double averageDriverRating = 0.0;
 
   Future<void> addDriverRating(String bookingId, int rating) async {
     try {
@@ -35,8 +37,10 @@ class DriverRatingState extends ChangeNotifier {
           await ratingService.getDriverRatingByDriverId(driverId);
       RatingModel ratingModel = RatingModel.fromJson(response.data);
 
-      driverRating = ratingModel.driver!;
-      user = ratingModel.user!;
+      driverRatings = ratingModel.driverRatings;
+      users = ratingModel.users;
+      totalUsers = ratingModel.totalUsers;
+      averageDriverRating = ratingModel.averageDriverRating.toDouble();
     } catch (error) {
       print('Error getting driver rating by booking ID: $error');
     }

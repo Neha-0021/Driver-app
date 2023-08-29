@@ -1,18 +1,20 @@
 import 'package:dio/dio.dart';
+import 'package:driver_app/utils/alert.dart';
 import 'package:flutter/material.dart';
 import 'package:driver_app/atom/custom-radioButton.dart';
 import 'package:driver_app/service/stop-ride.dart';
 
 class StopRide extends StatefulWidget {
- 
+  const StopRide({super.key});
+
   @override
   _StopRideState createState() => _StopRideState();
 }
 
 class _StopRideState extends State<StopRide> {
   StopRideService service = StopRideService();
-  String error = '';
 
+  AlertBundle alert = AlertBundle();
   bool isFirstReasonSelected = false;
   bool isSecondReasonSelected = false;
 
@@ -30,7 +32,7 @@ class _StopRideState extends State<StopRide> {
     });
   }
 
-  void stopRide( context) async {
+  void stopRide(context) async {
     try {
       String reason = isFirstReasonSelected
           ? 'Vehicle Breakdown'
@@ -41,17 +43,17 @@ class _StopRideState extends State<StopRide> {
       Response response = await service.stopRide(reason);
 
       if (response.statusCode == 200) {
-        // Handle success, e.g., show a success message or navigate somewhere
-        Navigator.pop(context); // Close the dialog
+        alert.SnackBarNotify(context, "Successfully stopped the ride");
+        Navigator.pop(context);
       } else {
-        setState(() {
-          error = "Failed to stop ride";
-        });
+        {
+          alert.SnackBarNotify(context, "Ride could not be stopped.");
+        }
       }
-    } catch (err) {
-      setState(() {
-        error = "An error occurred: $err";
-      });
+    } catch (error) {
+      print("Error: $error");
+      alert.SnackBarNotify(
+          context, "An error occurred. Please try again later.");
     }
   }
 
@@ -144,7 +146,7 @@ class _StopRideState extends State<StopRide> {
                     Expanded(
                       child: TextButton(
                         onPressed: () {
-                          stopRide(context); 
+                          stopRide(context);
                         },
                         style: TextButton.styleFrom(
                           minimumSize: const Size(130, 41),

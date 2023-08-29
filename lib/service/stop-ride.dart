@@ -16,14 +16,14 @@ class StopRideService {
       'Content-Type': 'application/json',
     };
 
-    Map<String, dynamic> requestBody = {
+    Map<String, dynamic> data = {
       "reason": reason,
     };
 
     try {
       Response response = await dio.post(
         "$baseUrl/api/driver/stop-ride",
-        data: requestBody,
+        data: data,
         options: Options(headers: headers),
       );
       return response;

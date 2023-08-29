@@ -1,169 +1,162 @@
 class RatingModel {
-  String? status;
-  List<Driver>? driver;
-  List<User>? user;
-
-  RatingModel({this.status, this.driver, this.user});
-
-  RatingModel.fromJson(Map<String, dynamic> json) {
+  RatingModel({
+    required this.status,
+    required this.driverRatings,
+    required this.users,
+    required this.totalUsers,
+    required this.averageDriverRating,
+  });
+  late final String status;
+  late final List<DriverRatings> driverRatings;
+  late final List<Users> users;
+  late final int totalUsers;
+  late final int averageDriverRating;
+  
+  RatingModel.fromJson(Map<String, dynamic> json){
     status = json['status'];
-    if (json['driver'] != null) {
-      driver = <Driver>[];
-      json['driver'].forEach((v) {
-        driver!.add(new Driver.fromJson(v));
-      });
-    }
-    if (json['user'] != null) {
-      user = <User>[];
-      json['user'].forEach((v) {
-        user!.add(new User.fromJson(v));
-      });
-    }
+    driverRatings = List.from(json['driverRatings']).map((e)=>DriverRatings.fromJson(e)).toList();
+    users = List.from(json['users']).map((e)=>Users.fromJson(e)).toList();
+    totalUsers = json['totalUsers'];
+    averageDriverRating = json['averageDriverRating'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    if (this.driver != null) {
-      data['driver'] = this.driver!.map((v) => v.toJson()).toList();
-    }
-    if (this.user != null) {
-      data['user'] = this.user!.map((v) => v.toJson()).toList();
-    }
-    return data;
+    final _data = <String, dynamic>{};
+    _data['status'] = status;
+    _data['driverRatings'] = driverRatings.map((e)=>e.toJson()).toList();
+    _data['users'] = users.map((e)=>e.toJson()).toList();
+    _data['totalUsers'] = totalUsers;
+    _data['averageDriverRating'] = averageDriverRating;
+    return _data;
   }
 }
 
-class Driver {
-  String? sId;
-  String? driverId;
-  int? rating;
-  String? userId;
-  String? createdOn;
-  int? iV;
-
-  Driver(
-      {this.sId,
-      this.driverId,
-      this.rating,
-      this.userId,
-      this.createdOn,
-      this.iV});
-
-  Driver.fromJson(Map<String, dynamic> json) {
-    sId = json['_id'];
+class DriverRatings {
+  DriverRatings({
+    required this.id,
+    required this.driverId,
+    required this.rating,
+    required this.userId,
+    required this.createdOn,
+    required this.V,
+  });
+  late final String id;
+  late final String driverId;
+  late final int rating;
+  late final String userId;
+  late final String createdOn;
+  late final int V;
+  
+  DriverRatings.fromJson(Map<String, dynamic> json){
+    id = json['_id'];
     driverId = json['driverId'];
     rating = json['rating'];
     userId = json['userId'];
     createdOn = json['createdOn'];
-    iV = json['__v'];
+    V = json['__v'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['_id'] = this.sId;
-    data['driverId'] = this.driverId;
-    data['rating'] = this.rating;
-    data['userId'] = this.userId;
-    data['createdOn'] = this.createdOn;
-    data['__v'] = this.iV;
-    return data;
+    final _data = <String, dynamic>{};
+    _data['_id'] = id;
+    _data['driverId'] = driverId;
+    _data['rating'] = rating;
+    _data['userId'] = userId;
+    _data['createdOn'] = createdOn;
+    _data['__v'] = V;
+    return _data;
   }
 }
 
-class User {
-  String? sId;
-  String? firstname;
-  String? lastname;
-  String? email;
-  String? address;
-  String? mobile;
-  String? password;
-  String? isactive;
-  String? isdelete;
-  String? isblocked;
-  String? isVerify;
-  String? createdOn;
-  String? updatedOn;
-  String? referralCode;
-  String? referredBy;
-  String? officeTimeFrom;
-  String? officeTimeTo;
-  int? iV;
-  String? profilePhoto;
-  String? workplace;
-  String? fcmToken;
-
-  User(
-      {this.sId,
-      this.firstname,
-      this.lastname,
-      this.email,
-      this.address,
-      this.mobile,
-      this.password,
-      this.isactive,
-      this.isdelete,
-      this.isblocked,
-      this.isVerify,
-      this.createdOn,
-      this.updatedOn,
-      this.referralCode,
-      this.referredBy,
-      this.officeTimeFrom,
-      this.officeTimeTo,
-      this.iV,
-      this.profilePhoto,
-      this.workplace,
-      this.fcmToken});
-
-  User.fromJson(Map<String, dynamic> json) {
-    sId = json['_id'];
+class Users {
+  Users({
+    required this.id,
+    required this.firstname,
+    required this.lastname,
+    required this.email,
+    required this.address,
+    required this.workplace,
+    required this.mobile,
+    required this.password,
+    required this.isactive,
+    required this.isdelete,
+    required this.isblocked,
+    required this.isVerify,
+    required this.referralCode,
+    required this.referredBy,
+    required this.officeTimeFrom,
+    required this.officeTimeTo,
+    required this.profilePhoto,
+    required this.createdOn,
+    required this.updatedOn,
+    required this.V,
+  });
+  late final String id;
+  late final String firstname;
+  late final String lastname;
+  late final String email;
+  late final String address;
+  late final String workplace;
+  late final String mobile;
+  late final String password;
+  late final String isactive;
+  late final String isdelete;
+  late final String isblocked;
+  late final String isVerify;
+  late final String referralCode;
+  late final String referredBy;
+  late final String officeTimeFrom;
+  late final String officeTimeTo;
+  late final String profilePhoto;
+  late final String createdOn;
+  late final String updatedOn;
+  late final int V;
+  
+  Users.fromJson(Map<String, dynamic> json){
+    id = json['_id'];
     firstname = json['firstname'];
     lastname = json['lastname'];
     email = json['email'];
     address = json['address'];
+    workplace = json['workplace'];
     mobile = json['mobile'];
     password = json['password'];
     isactive = json['isactive'];
     isdelete = json['isdelete'];
     isblocked = json['isblocked'];
     isVerify = json['isVerify'];
-    createdOn = json['createdOn'];
-    updatedOn = json['updatedOn'];
     referralCode = json['referral_code'];
     referredBy = json['referred_by'];
     officeTimeFrom = json['officeTimeFrom'];
     officeTimeTo = json['officeTimeTo'];
-    iV = json['__v'];
     profilePhoto = json['profile_photo'];
-    workplace = json['workplace'];
-    fcmToken = json['fcmToken'];
+    createdOn = json['createdOn'];
+    updatedOn = json['updatedOn'];
+    V = json['__v'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['_id'] = this.sId;
-    data['firstname'] = this.firstname;
-    data['lastname'] = this.lastname;
-    data['email'] = this.email;
-    data['address'] = this.address;
-    data['mobile'] = this.mobile;
-    data['password'] = this.password;
-    data['isactive'] = this.isactive;
-    data['isdelete'] = this.isdelete;
-    data['isblocked'] = this.isblocked;
-    data['isVerify'] = this.isVerify;
-    data['createdOn'] = this.createdOn;
-    data['updatedOn'] = this.updatedOn;
-    data['referral_code'] = this.referralCode;
-    data['referred_by'] = this.referredBy;
-    data['officeTimeFrom'] = this.officeTimeFrom;
-    data['officeTimeTo'] = this.officeTimeTo;
-    data['__v'] = this.iV;
-    data['profile_photo'] = this.profilePhoto;
-    data['workplace'] = this.workplace;
-    data['fcmToken'] = this.fcmToken;
-    return data;
+    final _data = <String, dynamic>{};
+    _data['_id'] = id;
+    _data['firstname'] = firstname;
+    _data['lastname'] = lastname;
+    _data['email'] = email;
+    _data['address'] = address;
+    _data['workplace'] = workplace;
+    _data['mobile'] = mobile;
+    _data['password'] = password;
+    _data['isactive'] = isactive;
+    _data['isdelete'] = isdelete;
+    _data['isblocked'] = isblocked;
+    _data['isVerify'] = isVerify;
+    _data['referral_code'] = referralCode;
+    _data['referred_by'] = referredBy;
+    _data['officeTimeFrom'] = officeTimeFrom;
+    _data['officeTimeTo'] = officeTimeTo;
+    _data['profile_photo'] = profilePhoto;
+    _data['createdOn'] = createdOn;
+    _data['updatedOn'] = updatedOn;
+    _data['__v'] = V;
+    return _data;
   }
 }

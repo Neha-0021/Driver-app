@@ -49,7 +49,7 @@ class  DriverHistoryService {
   }
 
   Future<Response> bulkUpdateBookingStatus(
-      String bookingId, String date) async {
+      String routeId, String date) async {
     final String token = await storage.getStringValue("token") ?? "";
     Map<String, dynamic> headers = {
       'Authorization': "Bearer $token",
@@ -58,7 +58,7 @@ class  DriverHistoryService {
 
     try {
       return await dio.put(
-        "$baseUrl/api/driver/bulk-update-booking-status/$bookingId/$date",
+        "$baseUrl/api/driver/bulk-update-booking-status/$routeId/$date",
         options: Options(headers: headers),
       );
     } catch (err) {
