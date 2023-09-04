@@ -433,7 +433,8 @@ class MapperComponent extends State<Mapper> {
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => const NextStop()),
+                        MaterialPageRoute(
+                            builder: (context) => const NextStop()),
                       );
                     },
                   ),

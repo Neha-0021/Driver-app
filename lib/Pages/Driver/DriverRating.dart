@@ -95,8 +95,7 @@ class _DriverRatingState extends State<DriverRating> {
                       final driver = driverRatingState.driverRatings[index];
                       final user = driverRatingState.users[index];
                       return DriverListCard(
-                        driver: driver,
-                        user: user,
+                       driver: driver, user: user,
                       );
                     }
                   },

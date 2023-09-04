@@ -23,15 +23,15 @@ class _NextStopState extends State<NextStop> {
 
     nextstopState.getAllRoutes().then((_) {
       if (nextstopState.routes.isNotEmpty) {
-        for (var route in nextstopState.routes) {
-          String routeId = route['_id'];
-          nextstopState.getStoppagesByRouteId(routeId).then((_) {
-            if (nextstopState.stoppages.isNotEmpty) {
-              String stoppageId = nextstopState.stoppages[0]['_id'];
-              nextstopState.getNextStoppage(routeId, stoppageId);
-            }
-          });
-        }
+        // Get the ID of the first route
+        String firstRouteId = nextstopState.routes[0]['_id'];
+
+        nextstopState.getStoppagesByRouteId(firstRouteId).then((_) {
+          if (nextstopState.stoppages.isNotEmpty) {
+            String stoppageId = nextstopState.stoppages[0]['_id'];
+            nextstopState.getNextStoppage(firstRouteId, stoppageId);
+          }
+        });
       }
     });
   }

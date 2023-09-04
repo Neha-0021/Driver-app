@@ -29,17 +29,6 @@ class HistoryCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             child: Row(
               children: [
-                Card(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(3),
-                    child: Image.network(
-                      data["route_details"]["image"],
-                      width: 30,
-                      height: 30,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -50,20 +39,20 @@ class HistoryCard extends StatelessWidget {
                         style: textHeadingstyle,
                       ),
                       Text(
-                        '${DateFormat("dd MMM yy").format(DateTime.parse(data['date']))} •${data["route_details"]["timing_form"]} to ${data["route_details"]["timing_to"]}',
+                        '${DateFormat("dd MMM yy").format(DateTime.parse(data['date']))}',
                         style: textSubHeadingStyle,
                       ),
                     ],
                   ),
                 ),
                 HistoryStatus(
-                  containerColor: data["isdelete"] == "N"
+                  containerColor: data["iscomplete"] == "Y"
                       ? const Color(0xff00BD79)
-                      : const Color(0xFFFF5353),
-                  labelText: data["isdelete"] == "N"
+                      : const Color(0xFFF9A90C),
+                  labelText: data["iscomplete"] == "Y"
                       ? "Completed"
-                      : data["isdelete"] == "Y"
-                          ? 'Cancelled'
+                      : data["iscomplete"] == "N"
+                          ? 'stopped'
                           : "",
                 ),
               ],
