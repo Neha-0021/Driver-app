@@ -1,5 +1,6 @@
 import 'package:driver_app/Molecules/history-card.dart';
 import 'package:driver_app/atom/history-notification-header.dart';
+import 'package:driver_app/atom/history/no-history.dart';
 import 'package:driver_app/state-management/history-state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +15,6 @@ class HistoryPage extends StatefulWidget {
 class _HistoryPageState extends State<HistoryPage> {
   List<dynamic> upcomingBookings = [];
 
-  
   @override
   void initState() {
     super.initState();
@@ -34,28 +34,22 @@ class _HistoryPageState extends State<HistoryPage> {
                 Titletext: 'History',
                 subtitletext: 'Check your ride history here!',
               ),
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: historyState.upcomingBookings.length,
-                itemBuilder: (context, index) {
-                  final history = historyState.upcomingBookings[index];
-                  return HistoryCard(data: history);
-                },
-              ),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: historyState.completeHistory.length,
-                itemBuilder: (context, index) {
-                  final history = historyState.completeHistory[index];
-                  return HistoryCard(data: history);
-                },
-              ),
+              historyState.completeHistory.isNotEmpty
+                  ? ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: historyState.completeHistory.length,
+                      itemBuilder: (context, index) {
+                        final history = historyState.completeHistory[index];
+                        return HistoryCard(data: history);
+                      },
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.all(20), child: NoHistory()),
             ],
           ),
         ),
       ),
-      );
-    
+    );
   }
 }

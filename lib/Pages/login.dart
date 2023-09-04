@@ -20,7 +20,6 @@ class LoginComponent extends State<Login> {
   bool showPassword = true;
   AlertBundle alert = AlertBundle();
   PhoneStorage storage = PhoneStorage();
-  
 
   driverLogin(context, homeState) async {
     if (homeState.driverMobile != "" && homeState.driverPassword != "") {
@@ -82,8 +81,7 @@ class LoginComponent extends State<Login> {
                   ),
                 ),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: const EdgeInsets.only(left: 20, top: 40, right: 20),
                   child: CustomTextInput(
                     hintText: "Enter Username",
                     imagePath: "assets/images/svg/profile.svg",
@@ -92,8 +90,7 @@ class LoginComponent extends State<Login> {
                   ),
                 ),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: const EdgeInsets.only(left: 20, top: 20, right: 20),
                   child: PasswordInput(
                     hintText: "Enter Password",
                     imagePath: "assets/images/svg/lock.svg",
@@ -109,8 +106,7 @@ class LoginComponent extends State<Login> {
                   ),
                 ),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+                  padding: const EdgeInsets.only(left: 20, top: 60, right: 20),
                   child: Padding(
                     padding: const EdgeInsets.only(top: 10),
                     child: CustomButton(
@@ -122,8 +118,7 @@ class LoginComponent extends State<Login> {
                   ),
                 ),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                  padding: const EdgeInsets.only(left: 30, top: 50, right: 30),
                   child: Center(child: PrivacyPolicy()),
                 ),
               ],

@@ -8,6 +8,7 @@ import 'package:driver_app/atom/home/HomeListCard.dart';
 import 'package:driver_app/atom/home/MapButton.dart';
 import 'package:driver_app/service/mapper/map.dart';
 import 'package:driver_app/service/start-ride/start-ride.dart';
+import 'package:driver_app/state-management/profile-state.dart';
 import 'package:driver_app/state-management/route-state.dart';
 import 'package:driver_app/utils/alert.dart';
 import 'package:driver_app/utils/distance.dart';
@@ -184,6 +185,7 @@ class MapperComponent extends State<Mapper> {
 
   bool fullScreen = false;
   bool isRideCompleted = false;
+  bool isLoading = false;
 
   void toggleMapSize() {
     setState(() {
@@ -208,23 +210,35 @@ class MapperComponent extends State<Mapper> {
                       height: fullScreen
                           ? MediaQuery.of(context).size.height
                           : 390.0,
-                      child: GoogleMap(
-                        mapType: MapType.normal,
-                        initialCameraPosition: _kGooglePlex,
-                        markers: {
-                          if (rideStarted) ...[
-                            userMarker,
-                            ...stoppageMarkers,
-                          ],
-                          if (!rideStarted) ...[
-                            userMarker,
-                            startPointMarker,
-                          ],
-                        },
-                        polylines: _routeCoordinates,
-                        onMapCreated: (GoogleMapController controller) {
-                          _controller.complete(controller);
-                        },
+                      child: Stack(
+                        children: [
+                          GoogleMap(
+                            mapType: MapType.normal,
+                            initialCameraPosition: _kGooglePlex,
+                            markers: {
+                              if (rideStarted) ...[
+                                userMarker,
+                                ...stoppageMarkers,
+                              ],
+                              if (!rideStarted) ...[
+                                userMarker,
+                                startPointMarker,
+                              ],
+                            },
+                            polylines: _routeCoordinates,
+                            onMapCreated: (GoogleMapController controller) {
+                              _controller.complete(controller);
+                            },
+                          ),
+                          // Loading Indicator (conditionally visible)
+                          Visibility(
+                            visible:
+                                isLoading, // Set this flag based on your logic
+                            child: const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -250,6 +264,11 @@ class MapperComponent extends State<Mapper> {
                     MapButton(
                       buttonText: 'Go to starting Point',
                       onPressed: () async {
+                        setState(() {
+                          isLoading =
+                              true; // Set loading to true when button is pressed
+                        });
+
                         await getCurrentLocation();
                         final GoogleMapController controller =
                             await _controller.future;
@@ -265,6 +284,11 @@ class MapperComponent extends State<Mapper> {
                           getDirection(
                               "${userLocation.latitude},${userLocation.longitude}",
                               "${routeState.startingPoint["latitude"]},${routeState.startingPoint["longitude"]}");
+
+                          // After fetching direction, set loading to false
+                          setState(() {
+                            isLoading = false;
+                          });
                         }
                         checkAndStartRide(context);
                       },
@@ -286,7 +310,9 @@ class MapperComponent extends State<Mapper> {
                             );
                           } else {
                             startShuttle(context);
-
+                            setState(() {
+                              isLoading = true;
+                            });
                             await getCurrentLocation();
                             List<LatLng> destinations = [];
                             for (var stoppage
@@ -348,6 +374,9 @@ class MapperComponent extends State<Mapper> {
                                     }
                                     updateDestinationAndDirections();
                                   }
+                                });
+                                setState(() {
+                                  isLoading = false;
                                 });
                               }
                             }

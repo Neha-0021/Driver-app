@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:driver_app/model/rating-model.dart';
+
 
 class DriverListCard extends StatelessWidget {
-     final DriverRatings driver;
-  final Users user;
-  const DriverListCard({super.key, 
+  final Map<String, dynamic> driver;
+  final Map<String, dynamic> user;
+  const DriverListCard({
+    super.key,
     required this.driver,
     required this.user,
   });
 
-   @override
+  @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
@@ -30,7 +31,7 @@ class DriverListCard extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
-                  image: NetworkImage(user.profilePhoto ?? ''),
+                  image: NetworkImage('${user["profile_photo"]}'),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -43,7 +44,7 @@ class DriverListCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  '${user.firstname} ${user.lastname}',
+                  '${user["firstname"]} ${user["lastname"]}',
                   style: const TextStyle(
                     color: Colors.black,
                     fontSize: 14,
@@ -52,7 +53,7 @@ class DriverListCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${user.workplace} - ${user.address} • ${user.officeTimeFrom}',
+                  '${user["workplace"]} - ${user["address"]} ',
                   style: const TextStyle(
                     color: Color(0xFF75879B),
                     fontSize: 10,
@@ -72,7 +73,7 @@ class DriverListCard extends StatelessWidget {
                   color: Colors.green,
                 ),
                 Text(
-                  '${driver.rating ?? 0}',
+                  '${driver["rating"]}',
                   style: const TextStyle(
                     color: Colors.black,
                     fontSize: 13,

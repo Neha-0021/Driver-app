@@ -1,12 +1,14 @@
+import 'package:driver_app/Molecules/driver-list-card.dart';
+
+import 'package:driver_app/atom/Driver/DriverContainer.dart';
+import 'package:driver_app/atom/Driver/HeaderWith-BackButton.dart';
+import 'package:driver_app/atom/no-rating.dart';
+import 'package:driver_app/state-management/Driver-Rating-state.dart';
 import 'package:driver_app/state-management/profile-state.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-
-import 'package:driver_app/Molecules/driver-list-card.dart';
-import 'package:driver_app/atom/Driver/DriverContainer.dart';
-import 'package:driver_app/atom/Driver/HeaderWith-BackButton.dart';
-import 'package:driver_app/state-management/Driver-Rating-state.dart';
 
 class DriverRating extends StatefulWidget {
   const DriverRating({Key? key}) : super(key: key);
@@ -47,7 +49,8 @@ class _DriverRatingState extends State<DriverRating> {
                   subtitletext: 'Check what your customers say about you!',
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -86,20 +89,22 @@ class _DriverRatingState extends State<DriverRating> {
                     ],
                   ),
                 ),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: driverRatingState.driverRatings.length,
-                  itemBuilder: (context, index) {
-                    if (index < driverRatingState.users.length) {
-                      final driver = driverRatingState.driverRatings[index];
-                      final user = driverRatingState.users[index];
-                      return DriverListCard(
-                       driver: driver, user: user,
-                      );
-                    }
-                  },
-                ),
+                driverRatingState.users.isNotEmpty
+                    ? ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: driverRatingState.users.length,
+                        itemBuilder: (context, index) {
+                          final driver = driverRatingState.driver[index];
+                          final user = driverRatingState.users[index];
+                          return DriverListCard(
+                            driver: driver,
+                            user: user,
+                          );
+                        },
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.all(20), child: NoRating())
               ],
             ),
           ),

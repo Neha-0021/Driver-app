@@ -6,8 +6,8 @@ import 'package:dio/dio.dart';
 class DriverRatingState extends ChangeNotifier {
   final DriverRatingService ratingService = DriverRatingService();
 
-  List<DriverRatings> driverRatings = [];
-  List<Users> users = [];
+  List<dynamic> driver = [];
+  List<dynamic> users = [];
   int totalUsers = 0;
   double averageDriverRating = 0.0;
 
@@ -35,14 +35,14 @@ class DriverRatingState extends ChangeNotifier {
     try {
       Response response =
           await ratingService.getDriverRatingByDriverId(driverId);
-      RatingModel ratingModel = RatingModel.fromJson(response.data);
+      driver = response.data["driverRatings"].reversed.toList();
 
-      driverRatings = ratingModel.driverRatings!;
-      users = ratingModel.users!;
-      totalUsers = ratingModel.totalUsers!;
-      averageDriverRating = ratingModel.averageDriverRating!;
+      users = response.data["users"].reversed.toList();
+      totalUsers = response.data["totalUsers"];
+      averageDriverRating = response.data["averageDriverRating"];
+      notifyListeners();
     } catch (error) {
-      print('Error getting driver rating by driver ID: $error');
+      print('Error fetching driver ratings: $error');
     }
   }
 }

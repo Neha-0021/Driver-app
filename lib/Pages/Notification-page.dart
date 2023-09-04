@@ -1,5 +1,6 @@
 import 'package:driver_app/Molecules/Notification-card.dart';
 import 'package:driver_app/atom/history-notification-header.dart';
+import 'package:driver_app/atom/no-notification.dart';
 import 'package:driver_app/state-management/notification-state.dart';
 
 import 'package:flutter/material.dart';
@@ -60,16 +61,12 @@ class _NotificationPageState extends State<NotificationPage> {
                   },
                 ),
                 notificationState.notifications.isEmpty
-                    ? GestureDetector(
-                        onTap: () =>
-                            {notificationState.getViewedNotification()},
-                        child: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: Text(
-                              notificationState.viewedNotifications.isEmpty
-                                  ? "Show Older Notification"
-                                  : "",
-                            )))
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 150),
+                        child: GestureDetector(
+                            onTap: () =>
+                                {notificationState.getViewedNotification()},
+                            child: NoNotification()))
                     : const Text(""),
               ],
             ),

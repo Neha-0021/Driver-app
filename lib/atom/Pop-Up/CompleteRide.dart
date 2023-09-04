@@ -5,54 +5,37 @@ import 'package:driver_app/utils/alert.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CompleteRide extends StatefulWidget {
-  const CompleteRide({Key? key});
-
-  @override
-  _CompleteRideState createState() => _CompleteRideState();
-}
-
-class _CompleteRideState extends State<CompleteRide> {
+class CompleteRide extends StatelessWidget {
+  CompleteRide({Key? key}) : super(key: key);
   final DriverHistoryService service = DriverHistoryService();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   AlertBundle alert = AlertBundle();
+  Future<void> rideComplete(BuildContext context) async {
+    final nextstopState =
+        Provider.of<NextStoppageState>(context, listen: false);
+    await nextstopState.getAllRoutes();
 
-  Future<void> Ridecomplete(BuildContext context) async {
-    print("Context: $context");
-    try {
-      final nextstopState =
-          Provider.of<NextStoppageState>(context, listen: false);
-      await nextstopState.getAllRoutes();
-
-      if (nextstopState.routes.isNotEmpty) {
-        for (var route in nextstopState.routes) {
-          String routeId = route['_id'];
-          String date = DateTime.now().toLocal().toString().split(' ')[0];
-          try {
-            Response response =
-                await service.bulkUpdateBookingStatus(routeId, date);
-
-            if (response.statusCode == 200) {
-              alert.SnackBarNotify(context, "Successfully complete the ride");
-              Navigator.pop(context);
-            } else {
-              alert.SnackBarNotify(context, "Ride could not be completed.");
-            }
-          } catch (error) {
-            alert.SnackBarNotify(
-                context, "An error occurred while updating booking status.");
+    if (nextstopState.routes.isNotEmpty) {
+      for (var route in nextstopState.routes) {
+        String routeId = route['_id'];
+        String date = DateTime.now().toLocal().toString().split(' ')[0];
+        Response response =
+            await service.bulkUpdateBookingStatus(routeId, date);
+        if (response.statusCode == 200) {
+          print("Successfully complete the ride");
+          if (_scaffoldKey.currentContext != null) {
+            Navigator.of(_scaffoldKey.currentContext!).pop();
           }
         }
       }
-    } catch (error) {
-      print("Error: $error");
-      alert.SnackBarNotify(
-          context, "An error occurred. Please try again later.");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      key: _scaffoldKey,
       child: Container(
         width: 320,
         height: 185,
@@ -78,7 +61,7 @@ class _CompleteRideState extends State<CompleteRide> {
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                'Are you sure you want to mark this ride  completed? you will not will able to  change it again ',
+                'Are you sure you want to mark this ride completed? You will not be able to change it again.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Color(0xFF75879B),
@@ -107,7 +90,7 @@ class _CompleteRideState extends State<CompleteRide> {
                                 padding: EdgeInsets.zero,
                               ),
                               onPressed: () {
-                                Navigator.pop(context);
+                                Navigator.of(context).pop();
                               },
                               child: const Text(
                                 'Go Back',
@@ -123,7 +106,7 @@ class _CompleteRideState extends State<CompleteRide> {
                           Expanded(
                             child: TextButton(
                               onPressed: () {
-                                Ridecomplete(context);
+                                rideComplete(context);
                               },
                               style: TextButton.styleFrom(
                                 minimumSize: const Size(130, 41),
