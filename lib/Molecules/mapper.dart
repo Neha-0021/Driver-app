@@ -64,7 +64,7 @@ class MapperComponent extends State<Mapper> {
             .asUint8List();
 
     // Define the desired size for the profile photo marker
-    double markerSize = 48.0; // You can change this value to the desired size
+    double markerSize = 80; // You can change this value to the desired size
 
     // Resize the profile photo
     Uint8List resizedBytes = await _resizeImage(bytes, markerSize);

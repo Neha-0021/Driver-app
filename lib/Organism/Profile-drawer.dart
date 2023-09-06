@@ -10,16 +10,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProfileDrawer extends StatelessWidget {
-  PhoneStorage storage = PhoneStorage();
-
   ProfileDrawer({super.key});
+  PhoneStorage storage = PhoneStorage();
 
   // ignore: non_constant_identifier_names
   void LogOut(context, homeProvider) async {
     storage.removeElement("token");
     homeProvider.reset();
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (BuildContext context) => Login()));
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      'login', // Replace with your login route name
+      (route) => false,
+    );
   }
 
   @override
@@ -61,10 +62,12 @@ class ProfileDrawer extends StatelessWidget {
                         style: textHeadingstyle,
                       ),
                       Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: Text(
-                              'Driver ID: ${profileState.driverData['_id'].toString().substring(0, 3)}',
-                              style: textSubHeadingStyle)),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Text(
+                          'Driver ID: ${profileState.driverData['_id'].toString().substring(0, 3)}',
+                          style: textSubHeadingStyle,
+                        ),
+                      ),
                     ],
                   ),
                 ),

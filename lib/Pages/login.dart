@@ -1,5 +1,6 @@
 import 'package:driver_app/state-management/home-state.dart';
 import 'package:driver_app/utils/alert.dart';
+import 'package:driver_app/utils/validation-utils.dart';
 import 'package:flutter/material.dart';
 import 'package:driver_app/utils/storage.dart';
 import 'package:driver_app/atom/Button.dart';
@@ -20,16 +21,27 @@ class LoginComponent extends State<Login> {
   bool showPassword = true;
   AlertBundle alert = AlertBundle();
   PhoneStorage storage = PhoneStorage();
-
+  Validation validation = Validation();
   driverLogin(context, homeState) async {
-    if (homeState.driverMobile != "" && homeState.driverPassword != "") {
-      homeState.driverLogin().then((value) => {
-            alert.SnackBarNotify(context, value['message']),
-            if (value["code"] == 200)
-              {Navigator.pushNamed(context, "bottom-tabbar")}
-          });
+    if (homeState.Login["mobile"] != "" && homeState.Login["password"] != "") {
+      if (!validation.validatePhoneNumber(homeState.Login["mobile"])) {
+        homeState.setLoginErrorText('Username must be your phonenumber.');
+      } else {
+        homeState.loginDriver().then((value) => {
+              if (value["code"] == 200)
+                {
+                  // naviagte to home
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      'bottom-tabbar', (route) => false)
+                }
+              else
+                {
+                  homeState.setLoginErrorText(value['message']),
+                }
+            });
+      }
     } else {
-      alert.SnackBarNotify(context, 'Please Provide Login details to continue');
+      homeState.setLoginErrorText('Please Provide Login details to continue');
     }
   }
 
@@ -41,7 +53,8 @@ class LoginComponent extends State<Login> {
       print(token);
       if (token != "") {
         print("inside to be navigated");
-        Navigator.pushNamed(context, "bottom-tabbar");
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('bottom-tabbar', (route) => false);
       }
     });
   }
@@ -94,21 +107,28 @@ class LoginComponent extends State<Login> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 20, top: 40, right: 20),
-                  child: CustomTextInput(
-                    hintText: "Enter Username",
-                    imagePath: "assets/images/svg/profile.svg",
-                    onChangeText: (String e) => homeState.updateDriverMobile(e),
-                    keyboardType: TextInputType.text,
-                  ),
-                ),
+                    padding:
+                        const EdgeInsets.only(left: 20, top: 40, right: 20),
+                    child: CustomTextInput(
+                      hintText: "Enter Username",
+                      imagePath: "assets/images/svg/profile.svg",
+                      onChangeText: (String e) => {
+                        if (homeState.loginErrorText != "")
+                          {homeState.setLoginErrorText("")},
+                        homeState.updateLoginValue("mobile", e)
+                      },
+                      keyboardType: TextInputType.phone,
+                    )),
                 Padding(
                   padding: const EdgeInsets.only(left: 20, top: 20, right: 20),
                   child: PasswordInput(
                     hintText: "Enter Password",
                     imagePath: "assets/images/svg/lock.svg",
-                    onChangeText: (String e) =>
-                        homeState.updateDriverPassword(e),
+                    onChangeText: (String e) => {
+                      if (homeState.loginErrorText != "")
+                        {homeState.setLoginErrorText("")},
+                      homeState.updateLoginValue("password", e)
+                    },
                     keyboardType: TextInputType.text,
                     showHidePassword: () {
                       setState(() {
@@ -116,6 +136,13 @@ class LoginComponent extends State<Login> {
                       });
                     },
                     showPassword: showPassword,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    homeState.loginErrorText,
+                    style: const TextStyle(color: Colors.red, fontSize: 12),
                   ),
                 ),
                 Padding(

@@ -8,8 +8,14 @@ import 'package:driver_app/utils/storage.dart';
 class HomeState extends ChangeNotifier {
   String driverMobile = "";
   String driverPassword = "";
-
+  String mobileErrorText = "";
+  String loginErrorText = "";
   Map<String, dynamic> driverData = {};
+
+  Map<String, String> Login = {
+    "mobile": "",
+    "password": "",
+  };
 
   DriverService services = DriverService();
   AlertBundle alert = AlertBundle();
@@ -23,6 +29,17 @@ class HomeState extends ChangeNotifier {
 
   void updateDriverPassword(String password) {
     driverPassword = password;
+    notifyListeners();
+  }
+
+  void setLoginErrorText(val) {
+    loginErrorText = val;
+    notifyListeners();
+  }
+
+  
+  void updateLoginValue(String key, String value) {
+    Login[key] = value;
     notifyListeners();
   }
 
@@ -44,40 +61,19 @@ class HomeState extends ChangeNotifier {
     }
   }
 
-  Future<dynamic> driverLogin() async {
-    if (driverMobile.isEmpty || driverPassword.isEmpty) {
-      return {
-        "code": 400,
-        "message": "Please enter both username and password.",
-      };
-    }
-
-    Response response = await services.driverLogin({
-      "mobile": driverMobile,
-      "password": driverPassword,
-      "fcm": "",
-    });
-
-    if (response.statusCode == 200) {
-      String token = response.data["token"];
-      if (token != "") {
-        storage.setStringValue("token", token);
-        return {
-          "code": 200,
-          "message": "Login successful.",
-        };
-      } else {
-        return {
-          "code": 400,
-          "message": "Invalid token received from the server.",
-        };
+  Future<dynamic> loginDriver() async {
+    // this need to be done via phone
+    Response loginAPICallback = await services.driverLogin(
+        {"mobile": Login["mobile"], "password": Login["password"]});
+    if (loginAPICallback.statusCode == 200) {
+      if (loginAPICallback.data["token"] != "") {
+        storage.setStringValue("token", loginAPICallback.data["token"]);
       }
-    } else {
-      return {
-        "code": response.statusCode,
-        "message": response.data["message"],
-      };
     }
+    return {
+      "code": loginAPICallback.statusCode,
+      "message": loginAPICallback.data["message"],
+    };
   }
 
   Future<dynamic> getDriverProfile() async {

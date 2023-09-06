@@ -49,12 +49,8 @@ class LogOutSheet extends StatelessWidget {
                   child: TextButton(
                     onPressed: () {
                       storage.removeElement("token");
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Login(),
-                        ),
-                      );
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          'login', (route) => false);
                     },
                     child: const Text(
                       'LogOut',
