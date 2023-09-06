@@ -1,4 +1,3 @@
-import 'package:driver_app/model/rating-model.dart';
 import 'package:driver_app/service/Driver/Driver.dart';
 import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';

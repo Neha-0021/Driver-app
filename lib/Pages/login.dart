@@ -34,6 +34,19 @@ class LoginComponent extends State<Login> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      final token = await storage.getStringValue("token") ?? "";
+      print(token);
+      if (token != "") {
+        print("inside to be navigated");
+        Navigator.pushNamed(context, "bottom-tabbar");
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     double deviceHeight = MediaQuery.of(context).size.height;
     double deviceWidth = MediaQuery.of(context).size.width;

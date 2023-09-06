@@ -31,7 +31,7 @@ class HomeHeaderComponent extends State<HomeHeader> {
               decoration: const BoxDecoration(color: Color(0xFF192B46)),
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                    const EdgeInsets.symmetric(vertical: 30, horizontal: 15),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
