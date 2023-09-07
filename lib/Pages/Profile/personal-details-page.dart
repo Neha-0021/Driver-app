@@ -1,9 +1,10 @@
 import 'dart:io';
+
 import 'package:driver_app/Molecules/Profile/Personal-details.dart';
 import 'package:driver_app/Molecules/Profile/camera-gallery.dart';
-import 'package:driver_app/atom/Button.dart';
+import 'package:driver_app/atom/Pop-Up/NoteAlert.dart';
 import 'package:driver_app/atom/Profile/header.dart';
-import 'package:driver_app/state-management/home-state.dart';
+
 import 'package:driver_app/state-management/profile-state.dart';
 import 'package:driver_app/utils/alert.dart';
 import 'package:flutter/material.dart';
@@ -23,13 +24,15 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
 
   AlertBundle alert = AlertBundle();
 
+  bool isDisableText = false;
+
   Future<void> selectProfileImage(BuildContext context, profileState) async {
-    final selectedImage = await showModalBottomSheet(
+    final selectedImage = await showModalBottomSheet<XFile>(
       context: context,
       builder: (BuildContext context) {
         return CameraGallerySheet(
-          onImageSelected: (XFile image) {
-            profileState.updateProfileImage(image);
+          onImageSelected: (XFile image) async {
+            await profileState.updateProfileImage(image);
             setState(() {
               profileImage = image;
             });
@@ -41,14 +44,13 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
     if (selectedImage != null) {
       setState(() {
         profileImage = selectedImage;
+        profileState.update(context);
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final stateCall = Provider.of<HomeState>(context, listen: false);
-
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Color(0xFF192B46),
@@ -71,17 +73,12 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
                             ),
                             color: Color(0xFF192B46),
                           ),
-                          child: Column(
+                          child: const Column(
                             children: [
                               Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 20),
+                                padding: EdgeInsets.symmetric(vertical: 20),
                                 child: HeaderWithActionButton(
                                   headerText: 'Personal Details',
-                                  showIcon: true,
-                                  onEditPressed: () {
-                                    profileState.toggleEdit();
-                                  },
                                 ),
                               ),
                             ],
@@ -90,58 +87,31 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
                         Padding(
                           padding: const EdgeInsets.only(top: 75),
                           child: Text(
-                            "${profileState.userData['firstname']} ${profileState.userData['lastname']}",
+                            "${profileState.driverData['name']} ${profileState.driverData['lastName']}",
                             style: textHeadingstyle,
                           ),
                         ),
                         Text(
-                            "Driver id : ${profileState.userData['_id'].toString().substring(0, 3)}",
+                            'Driver ID: ${profileState.driverData['_id'].toString().substring(0, 3)}',
                             style: textSubHeadingStyle),
-                        PersonalDetail(
-                          isDisable: profileState.isDisableText,
-                          onEmailChanged: (value) {
-                            profileState.updateState("email", value);
+                        GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return NoteAlert();
+                              },
+                            );
                           },
-                          onFirstNameChanged: (value) {
-                            profileState.updateState("firstname", value);
-                          },
-                          onLastNameChanged: (value) {
-                            profileState.updateState("lastname", value);
-                          },
-                          firstName: profileState.userData["firstname"] ?? "",
-                          lastName: profileState.userData["lastname"] ?? "",
-                          email: profileState.userData["email"] ?? "",
-                          phone: profileState.userData["mobile"] ?? "",
-                        ),
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 10),
-                              child: profileState.isDisableText
-                                  ? null
-                                  : CustomButton(
-                                      disabled:
-                                          profileState.userData["firstname"] ==
-                                              "",
-                                      label: 'Submit',
-                                      onPressed: () {
-                                        profileState.submit(context);
-                                      },
-                                    ),
-                            ),
-                          ),
-                        ),
+                          child: const PersonalDetail(),
+                        )
                       ],
                     ),
                     Positioned(
                       top: 120,
                       left: (MediaQuery.of(context).size.width - 130) / 2,
                       child: GestureDetector(
-                        onTap: () => profileState.isDisableText
-                            ? null
-                            : selectProfileImage(context, profileState),
+                        onTap: () => selectProfileImage(context, profileState),
                         child: Stack(
                           alignment: Alignment.bottomRight,
                           children: [
@@ -159,12 +129,12 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
                                 child: AspectRatio(
                                   aspectRatio: 1,
                                   child: profileState
-                                              .userData["profile_photo"] !=
+                                              .driverData["profile_photo"] !=
                                           null
                                       ? profileImage == null
                                           ? Image.network(
                                               profileState
-                                                  .userData["profile_photo"],
+                                                  .driverData["profile_photo"],
                                               fit: BoxFit.cover)
                                           : Image.file(
                                               File(profileImage!.path),
@@ -180,21 +150,36 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
                             Padding(
                               padding:
                                   const EdgeInsets.only(bottom: 5, right: 5),
-                              child: !profileState.isDisableText
-                                  ? Container(
-                                      width: 28,
-                                      height: 28,
-                                      decoration: const BoxDecoration(
-                                        color: Colors.white,
-                                        shape: BoxShape.circle,
-                                      ),
+                              child: Container(
+                                  width: 28,
+                                  height: 28,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Container(
+                                    width: 28,
+                                    height: 28,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        showModalBottomSheet(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return const CameraGallerySheet();
+                                          },
+                                        );
+                                      },
                                       child: const Icon(
                                         Icons.camera_alt,
                                         color: Color(0xFF192B46),
                                         size: 18,
                                       ),
-                                    )
-                                  : null,
+                                    ),
+                                  )),
                             ),
                           ],
                         ),
@@ -206,3 +191,19 @@ class PersonalDetailPageComponent extends State<PersonalDetailPage> {
             ));
   }
 }
+
+const TextStyle textHeadingstyle = TextStyle(
+  fontFamily: 'PublicaSans',
+  fontSize: 24,
+  fontWeight: FontWeight.w700,
+  letterSpacing: 0.0,
+  color: Color(0xFF000000),
+);
+
+const TextStyle textSubHeadingStyle = TextStyle(
+  fontFamily: 'PublicaSans',
+  fontSize: 16,
+  fontWeight: FontWeight.w400,
+  letterSpacing: 0.0,
+  color: Color(0xFF75879B),
+);

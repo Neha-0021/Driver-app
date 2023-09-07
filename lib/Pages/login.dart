@@ -1,12 +1,13 @@
+import 'package:driver_app/state-management/home-state.dart';
+import 'package:driver_app/utils/alert.dart';
+import 'package:driver_app/utils/validation-utils.dart';
+import 'package:flutter/material.dart';
+import 'package:driver_app/utils/storage.dart';
 import 'package:driver_app/atom/Button.dart';
 import 'package:driver_app/atom/CustomTextInput.dart';
 import 'package:driver_app/atom/custom-header.dart';
 import 'package:driver_app/atom/password-input.dart';
 import 'package:driver_app/atom/privacy-policy.dart';
-import 'package:driver_app/state-management/home-state.dart';
-import 'package:driver_app/utils/alert.dart';
-import 'package:driver_app/utils/storage.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
@@ -17,22 +18,45 @@ class Login extends StatefulWidget {
 }
 
 class LoginComponent extends State<Login> {
-  bool showPassword = false;
-
+  bool showPassword = true;
   AlertBundle alert = AlertBundle();
   PhoneStorage storage = PhoneStorage();
-
-  validateAndLogin(context, homeState) async {
-    if (homeState.Login["username"] != "" &&
-        homeState.Login["password"] != "") {
-      homeState.loginUser().then((value) => {
-            alert.SnackBarNotify(context, value['message']),
-            if (value["code"] == 200)
-              {Navigator.pushNamed(context, "bottomBar")}
-          });
+  Validation validation = Validation();
+  driverLogin(context, homeState) async {
+    if (homeState.Login["mobile"] != "" && homeState.Login["password"] != "") {
+      if (!validation.validatePhoneNumber(homeState.Login["mobile"])) {
+        homeState.setLoginErrorText('Username must be your phonenumber.');
+      } else {
+        homeState.loginDriver().then((value) => {
+              if (value["code"] == 200)
+                {
+                  // naviagte to home
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      'bottom-tabbar', (route) => false)
+                }
+              else
+                {
+                  homeState.setLoginErrorText(value['message']),
+                }
+            });
+      }
     } else {
-      alert.SnackBarNotify(context, 'Please Provide Login details to continue');
+      homeState.setLoginErrorText('Please Provide Login details to continue');
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      final token = await storage.getStringValue("token") ?? "";
+      print(token);
+      if (token != "") {
+        print("inside to be navigated");
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('bottom-tabbar', (route) => false);
+      }
+    });
   }
 
   @override
@@ -40,90 +64,109 @@ class LoginComponent extends State<Login> {
     double deviceHeight = MediaQuery.of(context).size.height;
     double deviceWidth = MediaQuery.of(context).size.width;
 
-    return (Consumer<HomeState>(
+    return ChangeNotifierProvider(
+      create: (context) => HomeState(),
+      child: Consumer<HomeState>(
         builder: (context, homeState, child) => Scaffold(
-              backgroundColor: const Color(0xffffffff),
-              resizeToAvoidBottomInset: true,
-              body: SafeArea(
-                  child: ListView(
-                children: [
-                  SizedBox(
-                      height: deviceHeight / 2.8,
-                      width: deviceWidth,
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          Image.asset(
-                            "assets/images/login.png",
-                            fit: BoxFit.fill,
-                          ),
-                          Positioned(
-                            left: 10,
-                            child: CustomHeader(),
-                          ),
-                        ],
-                      )),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 20, top: 20),
-                    child: Text(
-                      'Great to have you back!',
-                      style: screenTitleStyle,
-                      textAlign: TextAlign.left,
+          backgroundColor: const Color(0xffffffff),
+          resizeToAvoidBottomInset: true,
+          body: SafeArea(
+            child: ListView(
+              children: [
+                SizedBox(
+                  height: deviceHeight / 2.8,
+                  width: deviceWidth,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Image.asset(
+                        "assets/images/login.png",
+                        fit: BoxFit.fill,
+                      ),
+                      Positioned(
+                        left: 10,
+                        child: CustomHeader(),
+                      ),
+                    ],
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(left: 20, top: 20),
+                  child: Text(
+                    'Great to have you back!',
+                    style: screenTitleStyle,
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    'Start your journey with existing new features!',
+                    style: screenSubtitleStyle,
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+                Padding(
+                    padding:
+                        const EdgeInsets.only(left: 20, top: 40, right: 20),
+                    child: CustomTextInput(
+                      hintText: "Enter Username",
+                      imagePath: "assets/images/svg/profile.svg",
+                      onChangeText: (String e) => {
+                        if (homeState.loginErrorText != "")
+                          {homeState.setLoginErrorText("")},
+                        homeState.updateLoginValue("mobile", e)
+                      },
+                      keyboardType: TextInputType.phone,
+                    )),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, top: 20, right: 20),
+                  child: PasswordInput(
+                    hintText: "Enter Password",
+                    imagePath: "assets/images/svg/lock.svg",
+                    onChangeText: (String e) => {
+                      if (homeState.loginErrorText != "")
+                        {homeState.setLoginErrorText("")},
+                      homeState.updateLoginValue("password", e)
+                    },
+                    keyboardType: TextInputType.text,
+                    showHidePassword: () {
+                      setState(() {
+                        showPassword = !showPassword;
+                      });
+                    },
+                    showPassword: showPassword,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    homeState.loginErrorText,
+                    style: const TextStyle(color: Colors.red, fontSize: 12),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, top: 60, right: 20),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: CustomButton(
+                      label: 'Login',
+                      onPressed: () {
+                        driverLogin(context, homeState);
+                      },
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Text(
-                      'Start your journey with existing new features!',
-                      style: screenSubtitleStyle,
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                  Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
-                      child: CustomTextInput(
-                        hintText: "Enter Username",
-                        imagePath: "assets/images/svg/profile.svg",
-                        onChangeText: (String e) =>
-                            {homeState.updateLoginValue("username", e)},
-                        keyboardType: TextInputType.text,
-                      )),
-                  Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
-                      child: PasswordInput(
-                        hintText: "Enter Password",
-                        imagePath: "assets/images/svg/lock.svg",
-                        onChangeText: (String e) =>
-                            {homeState.updateLoginValue("password", e)},
-                        keyboardType: TextInputType.text,
-                        showHidePassword: () {
-                          setState(() {
-                            showPassword = !showPassword;
-                          });
-                        },
-                        showPassword: showPassword,
-                      )),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 50),
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: CustomButton(
-                          label: 'Login',
-                          onPressed: () {
-                            validateAndLogin(context, homeState);
-                          },
-                        )),
-                  ),
-                  Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 30, vertical: 15),
-                      child: Center(child: PrivacyPolicy()))
-                ],
-              )),
-            )));
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 30, top: 50, right: 30),
+                  child: Center(child: PrivacyPolicy()),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
