@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'package:custom_marker/marker_icon.dart';
 import 'package:dio/dio.dart';
-import 'dart:typed_data';
-import 'dart:ui' as ui;
+
 import 'package:driver_app/Pages/Next-stop.dart';
 import 'package:driver_app/atom/Button.dart';
 import 'package:driver_app/atom/Pop-Up/CompleteRide.dart';
@@ -15,12 +15,12 @@ import 'package:driver_app/state-management/route-state.dart';
 import 'package:driver_app/utils/alert.dart';
 import 'package:driver_app/utils/distance.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:image/image.dart' as img;
 
 class Mapper extends StatefulWidget {
   const Mapper({Key? key}) : super(key: key);
@@ -42,7 +42,9 @@ class MapperComponent extends State<Mapper> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
-  Marker userMarker = const Marker(markerId: MarkerId("userMarket"));
+  Marker userMarker = const Marker(
+    markerId: MarkerId("userMarket"),
+  );
 
   Marker startPointMarker = const Marker(
     markerId: MarkerId("startPointMarker"),
@@ -58,22 +60,19 @@ class MapperComponent extends State<Mapper> {
     double longitude = position.longitude;
     final stateCall = Provider.of<ProfileState>(context, listen: false);
     String profilePhoto = stateCall.driverData['profile_photo'];
-    Uint8List bytes =
-        (await NetworkAssetBundle(Uri.parse(profilePhoto)).load(profilePhoto))
-            .buffer
-            .asUint8List();
-
-    // Define the desired size for the profile photo marker
-    double markerSize = 80; // You can change this value to the desired size
-
-    // Resize the profile photo
-    Uint8List resizedBytes = await _resizeImage(bytes, markerSize);
+    final icon = await MarkerIcon.downloadResizePictureCircle(
+      profilePhoto,
+      size: 120,
+      addBorder: true,
+      borderColor: Colors.white,
+      borderSize: 30,
+    );
 
     setState(() {
       userLocation = LatLng(latitude, longitude);
       userMarker = Marker(
         markerId: const MarkerId("userMarker"),
-        icon: BitmapDescriptor.fromBytes(resizedBytes),
+        icon: icon,
         position: userLocation,
       );
 
@@ -85,16 +84,6 @@ class MapperComponent extends State<Mapper> {
       final GoogleMapController controller = await _controller.future;
       controller.animateCamera(CameraUpdate.newLatLng(userLocation));
     }
-  }
-
-  Future<Uint8List> _resizeImage(Uint8List imageBytes, double size) async {
-    final Completer<Uint8List> completer = Completer<Uint8List>();
-    img.Image? image = img.decodeImage(imageBytes);
-    img.Image resizedImage =
-        img.copyResize(image!, width: size.toInt(), height: size.toInt());
-    Uint8List resizedBytes = Uint8List.fromList(img.encodePng(resizedImage));
-    completer.complete(resizedBytes);
-    return completer.future;
   }
 
   getDirection(origin, destination) async {
@@ -166,12 +155,31 @@ class MapperComponent extends State<Mapper> {
             startingPointLatitude, startingPointLongitude);
     String startingpoint = distanceString.replaceAll(RegExp(r'[^0-9.]'), '');
     double? distance = double.tryParse(startingpoint);
-    if (distance != null && distance <= 10.0) {
+   if (distance != null && distance <= 10.0) {
+    DateTime currentTime = DateTime.now();
+    
+    // Get starting time (assuming it's in the format 'hh:mm a')
+    DateTime startingTime = DateFormat('hh:mm a').parse(routeState.routeDetails["timing_from"]);
+
+    // Set the date of startingTime to be the same as currentDate
+    startingTime = DateTime(currentTime.year, currentTime.month, currentTime.day, startingTime.hour, startingTime.minute);
+
+    // If starting time is in the past, it means the ride will be tomorrow
+    if (currentTime.isAfter(startingTime)) {
+      startingTime = startingTime.add(Duration(days: 1));
+    }
+
+    // Calculate time difference
+    Duration timeDifference = startingTime.difference(currentTime);
+
+    // Check if time difference is less than or equal to 10 minutes
+    if (timeDifference.inMinutes <= 10) {
       setState(() {
         rideStarted = true;
       });
     }
   }
+}
 
   ShuttleTrackingService service = ShuttleTrackingService();
   AlertBundle alert = AlertBundle();
@@ -230,7 +238,7 @@ class MapperComponent extends State<Mapper> {
   @override
   void dispose() {
     locationUpdateTimer?.cancel();
-    super.dispose();
+     super.dispose();
   }
 
   @override

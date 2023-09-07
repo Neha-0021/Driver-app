@@ -4,6 +4,7 @@ import 'package:driver_app/atom/history/no-history.dart';
 import 'package:driver_app/state-management/history-state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({Key? key}) : super(key: key);
@@ -25,6 +26,11 @@ class _HistoryPageState extends State<HistoryPage> {
 
   @override
   Widget build(BuildContext context) {
+     SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Color(0xFF192B46),
+      ),
+    );
     return Consumer<DriverHistoryState>(
       builder: (context, historyState, child) => Scaffold(
         body: SafeArea(

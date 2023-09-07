@@ -6,6 +6,8 @@ import 'package:driver_app/Molecules/Customer-details.dart';
 import 'package:driver_app/atom/header-with-back-button.dart';
 import 'package:driver_app/state-management/next-stop.dart';
 import 'package:driver_app/utils/bottom-tabbar.dart';
+import 'package:flutter/services.dart';
+
 
 class NextStop extends StatefulWidget {
   const NextStop({Key? key}) : super(key: key);
@@ -13,6 +15,8 @@ class NextStop extends StatefulWidget {
   @override
   _NextStopState createState() => _NextStopState();
 }
+
+
 
 class _NextStopState extends State<NextStop> {
   @override
@@ -38,6 +42,11 @@ class _NextStopState extends State<NextStop> {
 
   @override
   Widget build(BuildContext context) {
+     SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Color(0xFF192B46),
+      ),
+    );
     final nextstopState = Provider.of<NextStoppageState>(context);
     final stepperList = nextstopState.nextStoppageUserDetails.map((stoppage) {
       final users = stoppage['users'];

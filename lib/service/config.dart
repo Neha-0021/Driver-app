@@ -1,5 +1,5 @@
 class ServiceConfig {
-  static const String baseUrl = "http://54.210.104.160:7000";
+  static const String baseUrl = "http://54.210.104.160:8000";
   static const String localURL = "http://127.0.0.1:8000";
   static const String mapperHost = "https://maps.flightmap.io";
 

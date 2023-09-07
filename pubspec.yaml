@@ -57,6 +57,9 @@ dependencies:
   url_launcher: ^6.0.10
   flutter_image_compress: ^2.0.4
   image: ^4.0.17
+  flutter_cache_manager: ^3.3.1
+  circular_image: ^0.0.6
+  custom_marker: ^1.0.0
  
 
 dev_dependencies:

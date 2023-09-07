@@ -2,7 +2,6 @@ import 'package:driver_app/Molecules/Notification-card.dart';
 import 'package:driver_app/atom/history-notification-header.dart';
 import 'package:driver_app/atom/no-notification.dart';
 import 'package:driver_app/state-management/notification-state.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
