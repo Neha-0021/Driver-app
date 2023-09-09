@@ -1,21 +1,17 @@
 import 'dart:async';
 import 'package:custom_marker/marker_icon.dart';
 import 'package:dio/dio.dart';
-
 import 'package:driver_app/Pages/Next-stop.dart';
 import 'package:driver_app/atom/Button.dart';
-import 'package:driver_app/atom/Pop-Up/CompleteRide.dart';
+import 'package:driver_app/atom/Pop-Up/complete.dart';
 import 'package:driver_app/atom/Pop-Up/Stop-ride.dart';
 import 'package:driver_app/atom/home/HomeListCard.dart';
 import 'package:driver_app/atom/home/MapButton.dart';
 import 'package:driver_app/service/mapper/map.dart';
-import 'package:driver_app/service/start-ride/start-ride.dart';
 import 'package:driver_app/state-management/profile-state.dart';
 import 'package:driver_app/state-management/route-state.dart';
-import 'package:driver_app/utils/alert.dart';
 import 'package:driver_app/utils/distance.dart';
 import 'package:flutter/material.dart';
-
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -39,6 +35,10 @@ class MapperComponent extends State<Mapper> {
   LatLng userLocation = LatLng(0.0, 0.0);
   bool isLoading = true;
   bool fullScreen = false;
+  bool isRideCompleted = false;
+  DistanceUtils distanceUtils = DistanceUtils();
+
+  bool rideStarted = false;
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
@@ -58,31 +58,33 @@ class MapperComponent extends State<Mapper> {
     );
     double latitude = position.latitude;
     double longitude = position.longitude;
-    final stateCall = Provider.of<ProfileState>(context, listen: false);
-    String profilePhoto = stateCall.driverData['profile_photo'];
-    final icon = await MarkerIcon.downloadResizePictureCircle(
-      profilePhoto,
-      size: 120,
-      addBorder: true,
-      borderColor: Colors.white,
-      borderSize: 30,
-    );
-
-    setState(() {
-      userLocation = LatLng(latitude, longitude);
-      userMarker = Marker(
-        markerId: const MarkerId("userMarker"),
-        icon: icon,
-        position: userLocation,
+    if (mounted) {
+      final stateCall = Provider.of<ProfileState>(context, listen: false);
+      String profilePhoto = stateCall.driverData['profile_photo'];
+      final icon = await MarkerIcon.downloadResizePictureCircle(
+        profilePhoto,
+        size: 120,
+        addBorder: true,
+        borderColor: Colors.white,
+        borderSize: 30,
       );
 
-      isLoading = false;
-    });
+      setState(() {
+        userLocation = LatLng(latitude, longitude);
+        userMarker = Marker(
+          markerId: const MarkerId("userMarker"),
+          icon: icon,
+          position: userLocation,
+        );
 
-    // Update the camera position to the user's location
-    if (_controller.isCompleted) {
-      final GoogleMapController controller = await _controller.future;
-      controller.animateCamera(CameraUpdate.newLatLng(userLocation));
+        isLoading = false;
+      });
+
+      // Update the camera position to the user's location
+      if (_controller.isCompleted) {
+        final GoogleMapController controller = await _controller.future;
+        controller.animateCamera(CameraUpdate.newLatLng(userLocation));
+      }
     }
   }
 
@@ -140,10 +142,6 @@ class MapperComponent extends State<Mapper> {
     });
   }
 
-  DistanceUtils distanceUtils = DistanceUtils();
-
-  bool rideStarted = false;
-
   void checkAndStartRide(BuildContext context) async {
     final routeState = Provider.of<RouteDetailState>(context, listen: false);
     double startingPointLatitude =
@@ -155,68 +153,23 @@ class MapperComponent extends State<Mapper> {
             startingPointLatitude, startingPointLongitude);
     String startingpoint = distanceString.replaceAll(RegExp(r'[^0-9.]'), '');
     double? distance = double.tryParse(startingpoint);
-   if (distance != null && distance <= 10.0) {
-    DateTime currentTime = DateTime.now();
-    
-    // Get starting time (assuming it's in the format 'hh:mm a')
-    DateTime startingTime = DateFormat('hh:mm a').parse(routeState.routeDetails["timing_from"]);
-
-    // Set the date of startingTime to be the same as currentDate
-    startingTime = DateTime(currentTime.year, currentTime.month, currentTime.day, startingTime.hour, startingTime.minute);
-
-    // If starting time is in the past, it means the ride will be tomorrow
-    if (currentTime.isAfter(startingTime)) {
-      startingTime = startingTime.add(Duration(days: 1));
-    }
-
-    // Calculate time difference
-    Duration timeDifference = startingTime.difference(currentTime);
-
-    // Check if time difference is less than or equal to 10 minutes
-    if (timeDifference.inMinutes <= 10) {
-      setState(() {
-        rideStarted = true;
-      });
-    }
-  }
-}
-
-  ShuttleTrackingService service = ShuttleTrackingService();
-  AlertBundle alert = AlertBundle();
-  void startShuttle(BuildContext context) async {
-    try {
-      Response response = await service.startShuttleTracking(
-        userLocation.latitude,
-        userLocation.longitude,
-      );
-      if (response.statusCode == 200) {
-        alert.SnackBarNotify(context, "Shuttle tracking started");
-      } else {
-        alert.SnackBarNotify(context, "Shuttle tracking not started try again");
+    if (distance != null && distance <= 10.0) {
+      DateTime currentTime = DateTime.now();
+      DateTime startingTime =
+          DateFormat('hh:mm a').parse(routeState.routeDetails["timing_from"]);
+      startingTime = DateTime(currentTime.year, currentTime.month,
+          currentTime.day, startingTime.hour, startingTime.minute);
+      if (currentTime.isAfter(startingTime)) {
+        startingTime = startingTime.add(const Duration(days: 1));
       }
-    } catch (error) {
-      print("Error: $error");
-    }
-  }
-
-  void updateShuttle(BuildContext context) async {
-    try {
-      String driverId = '64d0801f0f214debe12bfc8b';
-      Response response = await service.updateShuttleTracking(
-        driverId,
-        "${userLocation.latitude},${userLocation.longitude}",
-      );
-      if (response.statusCode == 200) {
-        alert.SnackBarNotify(context, "Shuttle location updated");
-      } else {
-        alert.SnackBarNotify(context, "Failed to update shuttle location");
+      Duration timeDifference = startingTime.difference(currentTime);
+      if (timeDifference.inMinutes <= 10) {
+        setState(() {
+          rideStarted = true;
+        });
       }
-    } catch (error) {
-      print("Error: $error");
     }
   }
-
-  bool isRideCompleted = false;
 
   void toggleMapSize() {
     setState(() {
@@ -238,7 +191,7 @@ class MapperComponent extends State<Mapper> {
   @override
   void dispose() {
     locationUpdateTimer?.cancel();
-     super.dispose();
+    super.dispose();
   }
 
   @override
@@ -250,9 +203,7 @@ class MapperComponent extends State<Mapper> {
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 15),
-                child: AnimatedContainer(
-                  duration: const Duration(
-                      milliseconds: 500), // Adjust the duration as needed
+                child: SizedBox(
                   height: fullScreen ? MediaQuery.of(context).size.height : 390,
                   child: Stack(
                     children: [
@@ -289,7 +240,6 @@ class MapperComponent extends State<Mapper> {
                             size: 30,
                           ),
                           onPressed: () {
-                            // Toggle fullScreen value on button click
                             setState(() {
                               fullScreen = !fullScreen;
                             });
@@ -334,8 +284,14 @@ class MapperComponent extends State<Mapper> {
                               },
                             );
                           } else {
-                            startShuttle(context);
-                            updateShuttle(context);
+                            routeState.startShuttleTracking(
+                              userLocation.latitude,
+                              userLocation.longitude,
+                            );
+                            String id = routeState.starttracking["_id"];
+                            routeState.updateShuttleTracking(
+                                "${userLocation.latitude},${userLocation.longitude}",
+                                id);
                             setState(() {
                               isLoading = true;
                             });

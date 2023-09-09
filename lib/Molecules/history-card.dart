@@ -25,38 +25,57 @@ class HistoryCard extends StatelessWidget {
               ),
             ],
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Row(
+            children: [
+              Card(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(3),
+                  child: Image.network(
+                    data["route_details"]["image"],
+                    width: 30,
+                    height: 30,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                  child: Row(
                     children: [
-                      Text(
-                        "${data["stoppage_from_details"]["stoppage_name"]} - ${data["stoppage_to_details"]["stoppage_name"]}",
-                        style: textHeadingstyle,
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "${data["stoppage_from_details"]["stoppage_name"]} - ${data["stoppage_to_details"]["stoppage_name"]}",
+                              style: textHeadingstyle,
+                            ),
+                            Text(
+                              '${DateFormat("dd MMM yy").format(DateTime.parse(data['date']))}',
+                              style: textSubHeadingStyle,
+                            ),
+                          ],
+                        ),
                       ),
-                      Text(
-                        '${DateFormat("dd MMM yy").format(DateTime.parse(data['date']))}',
-                        style: textSubHeadingStyle,
+                      HistoryStatus(
+                        containerColor: data["iscomplete"] == "Y"
+                            ? const Color(0xff00BD79)
+                            : const Color(0xFFF9A90C),
+                        labelText: data["iscomplete"] == "Y"
+                            ? "Completed"
+                            : data["iscomplete"] == "N"
+                                ? 'stopped'
+                                : "",
                       ),
                     ],
                   ),
                 ),
-                HistoryStatus(
-                  containerColor: data["iscomplete"] == "Y"
-                      ? const Color(0xff00BD79)
-                      : const Color(0xFFF9A90C),
-                  labelText: data["iscomplete"] == "Y"
-                      ? "Completed"
-                      : data["iscomplete"] == "N"
-                          ? 'stopped'
-                          : "",
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ],

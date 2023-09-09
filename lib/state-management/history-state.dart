@@ -11,7 +11,10 @@ class DriverHistoryState extends ChangeNotifier {
   Future<void> getDriverUpcomingBookings() async {
     try {
       Response response = await historyService.getDriverUpcomingBookings();
-      upcomingBookings = response.data;
+      upcomingBookings = response.data["bookings"];
+        List<String> ids = response.data["bookings"]
+          .map<String>((obj) => obj["_id"].toString())
+          .toList();
       notifyListeners();
     } catch (error) {
       print('Error fetching upcoming bookings: $error');

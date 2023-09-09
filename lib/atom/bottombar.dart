@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class CustomNavigationBar extends StatefulWidget {
   Function(String) changeScreen;
 
   CustomNavigationBar({super.key, required this.changeScreen});
 
   @override
+  // ignore: library_private_types_in_public_api
   _CustomNavigationBarState createState() => _CustomNavigationBarState();
 }
 

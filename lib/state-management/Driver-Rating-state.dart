@@ -8,28 +8,9 @@ class DriverRatingState extends ChangeNotifier {
   List<dynamic> driver = [];
   List<dynamic> users = [];
   int totalUsers = 0;
-  double averageDriverRating = 0.0;
+  int averageDriverRating = 0;
 
-  Future<void> addDriverRating(String bookingId, int rating) async {
-    try {
-      Response response = await ratingService.driverRating(bookingId, rating);
-
-      notifyListeners();
-    } catch (error) {
-      print('Error add driverRating: $error');
-    }
-  }
-
-  Future<void> deleteDriverRating(String ratingId) async {
-    try {
-      Response response = await ratingService.deleteDriverRating(ratingId);
-
-      notifyListeners();
-    } catch (error) {
-      print('Error deleting driver rating: $error');
-    }
-  }
-
+ 
   Future<void> getDriverRatingByDriverId(String driverId) async {
     try {
       Response response =

@@ -5,6 +5,7 @@ import 'package:driver_app/utils/alert.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class CompleteRide extends StatelessWidget {
   CompleteRide({Key? key}) : super(key: key);
   final DriverHistoryService service = DriverHistoryService();

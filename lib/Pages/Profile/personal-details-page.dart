@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:driver_app/Molecules/Profile/Personal-details.dart';
-import 'package:driver_app/Molecules/Profile/camera-gallery.dart';
+import 'package:driver_app/Molecules/Profile/camera.dart';
 import 'package:driver_app/atom/Pop-Up/NoteAlert.dart';
 import 'package:driver_app/atom/Profile/header.dart';
 
