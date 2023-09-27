@@ -324,7 +324,7 @@ class MapperComponent extends State<Mapper> {
                               controller
                                   .animateCamera(CameraUpdate.newCameraPosition(
                                 CameraPosition(
-                                  target: destination,
+                                  target: userLocation,
                                   zoom: 15.0,
                                 ),
                               ));
