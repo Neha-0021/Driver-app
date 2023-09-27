@@ -13,7 +13,7 @@ class HomeState extends ChangeNotifier {
   Map<String, dynamic> driverData = {};
 
   Map<String, String> Login = {
-    "mobile": "",
+    "userName": "",
     "password": "",
   };
 
@@ -22,8 +22,8 @@ class HomeState extends ChangeNotifier {
   PhoneStorage storage = PhoneStorage();
   ProfileService profileService = ProfileService();
 
-  void updateDriverMobile(String mobile) {
-    driverMobile = mobile;
+  void updateDriverMobile(String userName) {
+    driverMobile = userName;
     notifyListeners();
   }
 
@@ -64,7 +64,7 @@ class HomeState extends ChangeNotifier {
   Future<dynamic> loginDriver() async {
     // this need to be done via phone
     Response loginAPICallback = await services.driverLogin(
-        {"mobile": Login["mobile"], "password": Login["password"]});
+        {"userName": Login["userName"], "password": Login["password"]});
     if (loginAPICallback.statusCode == 200) {
       if (loginAPICallback.data["token"] != "") {
         storage.setStringValue("token", loginAPICallback.data["token"]);

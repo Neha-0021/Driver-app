@@ -52,20 +52,21 @@ class RouteDetailService {
   }
 
   Future<Response<dynamic>> updateShuttleTracking(
-      String id, String driverCurrentLocation) async {
-    final String token = await storage.getStringValue('token') ?? '';
+      double driverLatitude, double driverLongitude) async {
+   String? token = await storage.getStringValue("token");
     final headers = {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
     };
 
     final body = {
-      'driverCurrentLocation': driverCurrentLocation,
+      'driverLatitude': driverLatitude.toString(),
+      'driverLongitude': driverLongitude.toString(),
     };
 
     try {
       return await dio.put(
-        '$baseUrl/api/driver/update-shuttle-tracking/$id',
+        '$baseUrl/api/driver/update-shuttle-tracking',
         data: body,
         options: Options(headers: headers),
       );
@@ -73,4 +74,6 @@ class RouteDetailService {
       throw error;
     }
   }
+
+
 }

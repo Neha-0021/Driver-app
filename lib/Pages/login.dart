@@ -22,28 +22,21 @@ class LoginComponent extends State<Login> {
   AlertBundle alert = AlertBundle();
   PhoneStorage storage = PhoneStorage();
   Validation validation = Validation();
-  driverLogin(context, homeState) async {
-    if (homeState.Login["mobile"] != "" && homeState.Login["password"] != "") {
-      if (!validation.validatePhoneNumber(homeState.Login["mobile"])) {
-        homeState.setLoginErrorText('Username must be your phonenumber.');
+ driverLogin(context, homeState) async {
+  if (homeState.Login["userName"] != "" && homeState.Login["password"] != "") {
+    homeState.loginDriver().then((value) => {
+      if (value["code"] == 200) {
+        // navigate to home
+        Navigator.of(context).pushNamedAndRemoveUntil(
+            'bottom-tabbar', (route) => false)
       } else {
-        homeState.loginDriver().then((value) => {
-              if (value["code"] == 200)
-                {
-                  // naviagte to home
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                      'bottom-tabbar', (route) => false)
-                }
-              else
-                {
-                  homeState.setLoginErrorText(value['message']),
-                }
-            });
+        homeState.setLoginErrorText(value['message']),
       }
-    } else {
-      homeState.setLoginErrorText('Please Provide Login details to continue');
-    }
+    });
+  } else {
+    homeState.setLoginErrorText('Please Provide Login details to continue');
   }
+}
 
   @override
   void initState() {
@@ -83,10 +76,6 @@ class LoginComponent extends State<Login> {
                         "assets/images/login.png",
                         fit: BoxFit.fill,
                       ),
-                      Positioned(
-                        left: 10,
-                        child: CustomHeader(),
-                      ),
                     ],
                   ),
                 ),
@@ -115,9 +104,9 @@ class LoginComponent extends State<Login> {
                       onChangeText: (String e) => {
                         if (homeState.loginErrorText != "")
                           {homeState.setLoginErrorText("")},
-                        homeState.updateLoginValue("mobile", e)
+                        homeState.updateLoginValue("userName", e)
                       },
-                      keyboardType: TextInputType.phone,
+                      keyboardType: TextInputType.text,
                     )),
                 Padding(
                   padding: const EdgeInsets.only(left: 20, top: 20, right: 20),

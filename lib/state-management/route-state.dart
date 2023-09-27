@@ -35,26 +35,14 @@ class RouteDetailState extends ChangeNotifier {
       double driverLatitude, double driverLongitude) async {
     final response =
         await service.startShuttleTracking(driverLatitude, driverLongitude);
-if (response.statusCode == 200) {
-      starttracking = response.data["data"];
+    starttracking = response.data["data"];
+    print('Response: $response');
+    if (response.statusCode == 200) {
       print('Shuttle tracking started successfully');
     } else {
       print('Error starting shuttle tracking');
     }
   }
 
-  Future<void> updateShuttleTracking(
-    String id,
-    String driverCurrentLocation,
-  ) async {
-    final response =
-        await service.updateShuttleTracking(id, driverCurrentLocation);
-
-    if (response.statusCode == 200) {
-      updatetracking = response.data["updatedData"];
-      print('Shuttle tracking updated successfully');
-    } else {
-      print('Error updating shuttle tracking');
-    }
-  }
+ 
 }

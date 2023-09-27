@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage>
               HomeHeader(
                 openSideDrawer: () => toggleDrawer(),
               ),
-              const Expanded(
+             Expanded(
                 child: Mapper(),
               ),
             ],

@@ -3,19 +3,21 @@ import 'package:custom_marker/marker_icon.dart';
 import 'package:dio/dio.dart';
 import 'package:driver_app/Pages/Next-stop.dart';
 import 'package:driver_app/atom/Button.dart';
-import 'package:driver_app/atom/Pop-Up/complete.dart';
 import 'package:driver_app/atom/Pop-Up/Stop-ride.dart';
+import 'package:driver_app/atom/Pop-Up/complete.dart';
 import 'package:driver_app/atom/home/HomeListCard.dart';
 import 'package:driver_app/atom/home/MapButton.dart';
 import 'package:driver_app/service/mapper/map.dart';
+import 'package:driver_app/service/route/route.dart';
 import 'package:driver_app/state-management/profile-state.dart';
 import 'package:driver_app/state-management/route-state.dart';
+import 'package:driver_app/utils/alert.dart';
 import 'package:driver_app/utils/distance.dart';
+import 'package:driver_app/utils/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class Mapper extends StatefulWidget {
@@ -28,6 +30,7 @@ class Mapper extends StatefulWidget {
 }
 
 class MapperComponent extends State<Mapper> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   Timer? locationUpdateTimer;
   MapperMap map = MapperMap();
   Set<Polyline> _routeCoordinates = Set<Polyline>();
@@ -37,7 +40,7 @@ class MapperComponent extends State<Mapper> {
   bool fullScreen = false;
   bool isRideCompleted = false;
   DistanceUtils distanceUtils = DistanceUtils();
-
+  PhoneStorage phoneStorage = PhoneStorage();
   bool rideStarted = false;
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
@@ -53,6 +56,7 @@ class MapperComponent extends State<Mapper> {
   List<Marker> stoppageMarkers = [];
 
   getCurrentLocation() async {
+    phoneStorage.setStringValue('destination', 'New Destination');
     Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
@@ -89,6 +93,7 @@ class MapperComponent extends State<Mapper> {
   }
 
   getDirection(origin, destination) async {
+    phoneStorage.setStringValue('destination', 'New Destination');
     Response resp = await map.getDirectionAPI(origin, destination);
     final responseData = resp.data;
     if (responseData['status'] == 'OK') {
@@ -143,6 +148,7 @@ class MapperComponent extends State<Mapper> {
   }
 
   void checkAndStartRide(BuildContext context) async {
+    phoneStorage.setStringValue('destination', 'New Destination');
     final routeState = Provider.of<RouteDetailState>(context, listen: false);
     double startingPointLatitude =
         double.parse(routeState.startingPoint["latitude"]);
@@ -153,21 +159,11 @@ class MapperComponent extends State<Mapper> {
             startingPointLatitude, startingPointLongitude);
     String startingpoint = distanceString.replaceAll(RegExp(r'[^0-9.]'), '');
     double? distance = double.tryParse(startingpoint);
+    print(distance);
     if (distance != null && distance <= 10.0) {
-      DateTime currentTime = DateTime.now();
-      DateTime startingTime =
-          DateFormat('hh:mm a').parse(routeState.routeDetails["timing_from"]);
-      startingTime = DateTime(currentTime.year, currentTime.month,
-          currentTime.day, startingTime.hour, startingTime.minute);
-      if (currentTime.isAfter(startingTime)) {
-        startingTime = startingTime.add(const Duration(days: 1));
-      }
-      Duration timeDifference = startingTime.difference(currentTime);
-      if (timeDifference.inMinutes <= 10) {
-        setState(() {
-          rideStarted = true;
-        });
-      }
+      setState(() {
+        rideStarted = true;
+      });
     }
   }
 
@@ -177,9 +173,28 @@ class MapperComponent extends State<Mapper> {
     });
   }
 
+  final RouteDetailService service = RouteDetailService();
+  AlertBundle alert = AlertBundle();
+  void updateShuttle(context) async {
+    try {
+      Response response = await service.updateShuttleTracking(
+        userLocation.latitude,
+        userLocation.longitude,
+      );
+      if (response.statusCode == 200) {
+        alert.SnackBarNotify(context, "Shuttle location updated");
+      } else {
+        alert.SnackBarNotify(context, "Failed to update shuttle location");
+      }
+    } catch (error) {
+      print("Error: $error");
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+
     final routeState = Provider.of<RouteDetailState>(context, listen: false);
     String currentDate = DateTime.now().toLocal().toString().split(' ')[0];
     routeState.getRouteDetailsByDriver(currentDate);
@@ -208,26 +223,25 @@ class MapperComponent extends State<Mapper> {
                   child: Stack(
                     children: [
                       GoogleMap(
-                        mapType: MapType.normal,
-                        initialCameraPosition: CameraPosition(
-                          target: userLocation,
-                          zoom: 15.0,
-                        ),
-                        markers: {
-                          if (rideStarted) ...[
-                            userMarker,
-                            ...stoppageMarkers,
-                          ],
-                          if (!rideStarted) ...[
-                            userMarker,
-                            startPointMarker,
-                          ],
-                        },
-                        polylines: _routeCoordinates,
-                        onMapCreated: (GoogleMapController controller) {
-                          _controller.complete(controller);
-                        },
-                      ),
+                          mapType: MapType.normal,
+                          initialCameraPosition: CameraPosition(
+                            target: userLocation,
+                            zoom: 15.0,
+                          ),
+                          markers: {
+                            if (rideStarted) ...[
+                              userMarker,
+                              ...stoppageMarkers,
+                            ],
+                            if (!rideStarted) ...[
+                              userMarker,
+                              startPointMarker,
+                            ],
+                          },
+                          polylines: _routeCoordinates,
+                          onMapCreated: (GoogleMapController controller) {
+                            _controller.complete(controller);
+                          }),
                       Positioned(
                         top: 10,
                         right: 10,
@@ -261,7 +275,7 @@ class MapperComponent extends State<Mapper> {
                   children: [
                     MapButton(
                       buttonText: 'Go to starting Point',
-                      onPressed: () {
+                      onPressed: () async {
                         getDirection(
                             "${userLocation.latitude},${userLocation.longitude}",
                             "${routeState.startingPoint["latitude"]},${routeState.startingPoint["longitude"]}");
@@ -276,94 +290,72 @@ class MapperComponent extends State<Mapper> {
                       disabled: !rideStarted,
                       onPressed: () async {
                         if (rideStarted) {
-                          if (isRideCompleted) {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return CompleteRide();
-                              },
-                            );
-                          } else {
-                            routeState.startShuttleTracking(
-                              userLocation.latitude,
-                              userLocation.longitude,
-                            );
-                            String id = routeState.starttracking["_id"];
-                            routeState.updateShuttleTracking(
-                                "${userLocation.latitude},${userLocation.longitude}",
-                                id);
-                            setState(() {
-                              isLoading = true;
-                            });
+                          routeState.startShuttleTracking(
+                            userLocation.latitude,
+                            userLocation.longitude,
+                          );
+                          updateShuttle(context);
+                          setState(() {
+                            isLoading = true;
+                          });
 
-                            List<LatLng> destinations = [];
-                            for (var stoppage
-                                in routeState.stoppageWithDetails) {
-                              double latitude = double.parse(
-                                  stoppage["stoppage"]["latitude"]);
-                              double longitude = double.parse(
-                                  stoppage["stoppage"]["longitude"]);
-                              LatLng location = LatLng(latitude, longitude);
-                              destinations.add(location);
-                            }
-                            int currentDestinationIndex = 0;
-                            void updateDestinationAndDirections() async {
-                              if (currentDestinationIndex <
-                                  destinations.length) {
-                                final LatLng destination =
-                                    destinations[currentDestinationIndex];
-                                // Fetch directions from current location to the destination.
-                                await getDirection(
-                                  "${userLocation.latitude},${userLocation.longitude}",
-                                  "${destination.latitude},${destination.longitude}",
-                                );
-                                // Animate the camera to the new destination.
-                                final GoogleMapController controller =
-                                    await _controller.future;
-                                controller.animateCamera(
-                                    CameraUpdate.newCameraPosition(
-                                  CameraPosition(
-                                    target: userLocation,
-                                    zoom: 15.0,
-                                  ),
-                                ));
-                                String destinationdistaion = await distanceUtils
-                                    .getCurrentLocationAndCalculateDistance(
-                                  destination.latitude,
-                                  destination.longitude,
-                                );
-                                String distanceString = destinationdistaion
-                                    .replaceAll(RegExp(r'[^0-9.]'), '');
-                                double? distance =
-                                    double.tryParse(distanceString);
-
-                                if (distance != null &&
-                                    (distance <= 10.0 ||
-                                        currentDestinationIndex ==
-                                            destinations.length - 1)) {
-                                  isRideCompleted = true;
-                                  setState(() {});
-                                }
-
-                                Timer.periodic(const Duration(seconds: 2),
-                                    (timer) {
-                                  if (distance != null && distance <= 10.0) {
-                                    currentDestinationIndex++;
-                                    if (currentDestinationIndex ==
-                                        destinations.length) {
-                                      isRideCompleted = true;
-                                    }
-                                    updateDestinationAndDirections();
-                                  }
-                                });
-                                setState(() {
-                                  isLoading = false;
-                                });
-                              }
-                            }
-
-                            updateDestinationAndDirections();
+                          List<LatLng> destinations = [];
+                          for (var stoppage in routeState.stoppageWithDetails) {
+                            double latitude =
+                                double.parse(stoppage["stoppage"]["latitude"]);
+                            double longitude =
+                                double.parse(stoppage["stoppage"]["longitude"]);
+                            LatLng location = LatLng(latitude, longitude);
+                            destinations.add(location);
                           }
+                          int currentDestinationIndex = 0;
+                          void updateDestinationAndDirections() async {
+                            if (currentDestinationIndex < destinations.length) {
+                              final LatLng destination =
+                                  destinations[currentDestinationIndex];
+                              // Fetch directions from current location to the destination.
+                              await getDirection(
+                                "${userLocation.latitude},${userLocation.longitude}",
+                                "${destination.latitude},${destination.longitude}",
+                              );
+                              // Animate the camera to the new destination.
+                              final GoogleMapController controller =
+                                  await _controller.future;
+                              controller
+                                  .animateCamera(CameraUpdate.newCameraPosition(
+                                CameraPosition(
+                                  target: destination,
+                                  zoom: 15.0,
+                                ),
+                              ));
+                              String destinationdistaion = await distanceUtils
+                                  .getCurrentLocationAndCalculateDistance(
+                                destination.latitude,
+                                destination.longitude,
+                              );
+                              String distanceString = destinationdistaion
+                                  .replaceAll(RegExp(r'[^0-9.]'), '');
+                              double? distance =
+                                  double.tryParse(distanceString);
+
+                              Timer.periodic(const Duration(seconds: 2),
+                                  (timer) {
+                                if (distance != null && distance <= 10.0) {
+                                  currentDestinationIndex++;
+                                  if (currentDestinationIndex ==
+                                      destinations.length) {
+                                    isRideCompleted = true;
+                                  }
+                                  updateDestinationAndDirections();
+                                }
+                              });
+                              setState(() {
+                                isLoading = false;
+                              });
+                            }
+                          }
+
+                          updateDestinationAndDirections();
                         }
                       },
                       width: 110,
@@ -371,16 +363,15 @@ class MapperComponent extends State<Mapper> {
                     ),
                     MapButton(
                       buttonText: 'Stop Ride',
-                      disabled: !rideStarted,
                       onPressed: () {
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
-                            return StopRide();
+                            return const StopRide();
                           },
                         );
                       },
-                      color: Color(0xFFECB21E),
+                      color: const Color(0xFFECB21E),
                       width: 85,
                     ),
                   ],
@@ -441,8 +432,8 @@ class MapperComponent extends State<Mapper> {
                       const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
                   child: CustomButton(
                     label: 'View All',
-                    onPressed: () {
-                      Navigator.pushReplacement(
+                    onPressed: () async {
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const NextStop()),
