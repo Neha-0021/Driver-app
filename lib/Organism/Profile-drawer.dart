@@ -24,6 +24,7 @@ class ProfileDrawer extends StatelessWidget {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Consumer<ProfileState>(
       builder: (context, profileState, child) => Column(
@@ -62,12 +63,10 @@ class ProfileDrawer extends StatelessWidget {
                         style: textHeadingstyle,
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Text(
-                          'Driver ID: ${profileState.driverData['_id'].toString().substring(0, 3)}',
-                          style: textSubHeadingStyle,
-                        ),
-                      ),
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Text(
+                              'RYD ID: ${profileState.driverData['_id'].toString().substring(0, 3)}',
+                              style: textSubHeadingStyle)),
                     ],
                   ),
                 ),

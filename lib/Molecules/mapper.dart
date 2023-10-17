@@ -4,20 +4,21 @@ import 'package:dio/dio.dart';
 import 'package:driver_app/Pages/Next-stop.dart';
 import 'package:driver_app/atom/Button.dart';
 import 'package:driver_app/atom/Pop-Up/Stop-ride.dart';
-import 'package:driver_app/atom/Pop-Up/complete.dart';
+
 import 'package:driver_app/atom/home/HomeListCard.dart';
 import 'package:driver_app/atom/home/MapButton.dart';
 import 'package:driver_app/service/mapper/map.dart';
 import 'package:driver_app/service/route/route.dart';
+
 import 'package:driver_app/state-management/profile-state.dart';
 import 'package:driver_app/state-management/route-state.dart';
 import 'package:driver_app/utils/alert.dart';
 import 'package:driver_app/utils/distance.dart';
 import 'package:driver_app/utils/storage.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+
 import 'package:provider/provider.dart';
 
 class Mapper extends StatefulWidget {
@@ -30,18 +31,18 @@ class Mapper extends StatefulWidget {
 }
 
 class MapperComponent extends State<Mapper> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   Timer? locationUpdateTimer;
   MapperMap map = MapperMap();
-  Set<Polyline> _routeCoordinates = Set<Polyline>();
-  int polylineCounter = 1;
-  LatLng userLocation = LatLng(0.0, 0.0);
+
+  late GoogleMapController mapController;
+
+  BitmapDescriptor? userIcon;
   bool isLoading = true;
   bool fullScreen = false;
   bool isRideCompleted = false;
   DistanceUtils distanceUtils = DistanceUtils();
   PhoneStorage phoneStorage = PhoneStorage();
-  bool rideStarted = false;
+
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
@@ -49,19 +50,12 @@ class MapperComponent extends State<Mapper> {
     markerId: MarkerId("userMarket"),
   );
 
-  Marker startPointMarker = const Marker(
-    markerId: MarkerId("startPointMarker"),
-  );
-
-  List<Marker> stoppageMarkers = [];
-
-  getCurrentLocation() async {
-    phoneStorage.setStringValue('destination', 'New Destination');
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-    double latitude = position.latitude;
-    double longitude = position.longitude;
+  
+   Future<void> getCurrentLocation() async {
+    final locationProvider =
+        Provider.of<RouteDetailState>(context, listen: false);
+    await locationProvider.getCurrentLocation();
+    isLoading = false;
     if (mounted) {
       final stateCall = Provider.of<ProfileState>(context, listen: false);
       String profilePhoto = stateCall.driverData['profile_photo'];
@@ -74,96 +68,17 @@ class MapperComponent extends State<Mapper> {
       );
 
       setState(() {
-        userLocation = LatLng(latitude, longitude);
         userMarker = Marker(
           markerId: const MarkerId("userMarker"),
           icon: icon,
-          position: userLocation,
+          position: locationProvider.userLocation,
         );
-
-        isLoading = false;
       });
-
-      // Update the camera position to the user's location
       if (_controller.isCompleted) {
         final GoogleMapController controller = await _controller.future;
-        controller.animateCamera(CameraUpdate.newLatLng(userLocation));
+        controller.animateCamera(
+            CameraUpdate.newLatLng(locationProvider.userLocation));
       }
-    }
-  }
-
-  getDirection(origin, destination) async {
-    phoneStorage.setStringValue('destination', 'New Destination');
-    Response resp = await map.getDirectionAPI(origin, destination);
-    final responseData = resp.data;
-    if (responseData['status'] == 'OK') {
-      final List<dynamic> routes = responseData['routes'];
-      if (routes.isNotEmpty) {
-        final Map<String, dynamic> route = routes[0];
-        final Map<String, dynamic> overviewPolyline =
-            route['overview_polyline'];
-        final String points = overviewPolyline['points'];
-        _decodePolyline(points);
-      }
-      setState(() {
-        final routeState =
-            Provider.of<RouteDetailState>(context, listen: false);
-        double startingPointLatitude =
-            double.parse(routeState.startingPoint["latitude"]);
-        double startingPointLongitude =
-            double.parse(routeState.startingPoint["longitude"]);
-        startPointMarker = Marker(
-            markerId: const MarkerId("startPointMarker"),
-            icon: BitmapDescriptor.defaultMarker,
-            position: LatLng(startingPointLatitude, startingPointLongitude));
-        for (var stoppage in routeState.stoppageWithDetails) {
-          double stoppageLatitude =
-              double.parse(stoppage["stoppage"]["latitude"]);
-          double stoppageLongitude =
-              double.parse(stoppage["stoppage"]["longitude"]);
-          Marker stoppageMarker = Marker(
-            markerId: MarkerId("stoppage_${stoppage["stoppage"]["_id"]}"),
-            icon: BitmapDescriptor.defaultMarker,
-            position: LatLng(stoppageLatitude, stoppageLongitude),
-          );
-          stoppageMarkers.add(stoppageMarker);
-        }
-      });
-    }
-  }
-
-  void _decodePolyline(String polyline) {
-    List<PointLatLng> points = PolylinePoints().decodePolyline(polyline);
-    final polylineIds = "polylineID$polylineCounter";
-    polylineCounter++;
-    Set<Polyline> tempRoute = Set<Polyline>();
-    tempRoute.add(Polyline(
-        polylineId: PolylineId(polylineIds),
-        width: 5,
-        color: Colors.blue,
-        points: points.map((e) => LatLng(e.latitude, e.longitude)).toList()));
-    setState(() {
-      _routeCoordinates = tempRoute;
-    });
-  }
-
-  void checkAndStartRide(BuildContext context) async {
-    phoneStorage.setStringValue('destination', 'New Destination');
-    final routeState = Provider.of<RouteDetailState>(context, listen: false);
-    double startingPointLatitude =
-        double.parse(routeState.startingPoint["latitude"]);
-    double startingPointLongitude =
-        double.parse(routeState.startingPoint["longitude"]);
-    String distanceString =
-        await distanceUtils.getCurrentLocationAndCalculateDistance(
-            startingPointLatitude, startingPointLongitude);
-    String startingpoint = distanceString.replaceAll(RegExp(r'[^0-9.]'), '');
-    double? distance = double.tryParse(startingpoint);
-    print(distance);
-    if (distance != null && distance <= 10.0) {
-      setState(() {
-        rideStarted = true;
-      });
     }
   }
 
@@ -175,27 +90,14 @@ class MapperComponent extends State<Mapper> {
 
   final RouteDetailService service = RouteDetailService();
   AlertBundle alert = AlertBundle();
-  void updateShuttle(context) async {
-    try {
-      Response response = await service.updateShuttleTracking(
-        userLocation.latitude,
-        userLocation.longitude,
-      );
-      if (response.statusCode == 200) {
-        alert.SnackBarNotify(context, "Shuttle location updated");
-      } else {
-        alert.SnackBarNotify(context, "Failed to update shuttle location");
-      }
-    } catch (error) {
-      print("Error: $error");
-    }
-  }
 
   @override
   void initState() {
     super.initState();
 
     final routeState = Provider.of<RouteDetailState>(context, listen: false);
+    getCurrentLocation();
+
     String currentDate = DateTime.now().toLocal().toString().split(' ')[0];
     routeState.getRouteDetailsByDriver(currentDate);
     locationUpdateTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
@@ -211,6 +113,8 @@ class MapperComponent extends State<Mapper> {
 
   @override
   Widget build(BuildContext context) {
+    LatLng userLocation = Provider.of<RouteDetailState>(context).userLocation;
+
     return Consumer<RouteDetailState>(
       builder: (context, routeState, child) => Scaffold(
         body: SingleChildScrollView(
@@ -229,16 +133,16 @@ class MapperComponent extends State<Mapper> {
                             zoom: 15.0,
                           ),
                           markers: {
-                            if (rideStarted) ...[
+                            if (routeState.rideStarted) ...[
                               userMarker,
-                              ...stoppageMarkers,
+                              ...routeState.stoppageMarkers,
                             ],
-                            if (!rideStarted) ...[
+                            if (!routeState.rideStarted) ...[
                               userMarker,
-                              startPointMarker,
+                              routeState.startPointMarker,
                             ],
                           },
-                          polylines: _routeCoordinates,
+                          polylines: routeState.routeCoordinates,
                           onMapCreated: (GoogleMapController controller) {
                             _controller.complete(controller);
                           }),
@@ -276,25 +180,24 @@ class MapperComponent extends State<Mapper> {
                     MapButton(
                       buttonText: 'Go to starting Point',
                       onPressed: () async {
-                        getDirection(
+                        routeState.getDirections(
                             "${userLocation.latitude},${userLocation.longitude}",
                             "${routeState.startingPoint["latitude"]},${routeState.startingPoint["longitude"]}");
-                        checkAndStartRide(context);
+                        routeState.checkAndStartRide(context);
                       },
                       width: 140,
                       color: const Color(0xFF192B46),
                     ),
                     MapButton(
-                      buttonText:
-                          isRideCompleted ? 'Complete Ride' : 'Start Ride',
-                      disabled: !rideStarted,
+                      buttonText: 'Start Ride',
+                      disabled: !routeState.rideStarted,
                       onPressed: () async {
-                        if (rideStarted) {
+                        if (routeState.rideStarted) {
                           routeState.startShuttleTracking(
                             userLocation.latitude,
                             userLocation.longitude,
                           );
-                          updateShuttle(context);
+                          routeState.updateShuttle(context);
                           setState(() {
                             isLoading = true;
                           });
@@ -314,7 +217,7 @@ class MapperComponent extends State<Mapper> {
                               final LatLng destination =
                                   destinations[currentDestinationIndex];
                               // Fetch directions from current location to the destination.
-                              await getDirection(
+                              await routeState.getDirections(
                                 "${userLocation.latitude},${userLocation.longitude}",
                                 "${destination.latitude},${destination.longitude}",
                               );
@@ -324,7 +227,7 @@ class MapperComponent extends State<Mapper> {
                               controller
                                   .animateCamera(CameraUpdate.newCameraPosition(
                                 CameraPosition(
-                                  target: userLocation,
+                                  target: destination,
                                   zoom: 15.0,
                                 ),
                               ));
@@ -338,9 +241,9 @@ class MapperComponent extends State<Mapper> {
                               double? distance =
                                   double.tryParse(distanceString);
 
-                              Timer.periodic(const Duration(seconds: 2),
+                              Timer.periodic(const Duration(seconds: 10),
                                   (timer) {
-                                if (distance != null && distance <= 10.0) {
+                                if (distance != null && distance <= 229004.11) {
                                   currentDestinationIndex++;
                                   if (currentDestinationIndex ==
                                       destinations.length) {
@@ -395,7 +298,7 @@ class MapperComponent extends State<Mapper> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: Text(
-                              rideStarted
+                              routeState.rideStarted
                                   ? 'Next Stop & Customers'
                                   : 'Total People to Pickup • ${routeState.totalUsers} Customers',
                               style: const TextStyle(

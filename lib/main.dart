@@ -19,9 +19,13 @@ import 'package:provider/provider.dart';
 import 'Pages/home/HomePage.dart';
 import 'state-management/history-state.dart';
 import 'state-management/next-stop.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+   await Permission.location.request();
   await Firebase.initializeApp();
   runApp(const MyApp());
 }

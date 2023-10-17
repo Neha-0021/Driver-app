@@ -39,5 +39,7 @@ class PhoneStorage {
   Future<void> saveToken(String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('token', token);
+    
   }
+ 
 }

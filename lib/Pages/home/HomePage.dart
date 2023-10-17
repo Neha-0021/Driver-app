@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:driver_app/Organism/Profile-drawer.dart';
 import 'package:driver_app/atom/home/homeheader.dart';
 import 'package:driver_app/Molecules/mapper.dart';
@@ -17,9 +19,10 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool permissionPopupShown = false;
+  bool permissionRequested = false;
 
   AlertBundle alert = AlertBundle();
 
@@ -30,20 +33,38 @@ class _HomePageState extends State<HomePage>
   }
 
   Future<void> requestPermissionHandler() async {
-    bool isServiceEnable = await Geolocator.isLocationServiceEnabled();
-    print("isService ${isServiceEnable.toString()}");
-    if (!isServiceEnable) {
-      openSettingPopup();
+    if (permissionRequested) {
       return;
     }
-    LocationPermission permission = await Geolocator.checkPermission();
-    print(permission);
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      if (!permissionPopupShown) {
+        openSettingPopup();
+        permissionPopupShown = true;
+      }
+    }
+
+    permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
+      permissionRequested = true;
+      if (permission == LocationPermission.denied) {
+        if (!permissionPopupShown) {
+          openSettingPopup();
+          permissionPopupShown = true;
+        }
+      }
     }
+
     if (permission == LocationPermission.deniedForever) {
-      openSettingPopup();
-      return;
+      if (!permissionPopupShown) {
+        openSettingPopup();
+        permissionPopupShown = true;
+      }
     }
   }
 
@@ -51,11 +72,12 @@ class _HomePageState extends State<HomePage>
     alert.showAlertDialogWithAction(
         context,
         "Permission Required",
-        'Looks you have not give us location permission. this is nessary for proceeding',
+        "To enhance your travel experience, granting location access allows us to help you identify your nearest boarding point. Your privacy is our utmost concern, and we at RydThru take rigorous measures to safeguard it. Please note that without it, all app features are restricted. Your location permission is crucial for personalized, optimal travel solutions.",
         [
           TextButton(
-              onPressed: () => openAppSettings(),
+              onPressed: () => {Navigator.pop(context), openAppSettings()},
               child: const Text("Open Settings")),
+          TextButton(onPressed: () => {exit(0)}, child: const Text("Exit")),
         ],
         false);
   }
@@ -63,12 +85,27 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance!.addObserver(this);
     requestPermissionHandler();
   }
 
   @override
+  void dispose() {
+    // Add this line to remove the observer when the widget is disposed
+    WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      requestPermissionHandler();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-     SystemChrome.setSystemUIOverlayStyle(
+    SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Color(0xFF192B46),
       ),
@@ -87,7 +124,7 @@ class _HomePageState extends State<HomePage>
               HomeHeader(
                 openSideDrawer: () => toggleDrawer(),
               ),
-             Expanded(
+              const Expanded(
                 child: Mapper(),
               ),
             ],

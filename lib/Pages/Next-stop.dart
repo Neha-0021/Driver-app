@@ -2,7 +2,6 @@ import 'package:driver_app/state-management/route-state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:casa_vertical_stepper/casa_vertical_stepper.dart';
 import 'package:driver_app/Molecules/Customer-details.dart';
 import 'package:driver_app/atom/header-with-back-button.dart';
 import 'package:driver_app/state-management/next-stop.dart';
@@ -35,29 +34,39 @@ class _NextStopState extends State<NextStop> {
         statusBarColor: Color(0xFF192B46),
       ),
     );
+
     final nextstopState = Provider.of<NextStoppageState>(context);
-    final stepperList = nextstopState.nextStoppageUserDetails.map((stoppage) {
+    final stoppageList = nextstopState.nextStoppageUserDetails.map((stoppage) {
       final users = stoppage['users'];
       final customerDetailsList = users.map((user) {
-        return CustomerDetails(
-          name: '${user['firstname']} ${user['lastname']}',
-          rideId: 'Ride ID: ${user['_id']}',
+        return Padding(
+          padding: const EdgeInsets.symmetric(
+              vertical: 8.0, horizontal: 30), // Add your desired padding values
+          child: CustomerDetails(
+            name: '${user['firstname']} ${user['lastname']}',
+            rideId: 'Ride ID: ${user['_id']}',
+          ),
         );
       }).toList();
 
-      return StepperStep(
-        title: Text(
-          stoppage['stoppage_name'],
-          style: textHeadingStyle,
+      return ExpansionTile(
+        title: Padding(
+          padding:
+              const EdgeInsets.only(bottom: 8.0), // Adjust the value as needed
+          child: Row(
+            children: [
+              SvgPicture.asset('assets/images/svg/drop-s.svg'),
+              SizedBox(width: 15.0),
+              Text(
+                stoppage['stoppage_name'],
+                style: textHeadingStyle,
+              ),
+            ],
+          ),
         ),
-        isExpanded: false,
-        leading: SvgPicture.asset('assets/images/svg/drop-s.svg'),
-        view: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ...customerDetailsList,
-          ],
-        ),
+        children: [
+          ...customerDetailsList,
+        ],
       );
     }).toList();
 
@@ -81,10 +90,8 @@ class _NextStopState extends State<NextStop> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 30),
-                  child: CasaVerticalStepperView(
-                    steps: stepperList,
-                    seperatorColor: Colors.transparent,
-                    isExpandable: true,
+                  child: Column(
+                    children: stoppageList,
                   ),
                 ),
               ],
