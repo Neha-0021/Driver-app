@@ -26,7 +26,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   @override
   Widget build(BuildContext context) {
-     SystemChrome.setSystemUIOverlayStyle(
+    SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Color(0xFF192B46),
       ),
@@ -40,18 +40,22 @@ class _HistoryPageState extends State<HistoryPage> {
                 Titletext: 'History',
                 subtitletext: 'Check your ride history here!',
               ),
-              historyState.completeHistory.isNotEmpty
-                  ? ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: historyState.completeHistory.length,
-                      itemBuilder: (context, index) {
-                        final history = historyState.completeHistory[index];
-                        return HistoryCard(data: history);
-                      },
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.all(20), child: NoHistory()),
+              Expanded(
+                // Wrap the ListView.builder with Expanded
+                child: historyState.completeHistory.isNotEmpty
+                    ? ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: historyState.completeHistory.length,
+                        itemBuilder: (context, index) {
+                          final history = historyState.completeHistory[index];
+                          return HistoryCard(data: history);
+                        },
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: NoHistory(),
+                      ),
+              ),
             ],
           ),
         ),

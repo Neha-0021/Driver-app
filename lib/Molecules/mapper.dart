@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:custom_marker/marker_icon.dart';
-import 'package:dio/dio.dart';
+
 import 'package:driver_app/Pages/Next-stop.dart';
 import 'package:driver_app/atom/Button.dart';
 import 'package:driver_app/atom/Pop-Up/Stop-ride.dart';
@@ -9,6 +9,7 @@ import 'package:driver_app/atom/home/HomeListCard.dart';
 import 'package:driver_app/atom/home/MapButton.dart';
 import 'package:driver_app/service/mapper/map.dart';
 import 'package:driver_app/service/route/route.dart';
+import 'package:driver_app/service/stop-ride.dart';
 
 import 'package:driver_app/state-management/profile-state.dart';
 import 'package:driver_app/state-management/route-state.dart';
@@ -37,7 +38,8 @@ class MapperComponent extends State<Mapper> {
   late GoogleMapController mapController;
 
   BitmapDescriptor? userIcon;
-  bool isLoading = true;
+  
+
   bool fullScreen = false;
   bool isRideCompleted = false;
   DistanceUtils distanceUtils = DistanceUtils();
@@ -46,16 +48,12 @@ class MapperComponent extends State<Mapper> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
-  Marker userMarker = const Marker(
-    markerId: MarkerId("userMarket"),
-  );
-
-  
-   Future<void> getCurrentLocation() async {
+  Future<void> getCurrentLocation() async {
     final locationProvider =
         Provider.of<RouteDetailState>(context, listen: false);
+
     await locationProvider.getCurrentLocation();
-    isLoading = false;
+
     if (mounted) {
       final stateCall = Provider.of<ProfileState>(context, listen: false);
       String profilePhoto = stateCall.driverData['profile_photo'];
@@ -68,11 +66,11 @@ class MapperComponent extends State<Mapper> {
       );
 
       setState(() {
-        userMarker = Marker(
+        locationProvider.updateUserMarker(Marker(
           markerId: const MarkerId("userMarker"),
           icon: icon,
           position: locationProvider.userLocation,
-        );
+        ));
       });
       if (_controller.isCompleted) {
         final GoogleMapController controller = await _controller.future;
@@ -90,6 +88,7 @@ class MapperComponent extends State<Mapper> {
 
   final RouteDetailService service = RouteDetailService();
   AlertBundle alert = AlertBundle();
+  StopRideService stop = StopRideService();
 
   @override
   void initState() {
@@ -134,11 +133,11 @@ class MapperComponent extends State<Mapper> {
                           ),
                           markers: {
                             if (routeState.rideStarted) ...[
-                              userMarker,
+                              routeState.userMarker,
                               ...routeState.stoppageMarkers,
                             ],
                             if (!routeState.rideStarted) ...[
-                              userMarker,
+                              routeState.userMarker,
                               routeState.startPointMarker,
                             ],
                           },
@@ -146,6 +145,10 @@ class MapperComponent extends State<Mapper> {
                           onMapCreated: (GoogleMapController controller) {
                             _controller.complete(controller);
                           }),
+                      if (routeState.isLoading)
+                        const Center(
+                          child: CircularProgressIndicator(),
+                        ),
                       Positioned(
                         top: 10,
                         right: 10,
@@ -164,10 +167,6 @@ class MapperComponent extends State<Mapper> {
                           },
                         ),
                       ),
-                      if (isLoading)
-                        const Center(
-                          child: CircularProgressIndicator(),
-                        ),
                     ],
                   ),
                 ),
@@ -193,15 +192,13 @@ class MapperComponent extends State<Mapper> {
                       disabled: !routeState.rideStarted,
                       onPressed: () async {
                         if (routeState.rideStarted) {
-                          routeState.startShuttleTracking(
-                            userLocation.latitude,
-                            userLocation.longitude,
-                          );
-                          routeState.updateShuttle(context);
-                          setState(() {
-                            isLoading = true;
+                          Timer.periodic(const Duration(seconds: 5), (timer) {
+                            routeState.startShuttleTracking(
+                              userLocation.latitude,
+                              userLocation.longitude,
+                            );
+                            routeState.updateShuttle(context);
                           });
-
                           List<LatLng> destinations = [];
                           for (var stoppage in routeState.stoppageWithDetails) {
                             double latitude =
@@ -241,19 +238,16 @@ class MapperComponent extends State<Mapper> {
                               double? distance =
                                   double.tryParse(distanceString);
 
-                              Timer.periodic(const Duration(seconds: 10),
+                              Timer.periodic(const Duration(seconds: 5),
                                   (timer) {
-                                if (distance != null && distance <= 229004.11) {
+                                if (distance != null && distance <= 10.0) {
                                   currentDestinationIndex++;
                                   if (currentDestinationIndex ==
                                       destinations.length) {
-                                    isRideCompleted = true;
+                                    routeState.stopRide();
                                   }
                                   updateDestinationAndDirections();
                                 }
-                              });
-                              setState(() {
-                                isLoading = false;
                               });
                             }
                           }
@@ -266,6 +260,7 @@ class MapperComponent extends State<Mapper> {
                     ),
                     MapButton(
                       buttonText: 'Stop Ride',
+                      disabled: !routeState.rideStarted,
                       onPressed: () {
                         showDialog(
                           context: context,

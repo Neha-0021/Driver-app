@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:driver_app/notification-handler.dart';
 import 'package:driver_app/service/login/login.dart';
 import 'package:driver_app/service/profile/profile.dart';
 import 'package:driver_app/utils/alert.dart';
@@ -12,9 +13,10 @@ class HomeState extends ChangeNotifier {
   String loginErrorText = "";
   Map<String, dynamic> driverData = {};
 
-  Map<String, String> Login = {
+  Map<String, dynamic> Login = {
     "userName": "",
     "password": "",
+    "fcmToken": "",
   };
 
   DriverService services = DriverService();
@@ -37,7 +39,6 @@ class HomeState extends ChangeNotifier {
     notifyListeners();
   }
 
-  
   void updateLoginValue(String key, String value) {
     Login[key] = value;
     notifyListeners();
@@ -63,8 +64,13 @@ class HomeState extends ChangeNotifier {
 
   Future<dynamic> loginDriver() async {
     // this need to be done via phone
-    Response loginAPICallback = await services.driverLogin(
-        {"userName": Login["userName"], "password": Login["password"]});
+    String fcmToken = await NotificationHandler().getFcmToken();
+    Login["fcmToken"] = fcmToken;
+    Response loginAPICallback = await services.driverLogin({
+      "userName": Login["userName"],
+      "password": Login["password"],
+      "fcmToken": Login["fcmToken"]
+    });
     if (loginAPICallback.statusCode == 200) {
       if (loginAPICallback.data["token"] != "") {
         storage.setStringValue("token", loginAPICallback.data["token"]);

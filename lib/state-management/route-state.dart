@@ -1,10 +1,9 @@
 import 'dart:async';
-
-import 'package:custom_marker/marker_icon.dart';
 import 'package:dio/dio.dart';
 import 'package:driver_app/service/mapper/map.dart';
 import 'package:driver_app/service/profile/profile.dart';
 import 'package:driver_app/service/route/route.dart';
+import 'package:driver_app/service/stop-ride.dart';
 import 'package:driver_app/utils/alert.dart';
 import 'package:driver_app/utils/distance.dart';
 import 'package:driver_app/utils/storage.dart';
@@ -12,13 +11,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 
 class RouteDetailState extends ChangeNotifier {
   final RouteDetailService service = RouteDetailService();
   final ProfileService Service = ProfileService();
   AlertBundle alert = AlertBundle();
   DistanceUtils distanceUtils = DistanceUtils();
-  bool rideStarted = true;
+  StopRideService stop = StopRideService();
+  bool rideStarted = false;
+  bool isLoading = true;
   late double latitude;
   late double longitude;
   Map<String, dynamic> routeDetails = {};
@@ -36,8 +38,7 @@ class RouteDetailState extends ChangeNotifier {
   MapperMap map = MapperMap();
   Set<Polyline> routeCoordinates = Set<Polyline>();
   int polylineCounter = 1;
-  final Completer<GoogleMapController> _controller =
-      Completer<GoogleMapController>();
+ 
   List<Marker> stoppageMarkers = [];
   Marker startPointMarker = const Marker(
     markerId: MarkerId("startPointMarker"),
@@ -52,6 +53,10 @@ class RouteDetailState extends ChangeNotifier {
   Marker userMarker = const Marker(
     markerId: MarkerId("userMarker"),
   );
+  void updateUserMarker(Marker marker) {
+    userMarker = marker;
+    notifyListeners();
+  }
 
   Future<void> getRouteDetailsByDriver(String date) async {
     try {
@@ -91,12 +96,15 @@ class RouteDetailState extends ChangeNotifier {
   }
 
   Future<void> getCurrentLocation() async {
+     
+    notifyListeners();
     phoneStorage.setStringValue('destination', 'New Destination');
     try {
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
       setCurrentLocation(position);
+      isLoading = false;
     } catch (e) {
       print("Error getting location: $e");
     }
@@ -155,6 +163,9 @@ class RouteDetailState extends ChangeNotifier {
 
   void checkAndStartRide(BuildContext context) async {
     phoneStorage.setStringValue('destination', 'New Destination');
+    DateTime givenTime = DateFormat('HH:mm').parse(routeDetails["timing_form"]);
+    givenTime = DateTime(DateTime.now().year, DateTime.now().month,
+        DateTime.now().day, givenTime.hour, givenTime.minute);
 
     double startingPointLatitude = double.parse(startingPoint["latitude"]);
     double startingPointLongitude = double.parse(startingPoint["longitude"]);
@@ -163,8 +174,13 @@ class RouteDetailState extends ChangeNotifier {
             startingPointLatitude, startingPointLongitude);
     String startingpoint = distanceString.replaceAll(RegExp(r'[^0-9.]'), '');
     double? distance = double.tryParse(startingpoint);
-    print(distance);
-    if (distance != null && distance <= 229004.11) {
+    print('Distance  $distance');
+
+    DateTime currentTime = DateTime.now();
+    int timeDifference = givenTime.difference(currentTime).inMinutes;
+    print('time : $timeDifference');
+    if (distance != null && distance <= 10.0 && timeDifference <= 10 ||
+        timeDifference <= 0) {
       rideStarted = true;
       notifyListeners();
     }
@@ -177,9 +193,27 @@ class RouteDetailState extends ChangeNotifier {
         userLocation.longitude,
       );
       if (response.statusCode == 200) {
-        alert.SnackBarNotify(context, "Shuttle location updated");
+        print("Shuttle location updated");
       } else {
-        alert.SnackBarNotify(context, "Failed to update shuttle location");
+        print("Failed to update shuttle location");
+      }
+    } catch (error) {
+      print("Error: $error");
+    }
+  }
+
+  void stopRide() async {
+    try {
+      String reason = 'All users dropped';
+
+      Response response = await stop.stopRide(reason);
+
+      if (response.statusCode == 200) {
+        print("Successfully stopped the ride");
+      } else {
+        {
+          print("Ride could not be stopped.");
+        }
       }
     } catch (error) {
       print("Error: $error");

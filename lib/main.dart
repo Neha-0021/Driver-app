@@ -19,14 +19,12 @@ import 'package:provider/provider.dart';
 import 'Pages/home/HomePage.dart';
 import 'state-management/history-state.dart';
 import 'state-management/next-stop.dart';
-import 'package:permission_handler/permission_handler.dart';
-
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-   await Permission.location.request();
+
   await Firebase.initializeApp();
+  NotificationHandler().getFcmToken();
   runApp(const MyApp());
 }
 
@@ -47,14 +45,7 @@ class MyAppComponent extends State<MyApp> {
   }
 
   void initializeNotificationService() async {
-    NotificationHandler notificationService = NotificationHandler();
-
-    String? token = await notificationService.getFcmToken();
-    if (token != "") {
-      print('FCM Token: $token');
-    } else {
-      print('Unable to get FCM token.');
-    }
+    NotificationHandler().getFcmToken();
   }
 
   @override

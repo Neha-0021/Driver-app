@@ -11,6 +11,9 @@ class HistoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isVehicleBreakdown = data["reason"] == "Vehicle Breakdown";
+    bool isAllUsersDropped = data["reason"] == "All users dropped";
+
     return Column(
       children: [
         Container(
@@ -32,7 +35,7 @@ class HistoryCard extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(3),
                   child: Image.network(
-                    data["route_details"]["image"],
+                    data["routeDetails"][0]["image"],
                     width: 30,
                     height: 30,
                     fit: BoxFit.cover,
@@ -51,25 +54,28 @@ class HistoryCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "${data["stoppage_from_details"]["stoppage_name"]} - ${data["stoppage_to_details"]["stoppage_name"]}",
+                              "${data["routeDetails"][0]["route_name"]}",
                               style: textHeadingstyle,
                             ),
                             Text(
-                              '${DateFormat("dd MMM yy").format(DateTime.parse(data['date']))}',
+                              '${DateFormat("dd MMM yy").format(DateTime.parse(data['date']))}•${data["routeDetails"][0]["timing_form"]} - ${data["routeDetails"][0]["timing_to"]}',
                               style: textSubHeadingStyle,
                             ),
                           ],
                         ),
                       ),
                       HistoryStatus(
-                        containerColor: data["iscomplete"] == "Y"
-                            ? const Color(0xff00BD79)
-                            : const Color(0xFFF9A90C),
-                        labelText: data["iscomplete"] == "Y"
-                            ? "Completed"
-                            : data["iscomplete"] == "N"
-                                ? 'stopped'
-                                : "",
+                        containerColor: isVehicleBreakdown
+                            ? const Color(0xFFF9A90C)
+                            : isAllUsersDropped
+                                ? const Color(0xff00BD79)
+                                : Colors
+                                    .black, // Adjust as needed for other cases
+                        labelText: isVehicleBreakdown
+                            ? "Stopped"
+                            : isAllUsersDropped
+                                ? "Completed"
+                                : "", // Adjust as needed for other cases
                       ),
                     ],
                   ),

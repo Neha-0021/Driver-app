@@ -5,28 +5,15 @@ import 'package:flutter/foundation.dart';
 class DriverHistoryState extends ChangeNotifier {
   final DriverHistoryService historyService = DriverHistoryService();
 
-  List<dynamic> upcomingBookings = [];
-  List<dynamic> completeHistory = [];
 
-  Future<void> getDriverUpcomingBookings() async {
-    try {
-      Response response = await historyService.getDriverUpcomingBookings();
-      upcomingBookings = response.data["bookings"];
-        List<String> ids = response.data["bookings"]
-          .map<String>((obj) => obj["_id"].toString())
-          .toList();
-      notifyListeners();
-    } catch (error) {
-      print('Error fetching upcoming bookings: $error');
-    }
-  }
+  List<dynamic> completeHistory = [];
 
   Future<void> getDriverCompleteHistory() async {
     try {
       Response response = await historyService.getDriverCompleteHistory();
-      completeHistory = response.data["bookings"].reversed.toList();
+      completeHistory = response.data["stopRoute"].reversed.toList();
 
-      List<String> ids = response.data["bookings"]
+      List<String> ids = response.data["stopRoute"]
           .map<String>((obj) => obj["_id"].toString())
           .toList();
 
@@ -35,6 +22,4 @@ class DriverHistoryState extends ChangeNotifier {
       print('Error fetching notifications: $error');
     }
   }
-
-  
 }
