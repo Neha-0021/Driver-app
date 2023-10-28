@@ -38,7 +38,6 @@ class MapperComponent extends State<Mapper> {
   late GoogleMapController mapController;
 
   BitmapDescriptor? userIcon;
-  
 
   bool fullScreen = false;
   bool isRideCompleted = false;
@@ -193,11 +192,8 @@ class MapperComponent extends State<Mapper> {
                       onPressed: () async {
                         if (routeState.rideStarted) {
                           Timer.periodic(const Duration(seconds: 5), (timer) {
-                            routeState.startShuttleTracking(
-                              userLocation.latitude,
-                              userLocation.longitude,
-                            );
-                            routeState.updateShuttle(context);
+                            routeState.startShuttle();
+                            routeState.updateShuttle();
                           });
                           List<LatLng> destinations = [];
                           for (var stoppage in routeState.stoppageWithDetails) {
@@ -219,15 +215,7 @@ class MapperComponent extends State<Mapper> {
                                 "${destination.latitude},${destination.longitude}",
                               );
                               // Animate the camera to the new destination.
-                              final GoogleMapController controller =
-                                  await _controller.future;
-                              controller
-                                  .animateCamera(CameraUpdate.newCameraPosition(
-                                CameraPosition(
-                                  target: destination,
-                                  zoom: 15.0,
-                                ),
-                              ));
+
                               String destinationdistaion = await distanceUtils
                                   .getCurrentLocationAndCalculateDistance(
                                 destination.latitude,

@@ -1,17 +1,14 @@
 import 'package:driver_app/atom/Custom-header.dart';
+import 'package:driver_app/atom/short-terms.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
+import 'package:url_launcher/url_launcher.dart';
 
 class AboutUs extends StatelessWidget {
   const AboutUs({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-     SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Color(0xFF192B46),
-      ),
-    );
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -23,9 +20,9 @@ class AboutUs extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 30),
                 child: CustomHeader(
-                  headerText: 'About Us',
-                  iconColor: Colors.white,
-                ),
+                    headerText: 'About Us',
+                    iconColor: Colors.white,
+                    textColor: Colors.white),
               ),
             ),
             Expanded(
@@ -51,30 +48,37 @@ class AboutUs extends StatelessWidget {
                               stops: [0.0815, 0.9557],
                             ),
                           ),
-                          child: const Center(
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                      text: 'RYD',
-                                      style: TextStyle(
-                                        fontFamily: 'PublicaSans',
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w700,
-                                        color: Color(0xFF2B70D7),
-                                      )),
-                                  TextSpan(
-                                      text: 'THRU',
-                                      style: TextStyle(
-                                        fontFamily: 'PublicaSans',
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w700,
-                                        color: Color(0xFF000000),
-                                      )),
-                                ],
-                              ),
-                            ),
+                          child: Image.asset(
+                            "assets/images/logo.png",
+                            height: 76,
+                            width: 76,
                           ),
+
+                          // Center(
+                          // child: ,
+                          // child: Text.rich(
+                          //   TextSpan(
+                          //     children: [
+                          //       TextSpan(
+                          //           text: 'RYD',
+                          //           style: TextStyle(
+                          //             fontFamily: 'PublicaSans',
+                          //             fontSize: 13,
+                          //             fontWeight: FontWeight.w700,
+                          //             color: Color(0xFF2B70D7),
+                          //           )),
+                          //       TextSpan(
+                          //           text: 'THRU',
+                          //           style: TextStyle(
+                          //             fontFamily: 'PublicaSans',
+                          //             fontSize: 13,
+                          //             fontWeight: FontWeight.w700,
+                          //             color: Color(0xFF000000),
+                          //           )),
+                          //     ],
+                          //   ),
+                          // ),
+                          // ),
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 3),
@@ -154,6 +158,13 @@ class AboutUs extends StatelessWidget {
                       child: Text(
                           "Customer satisfaction is our utmost priority. Our dedicated support team is available 24/7 to assist you with any queries, cancellations, or rescheduling needs. We value your feedback and continuously strive to improve our services based on your suggestions.",
                           style: textHeadingstyle)),
+                  GestureDetector(
+                    child: ShortTerms(),
+                    onTap: () async {
+                      await launchUrl(
+                          Uri.parse("https://rydthru.com/terms-of-use"));
+                    },
+                  )
                 ],
               ),
             ),

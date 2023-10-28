@@ -38,7 +38,7 @@ class RouteDetailState extends ChangeNotifier {
   MapperMap map = MapperMap();
   Set<Polyline> routeCoordinates = Set<Polyline>();
   int polylineCounter = 1;
- 
+
   List<Marker> stoppageMarkers = [];
   Marker startPointMarker = const Marker(
     markerId: MarkerId("startPointMarker"),
@@ -74,18 +74,23 @@ class RouteDetailState extends ChangeNotifier {
     }
   }
 
-  Future<void> startShuttleTracking(
-      double driverLatitude, double driverLongitude) async {
-    final response =
-        await service.startShuttleTracking(driverLatitude, driverLongitude);
-    starttracking = response.data["data"];
-    print('Response: $response');
-    if (response.statusCode == 200) {
-      print('Shuttle tracking started successfully');
-    } else {
-      print('Error starting shuttle tracking');
+ void startShuttle( ) async {
+    try {
+      Response response = await service.startShuttleTracking(
+        userLocation.latitude,
+        userLocation.longitude,
+      );
+      if (response.statusCode == 200) {
+        print('StartResponse: $response');
+        print( "Shuttle tracking started");
+      } else {
+        print( "Shuttle tracking not started try again");
+      }
+    } catch (error) {
+      print("Error: $error");
     }
   }
+
 
   Future<void> setCurrentLocation(Position position) async {
     latitude = position.latitude;
@@ -96,7 +101,6 @@ class RouteDetailState extends ChangeNotifier {
   }
 
   Future<void> getCurrentLocation() async {
-     
     notifyListeners();
     phoneStorage.setStringValue('destination', 'New Destination');
     try {
@@ -163,7 +167,7 @@ class RouteDetailState extends ChangeNotifier {
 
   void checkAndStartRide(BuildContext context) async {
     phoneStorage.setStringValue('destination', 'New Destination');
-    DateTime givenTime = DateFormat('HH:mm').parse(routeDetails["timing_form"]);
+    DateTime givenTime = DateFormat('HH:mm').parse(routeDetails['timing_form']);
     givenTime = DateTime(DateTime.now().year, DateTime.now().month,
         DateTime.now().day, givenTime.hour, givenTime.minute);
 
@@ -186,7 +190,7 @@ class RouteDetailState extends ChangeNotifier {
     }
   }
 
-  void updateShuttle(context) async {
+  void updateShuttle() async {
     try {
       Response response = await service.updateShuttleTracking(
         userLocation.latitude,

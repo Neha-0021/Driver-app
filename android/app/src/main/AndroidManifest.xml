@@ -13,7 +13,7 @@
 
 
     <application
-        android:label="driver_app"
+        android:label="RYDTHRU DRIVER"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

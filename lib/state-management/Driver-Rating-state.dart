@@ -8,9 +8,8 @@ class DriverRatingState extends ChangeNotifier {
   List<dynamic> driver = [];
   List<dynamic> users = [];
   int totalUsers = 0;
-  int averageDriverRating = 0;
+  double averageDriverRating = 0.0;
 
- 
   Future<void> getDriverRatingByDriverId(String driverId) async {
     try {
       Response response =
