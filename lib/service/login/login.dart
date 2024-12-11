@@ -1,16 +1,15 @@
 import 'package:dio/dio.dart';
 import 'package:driver_app/service/config.dart';
 
-
 final dio = Dio();
 
-class LoginService {
+class DriverService {
   String baseUrl = ServiceConfig.baseUrl;
 
-  checkUserEnroll(data) async {
+  createDriver(data) async {
     try {
       Response response =
-          await dio.post("$baseUrl/api/user/check-user-by-mobile", data: data);
+          await dio.post("$baseUrl/api/driver/create-driver", data: data);
       return response;
     } catch (err) {
       if (err is DioException) {
@@ -19,10 +18,38 @@ class LoginService {
     }
   }
 
-  validateOTP(data) async {
+  driverLogin(data) async {
     try {
       Response response = await dio.post(
-        "$baseUrl/api/user/otp-verification",
+        "$baseUrl/api/driver/driver-login",
+        data: data,
+      );
+      return response;
+    } catch (err) {
+      print(err);
+      if (err is DioException) {
+        return (err.response);
+      }
+    }
+  }
+
+  deleteDriver(driverId) async {
+    try {
+      Response response = await dio.delete(
+        "$baseUrl/api/driver/delete-driver/$driverId",
+      );
+      return response;
+    } catch (err) {
+      if (err is DioException) {
+        return (err.response);
+      }
+    }
+  }
+
+  updateDriver(driverId, data) async {
+    try {
+      Response response = await dio.put(
+        "$baseUrl/api/driver/update-driver/$driverId",
         data: data,
       );
       return response;
@@ -33,45 +60,11 @@ class LoginService {
     }
   }
 
-  sendOTPAPI(data) async {
+  deleteAllDrivers() async {
     try {
-      Response response =
-          await dio.post("$baseUrl/api/user/send-otp-by-mobile", data: data);
-      return response;
-    } catch (err) {
-      if (err is DioException) {
-        return (err.response);
-      }
-    }
-  }
-
-  createUser(data) async {
-    try {
-      Response response =
-          await dio.post("$baseUrl/api/user/createUser", data: data);
-      return response;
-    } catch (err) {
-      if (err is DioException) {
-        return (err.response);
-      }
-    }
-  }
-
-  login(data) async {
-    try {
-      Response response = await dio.post("$baseUrl/api/user/login", data: data);
-      return response;
-    } catch (err) {
-      if (err is DioException) {
-        return (err.response);
-      }
-    }
-  }
-
-  forgetMpin(data) async {
-    try {
-      Response response =
-          await dio.post("$baseUrl/api/user/forget-password", data: data);
+      Response response = await dio.delete(
+        "$baseUrl/api/driver/delete-all-driver",
+      );
       return response;
     } catch (err) {
       if (err is DioException) {

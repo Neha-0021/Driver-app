@@ -32,16 +32,11 @@ class AlertBundle {
     );
   }
 
-    void showAlertDialogWithAction(
-    BuildContext context,
-    String? heading,
-    String message,
-    List<Widget> action,
-    bool isBackPressDismissed
-  ) {
+  void showAlertDialogWithAction(BuildContext context, String? heading,
+      String message, List<Widget> action, bool isBackPressDismissed) {
     showDialog(
       context: context,
-      barrierDismissible:isBackPressDismissed,
+      barrierDismissible: isBackPressDismissed,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(heading ?? ""),

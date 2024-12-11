@@ -1,67 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../atom/CustomTextInput.dart';
+import '../../state-management/profile-state.dart';
 
 class PersonalDetail extends StatelessWidget {
-  final ValueChanged<String> onFirstNameChanged;
-  final ValueChanged<String> onLastNameChanged;
-  final ValueChanged<String> onEmailChanged;
-  final String? firstName;
-  final String? lastName;
-  final String? email;
-  final String? phone;
-  final bool isDisable;
-
-  const PersonalDetail(
-      {Key? key,
-      required this.onFirstNameChanged,
-      required this.onLastNameChanged,
-      required this.onEmailChanged,
-      required this.isDisable,
-      this.firstName,
-      this.lastName,
-      this.email,
-      this.phone})
-      : super(key: key);
+  const PersonalDetail({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Padding(
-            padding: const EdgeInsets.all(10),
-            child: CustomTextInput(
+    return Consumer<ProfileState>(builder: (context, profileState, child) {
+      final firstName = profileState.driverData['name']?.toString() ?? '';
+
+      final lastName = profileState.driverData['lastName']?.toString() ?? '';
+      final mobile = profileState.driverData['mobile']?.toString() ?? '';
+      final email = profileState.driverData['email']?.toString() ?? '';
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Padding(
+              padding: const EdgeInsets.all(10),
+              child: CustomTextInput(
                 hintText: "First Name",
                 imagePath: "assets/images/svg/profile.svg",
-                onChangeText: isDisable ? (String e) => {} : onFirstNameChanged,
+                onChangeText: (String value) {},
+                isDisabled: true,
                 value: firstName,
-                isDisabled: isDisable)),
-        Padding(
-            padding: const EdgeInsets.all(10),
-            child: CustomTextInput(
+              )),
+          Padding(
+              padding: const EdgeInsets.all(10),
+              child: CustomTextInput(
                 hintText: "Last Name",
                 imagePath: "assets/images/svg/profile-line.svg",
-                onChangeText: isDisable ? (String e) => {} : onLastNameChanged,
+                isDisabled: true,
+                onChangeText: (String value) {},
                 value: lastName,
-                isDisabled: isDisable)),
-        Padding(
+              )),
+          Padding(
             padding: const EdgeInsets.all(10),
             child: CustomTextInput(
-              hintText: phone ?? "",
+              hintText: "Mobile",
               imagePath: 'assets/images/disable.png',
               isDisabled: true,
               additionalImagePath: 'assets/images/Password.png',
               onChangeText: (String value) {},
-            )),
-        Padding(
-            padding: const EdgeInsets.all(10),
-            child: CustomTextInput(
+              value: mobile,
+            ),
+          ),
+          Padding(
+              padding: const EdgeInsets.all(10),
+              child: CustomTextInput(
                 hintText: "Email",
                 imagePath: "assets/images/svg/email.svg",
-                onChangeText: isDisable ? (String e) => {} : onEmailChanged,
+                onChangeText: (String value) {},
+                isDisabled: true,
                 value: email,
-                isDisabled: isDisable)),
-      ],
-    );
+              )),
+        ],
+      );
+    });
   }
 }
